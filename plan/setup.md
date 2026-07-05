@@ -1,4 +1,4 @@
-# Snap — Setup Guide
+# snip — Setup Guide
 
 Companion to `plan.md`. This covers project scaffolding, tooling, and account
 setup only — no feature implementation here.
@@ -91,7 +91,7 @@ blocks mid-build waiting on a missing key.
 2. Once provisioned, go to Connect → copy `HOST`, default `USER` (usually
    `default`), and `PASSWORD` (shown once at creation — save it immediately).
 3. Note the default database name (usually `default`, or create one named
-   `snap`).
+   `snip`).
 
 **Cloudflare**
 1. Add your domain (or use a free `workers.dev` subdomain if you don't have
@@ -118,7 +118,7 @@ blocks mid-build waiting on a missing key.
 
 **Sentry**
 1. Create a free-tier org at sentry.io.
-2. Create one project per app (`snap-api`, `snap-edge`, `snap-web`) — each
+2. Create one project per app (`snip-api`, `snip-edge`, `snip-web`) — each
    gives you a separate DSN. Copy each DSN into its app's `.env`.
 
 **GitHub**

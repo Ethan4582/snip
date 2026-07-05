@@ -73,7 +73,7 @@ This layer order is mandatory for believable depth.
   - `cursor-grabbing` while dragging
   - subtle active scaling for buttons (`active:scale-[0.97]` style behavior)
 - Use spring motion for fill/rotation where possible.
-- Preserve realistic feedback timing (short, snappy transitions).
+- Preserve realistic feedback timing (short, snippy transitions).
 
 ## Dial Guidance
 

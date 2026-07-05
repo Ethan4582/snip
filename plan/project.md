@@ -1,7 +1,7 @@
-# Snap — Production-Grade Resume Project — Blueprint
+# snip — Production-Grade Resume Project — Blueprint
 
 ## 1. What we're building
-**Snap** is a Bitly-style URL shortener with click analytics and auth. Not a
+**snip** is a Bitly-style URL shortener with click analytics and auth. Not a
 SaaS product — a personal-use, portfolio-quality system demonstrating
 production architecture patterns, built entirely on free tiers.
 
