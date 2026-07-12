@@ -1,7 +1,36 @@
+import { Redis } from '@upstash/redis/cloudflare'
+
 export interface Env {
   URL_CACHE: KVNamespace
   API_ORIGIN_URL: string
   APP_URL: string
+  UPSTASH_REDIS_REST_URL: string
+  UPSTASH_REDIS_REST_TOKEN: string
+}
+
+async function publishClickEvent(env: Env, request: Request, shortCode: string) {
+  try {
+    const redis = new Redis({
+      url: env.UPSTASH_REDIS_REST_URL,
+      token: env.UPSTASH_REDIS_REST_TOKEN,
+    })
+    
+    const cf = (request as any).cf
+    const country = cf?.country || 'Unknown'
+    const referrer = request.headers.get('referer') || ''
+    const userAgent = request.headers.get('user-agent') || ''
+    
+    await redis.xadd('click-events', '*', {
+      short_code: shortCode,
+      clicked_at: new Date().toISOString(),
+      country,
+      referrer,
+      user_agent: userAgent
+    })
+  } catch (err) {
+    // Fail silently so the redirect response isn't affected
+    console.error('Analytics write failed', err)
+  }
 }
 
 interface CachedUrl {
@@ -42,7 +71,7 @@ function errorPage(title: string, message: string, status: number, appUrl: strin
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url)
     const shortCode = url.pathname.slice(1)
     const appUrl = env.APP_URL || 'http://localhost:5173'
@@ -58,6 +87,7 @@ export default {
       if (data.expires_at && new Date(data.expires_at) <= new Date()) {
         return errorPage('Link Expired', 'This link has expired and is no longer available.', 410, appUrl)
       }
+      ctx.waitUntil(publishClickEvent(env, request, shortCode))
       return Response.redirect(data.long_url, 302)
     }
 
@@ -83,6 +113,7 @@ export default {
 
     await env.URL_CACHE.put(shortCode, JSON.stringify(data), { expirationTtl: ttlSeconds })
 
+    ctx.waitUntil(publishClickEvent(env, request, shortCode))
     return Response.redirect(data.long_url, 302)
   },
 }

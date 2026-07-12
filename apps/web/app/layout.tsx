@@ -2,10 +2,10 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Snip — URL Shortener',
+  title: 'Snip - URL Shortener',
   description: 'A fast, production-grade URL shortener with analytics. Capture links, organize them beautifully, and access anytime, anywhere.',
   openGraph: {
-    title: 'Snip — URL Shortener',
+    title: 'Snip - URL Shortener',
     description: 'Capture links, organize them beautifully, and access anytime, anywhere.',
     url: 'https://snip.app',
     siteName: 'Snip',
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Snip — URL Shortener',
+    title: 'Snip - URL Shortener',
     description: 'Capture links, organize them beautifully, and access anytime, anywhere.',
   },
 }

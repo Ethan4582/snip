@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import bg from '../../../assets/bg.png'
 
 export default function HeroSection() {
   const router = useRouter()
@@ -23,14 +24,11 @@ export default function HeroSection() {
 
   return (
     <div ref={containerRef} className="relative pt-[140px] pb-10 flex flex-col items-center w-full px-4 overflow-hidden" style={{ perspective: '1200px' }}>
-      {/* Background Decorative Circles/Lines */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-40 flex justify-center">
-        <img 
-          src="https://storage.googleapis.com/download/storage/v1/b/prd-shared-services.firebasestorage.app/o/h2m-assets%2Ff0aee0dffd2da36a3f20523b4793d7f2916798ae.svg?generation=1783850838681894&alt=media" 
-          className="w-full h-[800px] object-cover object-top opacity-50 max-w-[1400px]" 
-          alt="" 
-        />
-      </div>
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 z-0 pointer-events-none opacity-50 bg-no-repeat bg-top bg-cover"
+        style={{ backgroundImage: `url(${bg.src})` }}
+      />
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
