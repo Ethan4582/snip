@@ -1,6 +1,9 @@
 "use client"
 
 import { motion } from 'framer-motion'
+import f1 from '../../../assets/f1.png'
+import f2 from '../../../assets/f2.png'
+import f3 from '../../../assets/f3.png'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -51,7 +54,7 @@ export default function FeaturesSection() {
         <motion.div variants={itemVariants} className="group flex flex-col bg-white p-6 rounded-2xl shadow-sm border border-gray-100 gap-6 hover:shadow-md transition-shadow duration-300">
           <div className="w-full aspect-[1.36/1] rounded-xl overflow-hidden bg-gray-50 relative">
             <img 
-              src="https://storage.googleapis.com/download/storage/v1/b/prd-shared-services.firebasestorage.app/o/h2m-assets%2F8387747737b3ace5e7f2bf53779d46312beaa702.png?generation=1783850838674684&alt=media" 
+              src={f1.src} 
               className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out" 
               alt="Fast Redirects" 
             />
@@ -66,7 +69,7 @@ export default function FeaturesSection() {
         <motion.div variants={itemVariants} className="group flex flex-col bg-white p-6 rounded-2xl shadow-sm border border-gray-100 gap-6 hover:shadow-md transition-shadow duration-300">
           <div className="w-full aspect-[1.36/1] rounded-xl overflow-hidden bg-gray-50 relative">
             <img 
-              src="https://storage.googleapis.com/download/storage/v1/b/prd-shared-services.firebasestorage.app/o/h2m-assets%2F07506d145da3fb70bec63cd5335adda3d836e0f7.png?generation=1783850838683402&alt=media" 
+              src={f2.src}  
               className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out" 
               alt="Deep Analytics" 
             />
@@ -81,7 +84,7 @@ export default function FeaturesSection() {
         <motion.div variants={itemVariants} className="group flex flex-col bg-white p-6 rounded-2xl shadow-sm border border-gray-100 gap-6 hover:shadow-md transition-shadow duration-300">
           <div className="w-full aspect-[1.36/1] rounded-xl overflow-hidden bg-gray-50 relative">
              <img 
-               src="https://storage.googleapis.com/download/storage/v1/b/prd-shared-services.firebasestorage.app/o/h2m-assets%2F0f9669de8fa35fa9d888fe605ebf4c34d46ac2c0.png?generation=1783850838760568&alt=media" 
+              src={f3.src} 
                className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out" 
                alt="Custom Aliases" 
              />
