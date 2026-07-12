@@ -32,9 +32,9 @@ export default function LandingFooter() {
           </div>
 
           {/* Column 2: Platform */}
-          <div className="flex flex-col gap-6">
-            <h6 className="font-bold text-[11px] tracking-[0.15em] uppercase text-gray-900">Platform</h6>
-            <div className="flex flex-col gap-4 text-gray-500 text-[12px] font-semibold uppercase tracking-wider">
+          <div className="flex flex-col gap-5">
+            <h6 className="font-semibold text-[16px] text-gray-900 tracking-tight">Platform</h6>
+            <div className="flex flex-col gap-3 text-gray-500 text-[15px] font-medium">
               <a href="#features" className="hover:text-black transition-colors">Features</a>
               <a href="#" className="hover:text-black transition-colors">Analytics</a>
               <a href="#" className="hover:text-black transition-colors">Integrations</a>
@@ -42,9 +42,9 @@ export default function LandingFooter() {
           </div>
 
           {/* Column 3: Resources */}
-          <div className="flex flex-col gap-6">
-            <h6 className="font-bold text-[11px] tracking-[0.15em] uppercase text-gray-900">Resources</h6>
-            <div className="flex flex-col gap-4 text-gray-500 text-[12px] font-semibold uppercase tracking-wider">
+          <div className="flex flex-col gap-5">
+            <h6 className="font-semibold text-[16px] text-gray-900 tracking-tight">Resources</h6>
+            <div className="flex flex-col gap-3 text-gray-500 text-[15px] font-medium">
               <a href="https://docs.snip.app" target="_blank" rel="noopener noreferrer" className="hover:text-black transition-colors">Documentation</a>
               <a href="#" className="hover:text-black transition-colors">API Reference</a>
               <a href="#" className="hover:text-black transition-colors">Blog</a>
@@ -52,9 +52,9 @@ export default function LandingFooter() {
           </div>
 
           {/* Column 4: Community */}
-          <div className="flex flex-col gap-6">
-            <h6 className="font-bold text-[11px] tracking-[0.15em] uppercase text-gray-900">Community</h6>
-            <div className="flex flex-col gap-4 text-gray-500 text-[12px] font-semibold uppercase tracking-wider">
+          <div className="flex flex-col gap-5">
+            <h6 className="font-semibold text-[16px] text-gray-900 tracking-tight">Community</h6>
+            <div className="flex flex-col gap-3 text-gray-500 text-[15px] font-medium">
               <a href="#" className="hover:text-black transition-colors">Twitter / X</a>
               <a href="#" className="hover:text-black transition-colors">GitHub</a>
               <a href="#" className="hover:text-black transition-colors">Discord</a>
@@ -66,13 +66,13 @@ export default function LandingFooter() {
         <div className="flex flex-col gap-6 mt-6">
           <div className="w-full h-[1px] bg-gray-200"></div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-gray-400 text-[11px] font-bold tracking-[0.1em] uppercase">© 2024 Snip. All rights reserved.</p>
+            <p className="text-gray-500 text-[14px] font-medium">© 2024 Snip. All rights reserved.</p>
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-200 bg-green-50 text-green-700 text-[10px] font-bold tracking-widest uppercase">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-200 bg-green-50 text-green-700 text-[12px] font-semibold tracking-wide">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                Network Status: Operational
+                Operational
               </div>
-              <div className="flex items-center gap-1.5 text-gray-500 text-[11px] font-bold tracking-[0.1em] uppercase hover:text-gray-900 transition-colors cursor-pointer">
+              <div className="flex items-center gap-1.5 text-gray-500 text-[14px] font-medium hover:text-gray-900 transition-colors cursor-pointer">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
                 EN-US
               </div>
