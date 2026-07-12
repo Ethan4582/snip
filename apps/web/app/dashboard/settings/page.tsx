@@ -4,22 +4,41 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Input } from "@/components/ui/input"
+import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { apiFetch } from '@/lib/api'
 
 export default function SettingsPage() {
   const router = useRouter()
-  const [user, setUser] = useState<{ email?: string, id?: string } | null>(null)
+  const [user, setUser] = useState<{ email: string; name: string; initials: string; id: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
+      if (!session || !session.user.email) {
         router.push('/login')
       } else {
+        const email = session.user.email
+        const name = email.split('@')[0]
+        const initials = name.substring(0, 2).toUpperCase()
         setUser({
-          email: session.user.email,
+          email,
+          name,
+          initials,
           id: session.user.id
         })
       }
@@ -28,9 +47,6 @@ export default function SettingsPage() {
   }, [router])
 
   const handleDeleteAccount = async () => {
-    const confirmation = prompt('Are you sure you want to delete your account? This action is irreversible. Type "DELETE" to confirm.')
-    if (confirmation !== 'DELETE') return
-
     setIsDeleting(true)
     try {
       await apiFetch('/account', { method: 'DELETE' })
@@ -38,7 +54,7 @@ export default function SettingsPage() {
       router.push('/')
     } catch (err) {
       console.error('Failed to delete account', err)
-      alert('Failed to delete account. Please try again.')
+      toast.error('Failed to delete account. Please try again.')
     } finally {
       setIsDeleting(false)
     }
@@ -88,17 +104,35 @@ export default function SettingsPage() {
           <CardTitle>Profile Information</CardTitle>
           <CardDescription>Your personal account details.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <label className="text-sm font-medium text-gray-700">Email Address</label>
-            <div className="mt-1 p-3 bg-gray-50 rounded-md text-gray-900 text-sm border border-gray-200">
-              {user?.email || 'Unknown'}
+        <CardContent className="space-y-6">
+          <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
+            <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl shrink-0">
+              {user?.initials || 'U'}
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 text-lg">{user?.name || 'User'}</h3>
+              <p className="text-gray-500 text-sm">{user?.email || 'Unknown'}</p>
             </div>
           </div>
-          <div>
-            <label className="text-sm font-medium text-gray-700">User ID</label>
-            <div className="mt-1 p-3 bg-gray-50 rounded-md text-gray-500 font-mono text-xs border border-gray-200">
-              {user?.id || 'Unknown'}
+          
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">Display Name</label>
+              <div className="mt-1 p-3 bg-gray-50 rounded-md text-gray-900 text-sm border border-gray-200">
+                {user?.name || 'Unknown'}
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">Email Address</label>
+              <div className="mt-1 p-3 bg-gray-50 rounded-md text-gray-900 text-sm border border-gray-200">
+                {user?.email || 'Unknown'}
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">User ID</label>
+              <div className="mt-1 p-3 bg-gray-50 rounded-md text-gray-500 font-mono text-xs border border-gray-200">
+                {user?.id || 'Unknown'}
+              </div>
             </div>
           </div>
         </CardContent>
@@ -117,13 +151,49 @@ export default function SettingsPage() {
                 Once you delete your account, there is no going back. This will permanently delete all your short links, analytics data, and profile information.
               </p>
             </div>
-            <Button 
-              variant="destructive" 
-              onClick={handleDeleteAccount}
-              disabled={isDeleting}
-            >
-              {isDeleting ? 'Deleting...' : 'Delete Account'}
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive" 
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Account'}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your account, all your short links, and analytics data.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="my-4">
+                  <label className="text-sm font-medium text-gray-700">Type "DELETE" to confirm:</label>
+                  <Input 
+                    value={deleteConfirmText} 
+                    onChange={(e) => setDeleteConfirmText(e.target.value)} 
+                    className="mt-2" 
+                    placeholder="DELETE" 
+                  />
+                </div>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={() => setDeleteConfirmText('')}>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={(e) => {
+                      if (deleteConfirmText !== 'DELETE') {
+                        e.preventDefault()
+                        return
+                      }
+                      handleDeleteAccount()
+                    }}
+                    disabled={deleteConfirmText !== 'DELETE' || isDeleting}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    Delete Account
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardContent>
       </Card>

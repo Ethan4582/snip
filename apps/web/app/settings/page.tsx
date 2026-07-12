@@ -8,12 +8,26 @@ import { Button } from '@/components/ui/button'
 import { User } from '@supabase/supabase-js'
 import { format } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Input } from "@/components/ui/input"
+import { toast } from 'sonner'
 
 export default function SettingsPage() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -27,9 +41,6 @@ export default function SettingsPage() {
   }, [router])
 
   const handleDeleteAccount = async () => {
-    if (!confirm('WARNING: This will permanently delete your account, all your shortened links, and analytics data. This action cannot be undone. Are you sure?')) {
-      return
-    }
 
     setIsDeleting(true)
     try {
@@ -38,7 +49,7 @@ export default function SettingsPage() {
       router.push('/')
     } catch (err) {
       console.error('Failed to delete account', err)
-      alert('Failed to delete account. Please try again.')
+      toast.error('Failed to delete account. Please try again.')
       setIsDeleting(false)
     }
   }
@@ -99,13 +110,49 @@ export default function SettingsPage() {
                 Permanently delete your account and all associated data. This action cannot be undone.
               </p>
             </div>
-            <Button 
-              variant="destructive" 
-              onClick={handleDeleteAccount}
-              disabled={isDeleting}
-            >
-              {isDeleting ? 'Deleting...' : 'Delete Account'}
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive" 
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Account'}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your account, all your short links, and analytics data.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="my-4">
+                  <label className="text-sm font-medium text-gray-700">Type "DELETE" to confirm:</label>
+                  <Input 
+                    value={deleteConfirmText} 
+                    onChange={(e) => setDeleteConfirmText(e.target.value)} 
+                    className="mt-2" 
+                    placeholder="DELETE" 
+                  />
+                </div>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={() => setDeleteConfirmText('')}>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={(e) => {
+                      if (deleteConfirmText !== 'DELETE') {
+                        e.preventDefault()
+                        return
+                      }
+                      handleDeleteAccount()
+                    }}
+                    disabled={deleteConfirmText !== 'DELETE' || isDeleting}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    Delete Account
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardContent>
       </Card>

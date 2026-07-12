@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { LayoutDashboard, Link2, Star, Settings, PanelLeftClose, PanelLeftOpen, LogOut } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { supabase } from '@/lib/supabase'
 import logo from '../../assets/logo.png'
 
@@ -69,51 +70,46 @@ export function Sidebar() {
       </nav>
 
       {/* Profile / Logout */}
-      <div className={`border-t border-gray-100 flex items-center justify-between w-full group relative ${isOpen ? 'p-4' : 'p-2 justify-center'}`}>
-        
-        <div className="flex items-center gap-3 overflow-hidden">
-          {isOpen ? (
-            <>
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-medium text-sm shrink-0">
+      <TooltipProvider delayDuration={100}>
+        <div className={`border-t border-gray-100 flex items-center justify-between w-full ${isOpen ? 'p-4' : 'p-2 justify-center'}`}>
+          
+          <div className="flex items-center gap-3 overflow-hidden">
+            {isOpen ? (
+              <>
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-medium text-sm shrink-0 shadow-sm">
+                  {user ? user.initials : 'A'}
+                </div>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="text-sm font-medium text-gray-900 leading-tight truncate">
+                    {user ? user.name : 'Loading...'}
+                  </span>
+                  <span className="text-[13px] text-gray-500 leading-tight truncate">
+                    {user ? user.email : '...'}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-medium text-sm shrink-0 mx-auto shadow-sm">
                 {user ? user.initials : 'A'}
               </div>
-              <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-medium text-gray-900 leading-tight truncate">
-                  {user ? user.name : 'Loading...'}
-                </span>
-                <span className="text-[13px] text-gray-500 leading-tight truncate">
-                  {user ? user.email : '...'}
-                </span>
-              </div>
-            </>
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-medium text-sm shrink-0 mx-auto">
-              {user ? user.initials : 'A'}
-            </div>
-          )}
+            )}
+          </div>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button 
+                onClick={handleLogout} 
+                className={`${isOpen ? 'p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-md transition-colors' : 'absolute right-[-10px] bg-white border border-gray-100 p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-md transition-colors shadow-sm opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto group-hover:-translate-x-8 z-50'}`}
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" sideOffset={10} className="bg-gray-900 text-white border-gray-800">
+              <p>Logout</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
-
-        {isOpen && (
-          <button 
-            onClick={handleLogout} 
-            className="p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-md transition-colors relative group/btn"
-          >
-            <LogOut className="w-4 h-4" />
-            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-              Logout
-            </div>
-          </button>
-        )}
-
-        {!isOpen && (
-          <button 
-            onClick={handleLogout} 
-            className="absolute right-[-10px] bg-white border border-gray-100 p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-md transition-colors shadow-sm opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto group-hover:-translate-x-8 z-50"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
-        )}
-      </div>
+      </TooltipProvider>
 
     </aside>
   )
