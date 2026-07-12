@@ -1,215 +1,140 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { apiFetch } from '../../src/lib/api'
-import { supabase } from '../../src/lib/supabase'
-import type { Url, CreateUrlResponse } from '@snip/shared'
+import { apiFetch } from '@/lib/api'
+import { supabase } from '@/lib/supabase'
+import { StatCard } from '@/components/StatCard'
+import { ClicksChart } from '@/components/ClicksChart'
+import { BreakdownCard } from '@/components/BreakdownCard'
+import { TopLinksTable } from '@/components/TopLinksTable'
+import { RecentSnipsTable } from '@/components/RecentSnipsTable'
+import { CreateSnipDialog } from '@/components/CreateSnipDialog'
+import { MousePointerClick, Link2, TrendingUp } from 'lucide-react'
+import type { Url } from '@snip/shared'
 
 export default function Dashboard() {
   const router = useRouter()
-  const [urls, setUrls] = useState<Url[]>([])
-  const [loadingUrls, setLoadingUrls] = useState(true)
+  const [loading, setLoading] = useState(true)
+  
+  const [summary, setSummary] = useState({ total_clicks: 0, total_snips: 0, avg_clicks: 0 })
+  const [daily, setDaily] = useState([])
+  const [countries, setCountries] = useState([])
+  const [referrers, setReferrers] = useState([])
+  const [devices, setDevices] = useState([])
+  const [topLinks, setTopLinks] = useState([])
+  const [recentSnips, setRecentSnips] = useState<Url[]>([])
 
-  const [longUrl, setLongUrl] = useState('')
-  const [customAlias, setCustomAlias] = useState('')
-  const [expirationDate, setExpirationDate] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [formError, setFormError] = useState<string | null>(null)
-  const [newShortUrl, setNewShortUrl] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
-
-  // Auth check
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        router.push('/login')
-      }
+      if (!session) router.push('/login')
     })
-    
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) {
-        router.push('/login')
-      }
+      if (!session) router.push('/login')
     })
-
     return () => subscription.unsubscribe()
   }, [router])
 
-  const fetchUrls = useCallback(async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
-      const data = await apiFetch<Url[]>('/urls')
-      setUrls(data)
+      const [
+        sumData, dailyData, 
+        countriesData, referrersData, devicesData, 
+        topLinksData, snipsData
+      ] = await Promise.all([
+        apiFetch('/analytics/summary').catch(() => ({ total_clicks: 0, total_snips: 0, avg_clicks: 0 })),
+        apiFetch('/analytics/daily').catch(() => []),
+        apiFetch('/analytics/breakdown?by=country').catch(() => []),
+        apiFetch('/analytics/breakdown?by=referrer').catch(() => []),
+        apiFetch('/analytics/breakdown?by=device').catch(() => []),
+        apiFetch('/analytics/top-links').catch(() => []),
+        apiFetch<Url[]>('/urls').catch(() => [])
+      ])
+
+      setSummary(sumData as any)
+      setDaily(dailyData as any)
+      setCountries(countriesData as any)
+      setReferrers(referrersData as any)
+      setDevices(devicesData as any)
+      setTopLinks(topLinksData as any)
+      
+      // Match clicks to recent snips
+      const topLinksMap = new Map((topLinksData as any[]).map(t => [t.short_code, t.clicks]))
+      const enrichedSnips = (snipsData as Url[]).slice(0, 10).map(snip => ({
+        ...snip,
+        clicks: topLinksMap.get(snip.short_code) || 0
+      }))
+      setRecentSnips(enrichedSnips)
+
     } finally {
-      setLoadingUrls(false)
+      setLoading(false)
     }
   }, [])
 
   useEffect(() => {
-    fetchUrls()
-  }, [fetchUrls])
+    fetchDashboardData()
+  }, [fetchDashboardData])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
-    setFormError(null)
-    setNewShortUrl(null)
-
-    try {
-      const res = await apiFetch<CreateUrlResponse>('/urls', {
-        method: 'POST',
-        body: JSON.stringify({
-          long_url: longUrl,
-          ...(customAlias ? { custom_alias: customAlias } : {}),
-          ...(expirationDate ? { expiration_date: new Date(expirationDate).toISOString() } : {}),
-        }),
-      })
-      setNewShortUrl(res.short_url)
-      setLongUrl('')
-      setCustomAlias('')
-      setExpirationDate('')
-      fetchUrls()
-    } catch (err: unknown) {
-      const e = err as { status?: number; data?: { message?: string } }
-      if (e.status === 409) setFormError('Custom alias is already taken')
-      else setFormError(e.data?.message ?? 'Something went wrong')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+  if (loading) {
+    return <div className="p-8 text-gray-500">Loading dashboard...</div>
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="max-w-4xl mx-auto px-4 py-10 space-y-10">
-        {/* Create form */}
-        <section>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Shorten a URL</h2>
-          <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
-            <div>
-              <label htmlFor="long-url" className="block text-sm font-medium text-gray-700 mb-1">
-                Long URL <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="long-url"
-                type="url"
-                required
-                placeholder="https://example.com/very/long/path"
-                value={longUrl}
-                onChange={(e) => setLongUrl(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-              />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="custom-alias" className="block text-sm font-medium text-gray-700 mb-1">
-                  Custom alias <span className="text-gray-400">(optional)</span>
-                </label>
-                <input
-                  id="custom-alias"
-                  type="text"
-                  placeholder="my-link"
-                  value={customAlias}
-                  onChange={(e) => setCustomAlias(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label htmlFor="expiration-date" className="block text-sm font-medium text-gray-700 mb-1">
-                  Expires at <span className="text-gray-400">(optional)</span>
-                </label>
-                <input
-                  id="expiration-date"
-                  type="datetime-local"
-                  value={expirationDate}
-                  onChange={(e) => setExpirationDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                />
-              </div>
-            </div>
-            {formError && <p className="text-sm text-red-600">{formError}</p>}
-            {newShortUrl && (
-              <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
-                <span className="text-sm text-gray-700 font-mono flex-1 truncate">{newShortUrl}</span>
-                <button
-                  type="button"
-                  id="copy-new-url"
-                  onClick={() => copyToClipboard(newShortUrl)}
-                  className="text-xs text-gray-500 hover:text-gray-900 shrink-0 transition-colors"
-                >
-                  {copied ? 'Copied!' : 'Copy'}
-                </button>
-              </div>
-            )}
-            <button
-              id="create-submit"
-              type="submit"
-              disabled={submitting}
-              className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-700 disabled:opacity-50 transition-colors"
-            >
-              {submitting ? 'Creating…' : 'Create short URL'}
-            </button>
-          </form>
-        </section>
+    <div className="p-8 max-w-7xl mx-auto space-y-8">
+      {/* Header */}
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+          <p className="text-gray-500 mt-1">An overview of your links and activity.</p>
+        </div>
+        <div className="flex gap-3">
+          <CreateSnipDialog />
+        </div>
+      </div>
 
-        {/* URL list */}
-        <section>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Your URLs</h2>
-          {loadingUrls ? (
-            <p className="text-sm text-gray-400">Loading…</p>
-          ) : urls.length === 0 ? (
-            <p className="text-sm text-gray-400">No URLs yet. Create one above.</p>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="border-b border-gray-200 bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left font-medium text-gray-600">Short code</th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-600">Long URL</th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-600">Created</th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-600">Expires</th>
-                    <th className="px-4 py-3"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {urls.map((url) => (
-                    <tr key={url.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 font-mono text-gray-900">{url.short_code}</td>
-                      <td className="px-4 py-3 text-gray-600 max-w-xs truncate">{url.long_url}</td>
-                      <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-                        {new Date(url.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-                        {url.expiration_date
-                          ? new Date(url.expiration_date).toLocaleDateString()
-                          : '—'}
-                      </td>
-                      <td className="px-4 py-3">
-                        <button
-                          type="button"
-                          id={`copy-${url.short_code}`}
-                          onClick={() =>
-                            copyToClipboard(
-                              `${process.env.NEXT_PUBLIC_EDGE_URL ?? 'http://localhost:8787'}/${url.short_code}`
-                            )
-                          }
-                          className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
-                        >
-                          Copy
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-      </main>
+      {/* Stats Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatCard 
+          title="Total Clicks" 
+          value={summary.total_clicks >= 1000 ? (summary.total_clicks/1000).toFixed(1) + 'K' : summary.total_clicks}
+          icon={<MousePointerClick className="w-5 h-5" />} 
+        />
+        <StatCard 
+          title="Total Snips" 
+          value={summary.total_snips >= 1000 ? (summary.total_snips/1000).toFixed(1) + 'K' : summary.total_snips}
+          icon={<Link2 className="w-5 h-5" />} 
+        />
+        <StatCard 
+          title="Avg. Clicks / Snip" 
+          value={summary.avg_clicks}
+          icon={<TrendingUp className="w-5 h-5" />} 
+        />
+      </div>
+
+      {/* Chart Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 h-[350px]">
+          <ClicksChart data={daily} />
+        </div>
+        <div className="h-[350px]">
+          <BreakdownCard title="Top Countries" data={countries} />
+        </div>
+      </div>
+
+      {/* Breakdown Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="h-[350px]">
+          <BreakdownCard title="Top Referrers" data={referrers} />
+        </div>
+        <div className="h-[350px]">
+          <BreakdownCard title="Top Devices" data={devices} />
+        </div>
+      </div>
+
+      {/* Tables */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TopLinksTable data={topLinks} />
+        <RecentSnipsTable data={recentSnips} />
+      </div>
     </div>
   )
 }
