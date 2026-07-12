@@ -1,9 +1,11 @@
+"use client"
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { supabase } from '../../src/lib/supabase'
 
 export default function Signup() {
-  const navigate = useNavigate()
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -19,7 +21,7 @@ export default function Signup() {
       setLoading(false)
       return
     }
-    navigate('/dashboard')
+    router.push('/dashboard')
   }
 
   const handleGoogleSignIn = async () => {
@@ -32,14 +34,13 @@ export default function Signup() {
     }
   }
 
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-semibold text-gray-900 mb-1">Create account</h1>
         <p className="text-sm text-gray-500 mb-8">
           Already have an account?{' '}
-          <Link to="/login" className="text-gray-900 underline underline-offset-2">
+          <Link href="/login" className="text-gray-900 underline underline-offset-2">
             Sign in
           </Link>
         </p>

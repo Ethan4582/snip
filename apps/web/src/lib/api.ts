@@ -1,6 +1,6 @@
 import { supabase } from './supabase'
 
-const BASE_URL = (import.meta.env.VITE_API_URL as string) ?? 'http://localhost:3000'
+const BASE_URL = (process.env.NEXT_PUBLIC_API_URL as string) ?? 'http://localhost:3000'
 
 async function getAuthHeader(): Promise<string> {
   const { data } = await supabase.auth.getSession()

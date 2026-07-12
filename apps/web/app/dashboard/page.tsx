@@ -1,9 +1,12 @@
+"use client"
 import { useState, useEffect, useCallback } from 'react'
-import { apiFetch } from '../lib/api'
-import Navbar from '../components/Navbar'
+import { useRouter } from 'next/navigation'
+import { apiFetch } from '../../src/lib/api'
+import { supabase } from '../../src/lib/supabase'
 import type { Url, CreateUrlResponse } from '@snip/shared'
 
 export default function Dashboard() {
+  const router = useRouter()
   const [urls, setUrls] = useState<Url[]>([])
   const [loadingUrls, setLoadingUrls] = useState(true)
 
@@ -14,6 +17,23 @@ export default function Dashboard() {
   const [formError, setFormError] = useState<string | null>(null)
   const [newShortUrl, setNewShortUrl] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+
+  // Auth check
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.push('/login')
+      }
+    })
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        router.push('/login')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [router])
 
   const fetchUrls = useCallback(async () => {
     try {
@@ -65,9 +85,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
       <main className="max-w-4xl mx-auto px-4 py-10 space-y-10">
-
         {/* Create form */}
         <section>
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Shorten a URL</h2>
@@ -176,7 +194,7 @@ export default function Dashboard() {
                           id={`copy-${url.short_code}`}
                           onClick={() =>
                             copyToClipboard(
-                              `${import.meta.env.VITE_EDGE_URL ?? 'http://localhost:8787'}/${url.short_code}`
+                              `${process.env.NEXT_PUBLIC_EDGE_URL ?? 'http://localhost:8787'}/${url.short_code}`
                             )
                           }
                           className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
