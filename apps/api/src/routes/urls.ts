@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { db, urls } from '@snip/db'
-import { eq, desc, and, count } from 'drizzle-orm'
+import { eq, desc, and, count, ilike, or } from 'drizzle-orm'
 import { authMiddleware, AuthUser } from '../middleware/auth'
 import { getNextCounter, setCachedUrl } from '../lib/redis'
 import { toBase62, validateAlias } from '../lib/shortcode'
@@ -121,11 +121,20 @@ router.get('/', async (c) => {
   const page = parseInt(c.req.query('page') || '1', 10)
   const limit = parseInt(c.req.query('limit') || '10', 10)
   const isFavorite = c.req.query('is_favorite') === 'true'
+  const search = c.req.query('search')
   const offset = (page - 1) * limit
 
-  const whereCondition = isFavorite 
-    ? and(eq(urls.user_id, user.id), eq(urls.is_favorite, true))
-    : eq(urls.user_id, user.id)
+  const searchCondition = search 
+    ? or(ilike(urls.long_url, `%${search}%`), ilike(urls.short_code, `%${search}%`))
+    : undefined
+
+  const conditions = [
+    eq(urls.user_id, user.id),
+    isFavorite ? eq(urls.is_favorite, true) : undefined,
+    searchCondition
+  ].filter(Boolean)
+
+  const whereCondition = and(...conditions)
 
   const rows = await db
     .select()

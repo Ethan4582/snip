@@ -1,8 +1,8 @@
 "use client"
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { CalendarIcon, Link2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { apiFetch } from '@/lib/api'
 
 import {
@@ -23,8 +23,7 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
-export function CreateSnipDialog({ children }: { children?: React.ReactNode }) {
-  const router = useRouter()
+export function CreateSnipDialog({ children, onSuccess }: { children?: React.ReactNode, onSuccess?: () => void }) {
   const [open, setOpen] = useState(false)
   const [longUrl, setLongUrl] = useState('')
   const [customAlias, setCustomAlias] = useState('')
@@ -52,9 +51,11 @@ export function CreateSnipDialog({ children }: { children?: React.ReactNode }) {
       setCustomAlias('')
       setDate(undefined)
       
-      router.refresh()
+      onSuccess?.()
+      toast.success('Short URL created successfully!')
     } catch (err: any) {
       setError(err.message || 'Failed to create short URL')
+      toast.error('Failed to create short URL')
     } finally {
       setLoading(false)
     }

@@ -61,7 +61,7 @@ export default function Dashboard() {
       
       // Match clicks to recent snips
       const topLinksMap = new Map((topLinksData as any[]).map(t => [t.short_code, t.clicks]))
-      const enrichedSnips = (snipsData as Url[]).slice(0, 10).map(snip => ({
+      const enrichedSnips = ((snipsData as any).data as Url[] || []).slice(0, 10).map(snip => ({
         ...snip,
         clicks: topLinksMap.get(snip.short_code) || 0
       }))
@@ -111,7 +111,7 @@ export default function Dashboard() {
           <p className="text-gray-500 mt-1">An overview of your links and activity.</p>
         </div>
         <div className="flex gap-3">
-          <CreateSnipDialog />
+        <CreateSnipDialog onSuccess={fetchDashboardData} />
         </div>
       </div>
 
