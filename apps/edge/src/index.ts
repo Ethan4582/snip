@@ -6,6 +6,8 @@ export interface Env {
   APP_URL: string
   UPSTASH_REDIS_REST_URL: string
   UPSTASH_REDIS_REST_TOKEN: string
+  ANALYTICS_ENGINE: any
+  INTERNAL_ANALYTICS_SECRET: string
 }
 
 async function publishClickEvent(env: Env, request: Request, shortCode: string) {
@@ -73,6 +75,39 @@ function errorPage(title: string, message: string, status: number, appUrl: strin
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url)
+
+    // Handle internal analytics write
+    if (url.pathname === '/internal/analytics-write' && request.method === 'POST') {
+      const secret = request.headers.get('x-internal-secret')
+      if (!env.INTERNAL_ANALYTICS_SECRET || secret !== env.INTERNAL_ANALYTICS_SECRET) {
+        return new Response('Unauthorized', { status: 401 })
+      }
+      
+      try {
+        const events = (await request.json()) as any[]
+        if (Array.isArray(events)) {
+          for (const e of events) {
+            if (env.ANALYTICS_ENGINE) {
+              env.ANALYTICS_ENGINE.writeDataPoint({
+                blobs: [
+                  e.short_code || '',
+                  e.country || 'Unknown',
+                  e.referrer || '',
+                  e.device_type || 'desktop',
+                  e.browser || 'unknown'
+                ],
+                doubles: [1],
+                indexes: [e.short_code || '']
+              })
+            }
+          }
+        }
+        return new Response('OK', { status: 200 })
+      } catch (err) {
+        return new Response('Bad Request', { status: 400 })
+      }
+    }
+
     const shortCode = url.pathname.slice(1)
     const appUrl = env.APP_URL || 'http://localhost:5173'
 

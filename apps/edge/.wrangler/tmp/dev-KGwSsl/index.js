@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 
-// .wrangler/tmp/bundle-FN47Z8/strip-cf-connecting-ip-header.js
+// .wrangler/tmp/bundle-YNbwsp/strip-cf-connecting-ip-header.js
 function stripCfConnectingIPHeader(input, init) {
   const request = new Request(input, init);
   request.headers.delete("CF-Connecting-IP");
@@ -6086,6 +6086,35 @@ __name(errorPage, "errorPage");
 var src_default = {
   async fetch(request, env2, ctx) {
     const url = new URL(request.url);
+    if (url.pathname === "/internal/analytics-write" && request.method === "POST") {
+      const secret = request.headers.get("x-internal-secret");
+      if (!env2.INTERNAL_ANALYTICS_SECRET || secret !== env2.INTERNAL_ANALYTICS_SECRET) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+      try {
+        const events = await request.json();
+        if (Array.isArray(events)) {
+          for (const e of events) {
+            if (env2.ANALYTICS_ENGINE) {
+              env2.ANALYTICS_ENGINE.writeDataPoint({
+                blobs: [
+                  e.short_code || "",
+                  e.country || "Unknown",
+                  e.referrer || "",
+                  e.device_type || "desktop",
+                  e.browser || "unknown"
+                ],
+                doubles: [1],
+                indexes: [e.short_code || ""]
+              });
+            }
+          }
+        }
+        return new Response("OK", { status: 200 });
+      } catch (err) {
+        return new Response("Bad Request", { status: 400 });
+      }
+    }
     const shortCode = url.pathname.slice(1);
     const appUrl = env2.APP_URL || "http://localhost:5173";
     if (!shortCode || shortCode === "") {
@@ -6120,6 +6149,27 @@ var src_default = {
     return Response.redirect(data.long_url, 302);
   }
 };
+
+// wrangler-config:config:middleware/mock-analytics-engine
+var bindings = ["ANALYTICS_ENGINE"];
+
+// ../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/templates/middleware/middleware-mock-analytics-engine.ts
+var bindingsEnv = Object.fromEntries(
+  bindings.map((binding2) => [
+    binding2,
+    {
+      writeDataPoint() {
+      }
+    }
+  ])
+);
+var analyticsEngine = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx) => {
+  for (const binding2 of bindings) {
+    env2[binding2] ??= bindingsEnv[binding2];
+  }
+  return await middlewareCtx.next(request, env2);
+}, "analyticsEngine");
+var middleware_mock_analytics_engine_default = analyticsEngine;
 
 // ../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
 var drainBody = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx) => {
@@ -6162,8 +6212,9 @@ var jsonError = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-FN47Z8/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-YNbwsp/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
+  middleware_mock_analytics_engine_default,
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
@@ -6194,7 +6245,7 @@ function __facade_invoke__(request, env2, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-FN47Z8/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-YNbwsp/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
