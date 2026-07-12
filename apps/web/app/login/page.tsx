@@ -71,7 +71,7 @@ export default function Login() {
 
       {/* Right Column (Form) */}
       <div className="flex-1 flex items-center justify-center p-6 bg-[#fbfaf9]">
-        <div className="w-full max-w-[440px] bg-white rounded-3xl p-10 sm:p-12 shadow-[0_2px_20px_rgb(0,0,0,0.04)] border border-gray-100/60">
+        <div className="w-full max-w-[400px] bg-white rounded-3xl p-8 sm:p-10 shadow-[0_2px_20px_rgb(0,0,0,0.04)] border border-gray-100/60">
           <div className="mb-8 text-center sm:text-left">
             <h2 className="text-[28px] font-bold text-gray-900 tracking-tight mb-2">Welcome back</h2>
             <p className="text-[15px] text-gray-500">Sign in to your Snip account</p>

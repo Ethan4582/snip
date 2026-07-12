@@ -53,17 +53,7 @@ export default function HeroSection() {
           </button>
         </form>
         
-        <div className="flex flex-wrap justify-center gap-6 md:gap-10 text-sm font-medium text-gray-500 mt-2">
-           <span className="flex items-center gap-2">
-             <span className="text-[#ff6201]">⚡</span> Instant Capture
-           </span>
-           <span className="flex items-center gap-2">
-             <span className="text-[#ff6201]">📁</span> Smart Organization
-           </span>
-           <span className="flex items-center gap-2">
-             <span className="text-[#ff6201]">🔍</span> Quick Search
-           </span>
-        </div>
+        
       </div>
       
       {/* Dashboard Preview Image */}
