@@ -10,3 +10,4 @@ preview_id = "b2f671c466d8403180a3644afe9e614d"
 
 [vars]
 API_ORIGIN_URL = "http://localhost:3000"
+APP_URL = "http://localhost:5173"

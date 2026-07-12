@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 
-// .wrangler/tmp/bundle-Egx9SG/strip-cf-connecting-ip-header.js
+// .wrangler/tmp/bundle-Mk6zyw/strip-cf-connecting-ip-header.js
 function stripCfConnectingIPHeader(input, init) {
   const request = new Request(input, init);
   request.headers.delete("CF-Connecting-IP");
@@ -892,18 +892,51 @@ var process_default = _process;
 globalThis.process = process_default;
 
 // src/index.ts
+function errorPage(title2, message, status, appUrl) {
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${title2}</title>
+      <style>
+        body { font-family: system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #fafafa; color: #111; }
+        .container { text-align: center; max-width: 400px; padding: 2.5rem 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border: 1px solid #eaeaea; }
+        h1 { margin-top: 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
+        p { color: #555; margin-bottom: 2rem; line-height: 1.5; font-size: 0.95rem; }
+        a { display: inline-flex; align-items: center; justify-content: center; background-color: #000; color: #fff; text-decoration: none; padding: 0.625rem 1.25rem; border-radius: 6px; font-weight: 500; font-size: 0.875rem; transition: background-color 0.2s; }
+        a:hover { background-color: #333; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>${title2}</h1>
+        <p>${message}</p>
+        <a href="${appUrl}">Return to Snip</a>
+      </div>
+    </body>
+    </html>
+  `;
+  return new Response(html, {
+    status,
+    headers: { "Content-Type": "text/html; charset=utf-8" }
+  });
+}
+__name(errorPage, "errorPage");
 var src_default = {
   async fetch(request, env2) {
     const url = new URL(request.url);
     const shortCode = url.pathname.slice(1);
+    const appUrl = env2.APP_URL || "http://localhost:5173";
     if (!shortCode || shortCode === "") {
-      return new Response("Not found", { status: 404 });
+      return errorPage("Not Found", "The link you are looking for does not exist.", 404, appUrl);
     }
     const cached = await env2.URL_CACHE.get(shortCode);
     if (cached) {
       const data2 = JSON.parse(cached);
       if (data2.expires_at && new Date(data2.expires_at) <= /* @__PURE__ */ new Date()) {
-        return new Response("Link has expired", { status: 410 });
+        return errorPage("Link Expired", "This link has expired and is no longer available.", 410, appUrl);
       }
       return Response.redirect(data2.long_url, 302);
     }
@@ -912,14 +945,14 @@ var src_default = {
     try {
       apiRes = await fetch(apiUrl);
     } catch {
-      return new Response("Service unavailable", { status: 502 });
+      return errorPage("Service Unavailable", "The URL resolution service is currently unavailable.", 502, appUrl);
     }
     if (apiRes.status === 404)
-      return new Response("Link not found", { status: 404 });
+      return errorPage("Not Found", "The link you are looking for does not exist.", 404, appUrl);
     if (apiRes.status === 410)
-      return new Response("Link has expired", { status: 410 });
+      return errorPage("Link Expired", "This link has expired and is no longer available.", 410, appUrl);
     if (!apiRes.ok)
-      return new Response("Service error", { status: 502 });
+      return errorPage("Service Error", "An unexpected error occurred while resolving the link.", 502, appUrl);
     const data = await apiRes.json();
     const ttlSeconds = data.expires_at ? Math.max(60, Math.floor((new Date(data.expires_at).getTime() - Date.now()) / 1e3)) : 86400;
     await env2.URL_CACHE.put(shortCode, JSON.stringify(data), { expirationTtl: ttlSeconds });
@@ -968,7 +1001,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-Egx9SG/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-Mk6zyw/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -1000,7 +1033,7 @@ function __facade_invoke__(request, env2, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-Egx9SG/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-Mk6zyw/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

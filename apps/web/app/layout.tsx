@@ -3,7 +3,7 @@ import './globals.css'
 import Navbar from '../src/components/Navbar'
 
 export const metadata: Metadata = {
-  title: 'Snap — URL Shortener',
+  title: 'Snip — URL Shortener',
   description: 'A fast, production-grade URL shortener with analytics.',
 }
 

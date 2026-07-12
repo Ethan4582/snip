@@ -13,7 +13,7 @@ export default function Navbar() {
   return (
     <nav className="border-b border-gray-200 bg-white">
       <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-        <span className="font-semibold text-gray-900 tracking-tight">Snap</span>
+        <span className="font-semibold text-gray-900 tracking-tight">Snip</span>
         <button
           id="logout-btn"
           onClick={handleLogout}
