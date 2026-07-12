@@ -22,6 +22,17 @@ export default function Login() {
     navigate('/dashboard')
   }
 
+  const handleGoogleSignIn = async () => {
+    setError(null)
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    })
+    if (error) {
+      setError(error.message)
+    }
+  }
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm">
@@ -69,6 +80,26 @@ export default function Login() {
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
+
+        <div className="mt-6 flex items-center justify-center">
+          <span className="w-full border-t border-gray-300"></span>
+          <span className="px-3 text-sm text-gray-500 bg-gray-50">or</span>
+          <span className="w-full border-t border-gray-300"></span>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          className="mt-6 w-full py-2 px-4 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors flex justify-center items-center gap-2"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27c3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10c5.35 0 9.25-3.67 9.25-9.09c0-1.15-.15-1.81-.15-1.81Z"
+            />
+          </svg>
+          Sign in with Google
+        </button>
       </div>
     </div>
   )

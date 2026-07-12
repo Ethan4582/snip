@@ -5,8 +5,8 @@ compatibility_flags = ["nodejs_compat"]
 
 [[kv_namespaces]]
 binding = "URL_CACHE"
-id = "YOUR_KV_NAMESPACE_ID"
-preview_id = "YOUR_KV_PREVIEW_NAMESPACE_ID"
+id = "b2f671c466d8403180a3644afe9e614d"
+preview_id = "b2f671c466d8403180a3644afe9e614d"
 
 [vars]
 API_ORIGIN_URL = "http://localhost:3000"
