@@ -21,7 +21,7 @@ const itemVariants = {
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
+    transition: { duration: 0.6, ease: "easeOut" as const }
   }
 }
 
@@ -61,7 +61,7 @@ export default function FeaturesSection() {
           </div>
           <div className="flex flex-col gap-2">
             <h6 className="font-semibold text-[20px] tracking-tight">Blazing Fast Redirects</h6>
-            <p className="text-gray-600 text-[15px] leading-relaxed">Served directly from Cloudflare's edge cache. Your users get redirected in milliseconds, anywhere in the world.</p>
+            <p className="text-gray-600 text-[15px] leading-relaxed">Served directly from Cloudflare&apos;s edge cache. Your users get redirected in milliseconds, anywhere in the world.</p>
           </div>
         </motion.div>
         
@@ -76,7 +76,7 @@ export default function FeaturesSection() {
           </div>
           <div className="flex flex-col gap-2">
             <h6 className="font-semibold text-[20px] tracking-tight">Deep Analytics</h6>
-            <p className="text-gray-600 text-[15px] leading-relaxed">Track clicks, devices, referrers, and geography. Snip's dashboard gives you instant insight into how your links are performing.</p>
+            <p className="text-gray-600 text-[15px] leading-relaxed">Track clicks, devices, referrers, and geography. Snip&apos;s dashboard gives you instant insight into how your links are performing.</p>
           </div>
         </motion.div>
         

@@ -4,6 +4,10 @@ import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import bg from '../../../assets/bg.png'
+import L1 from '../../../assets/l1.png'
+import L2 from '../../../assets/l2.png'
+import L3 from '../../../assets/l3.png'
+import L4 from '../../../assets/l4.png'
 
 export default function HeroSection() {
   const router = useRouter()
@@ -29,6 +33,43 @@ export default function HeroSection() {
         className="absolute inset-0 z-0 pointer-events-none opacity-50 bg-no-repeat bg-top bg-cover"
         style={{ backgroundImage: `url(${bg.src})` }}
       />
+
+      {/* Floating Icons */}
+      {/* Top-Left: Link (L1) */}
+      <motion.div
+        className="hidden md:block absolute left-[10%] top-[20%] w-24 h-24 z-20 pointer-events-none"
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <img src={L1.src} alt="Link icon" className="w-full h-full object-contain" />
+      </motion.div>
+
+      {/* Bottom-Left: Analytics (L3) */}
+      <motion.div
+        className="hidden md:block absolute left-[8%] top-[45%] w-24 h-24 z-20 pointer-events-none"
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+      >
+        <img src={L3.src} alt="Analytics icon" className="w-full h-full object-contain" />
+      </motion.div>
+
+      {/* Top-Right: Lightning (L2) */}
+      <motion.div
+        className="hidden md:block absolute right-[12%] top-[24%] w-24 h-24 z-20 pointer-events-none"
+        animate={{ y: [0, -7, 0] }}
+        transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      >
+        <img src={L2.src} alt="Lightning icon" className="w-full h-full object-contain" />
+      </motion.div>
+
+      {/* Bottom-Right: Pie Chart (L4) */}
+      <motion.div
+        className="hidden md:block absolute right-[10%] top-[54%] w-24 h-24 z-20 pointer-events-none"
+        animate={{ y: [0, -9, 0] }}
+        transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+      >
+        <img src={L4.src} alt="Pie Chart icon" className="w-full h-full object-contain" />
+      </motion.div>
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}

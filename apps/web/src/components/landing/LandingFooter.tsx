@@ -6,10 +6,10 @@ export default function LandingFooter() {
       <div className="w-full max-w-[1200px] mx-auto flex flex-col gap-8">
         
         {/* Top 4-column section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8 w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 lg:gap-8 w-full">
           
           {/* Column 1: Branding and description */}
-          <div className="flex flex-col gap-6 md:col-span-1">
+          <div className="flex flex-col gap-6 col-span-2 md:col-span-1">
             <div className="flex items-center gap-2">
               <img src={logo.src} alt="Snip Logo" className="h-7 w-auto" />
               <span className="font-bold text-xl tracking-tight text-gray-900">Snip</span>
