@@ -127,7 +127,6 @@ export function CreateSnipDialog({ children }: { children?: React.ReactNode }) {
                     mode="single"
                     selected={date}
                     onSelect={setDate}
-                    initialFocus
                   />
                   {date && (
                     <div className="p-2 border-t">

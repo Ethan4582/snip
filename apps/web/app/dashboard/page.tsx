@@ -11,6 +11,8 @@ import { RecentSnipsTable } from '@/components/RecentSnipsTable'
 import { CreateSnipDialog } from '@/components/CreateSnipDialog'
 import { MousePointerClick, Link2, TrendingUp } from 'lucide-react'
 import type { Url } from '@snip/shared'
+import { StatCardSkeleton } from '@/components/skeletons/StatCardSkeleton'
+import { ChartSkeleton } from '@/components/skeletons/ChartSkeleton'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -75,7 +77,29 @@ export default function Dashboard() {
   }, [fetchDashboardData])
 
   if (loading) {
-    return <div className="p-8 text-gray-500">Loading dashboard...</div>
+    return (
+      <div className="p-8 max-w-7xl mx-auto space-y-8">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+            <p className="text-gray-500 mt-1">An overview of your links and activity.</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 h-[350px]">
+            <ChartSkeleton />
+          </div>
+          <div className="h-[350px]">
+            <ChartSkeleton />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

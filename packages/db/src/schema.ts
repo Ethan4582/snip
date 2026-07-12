@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, timestamp } from 'drizzle-orm/pg-core'
+import { pgTable, text, uuid, timestamp, boolean } from 'drizzle-orm/pg-core'
 import { sql } from 'drizzle-orm'
 
 export const urls = pgTable('urls', {
@@ -10,6 +10,7 @@ export const urls = pgTable('urls', {
   custom_alias: text('custom_alias').unique(),
   user_id: uuid('user_id').notNull(),
   expiration_date: timestamp('expiration_date', { withTimezone: true, mode: 'date' }),
+  is_favorite: boolean('is_favorite').default(false).notNull(),
   created_at: timestamp('created_at', { withTimezone: true, mode: 'date' })
     .notNull()
     .default(sql`now()`),

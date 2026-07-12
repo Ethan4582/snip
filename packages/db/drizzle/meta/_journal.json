@@ -8,6 +8,13 @@
       "when": 1783837364346,
       "tag": "0000_common_jubilee",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783897174282,
+      "tag": "0001_lumpy_steel_serpent",
+      "breakpoints": true
     }
   ]
 }

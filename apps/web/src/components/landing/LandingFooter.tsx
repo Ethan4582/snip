@@ -55,9 +55,9 @@ export default function LandingFooter() {
           <div className="flex flex-col gap-5">
             <h6 className="font-semibold text-[16px] text-gray-900 tracking-tight">Community</h6>
             <div className="flex flex-col gap-3 text-gray-500 text-[15px] font-medium">
-              <a href="#" className="hover:text-black transition-colors">Twitter / X</a>
-              <a href="#" className="hover:text-black transition-colors">GitHub</a>
-              <a href="#" className="hover:text-black transition-colors">Discord</a>
+              <a href="https://x.com/ashirwadsingh" className="hover:text-black transition-colors">X</a>
+              <a href="https://github.com/Ethan4582" className="hover:text-black transition-colors">GitHub</a>
+              <a href="https://www.linkedin.com/in/ashirwad-singh-281677241/" className="hover:text-black transition-colors">LinkedIn</a>
             </div>
           </div>
         </div>

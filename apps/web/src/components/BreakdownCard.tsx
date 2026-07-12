@@ -34,7 +34,7 @@ export function BreakdownCard({ title, data }: BreakdownCardProps) {
                     paddingAngle={2}
                     dataKey="clicks"
                   >
-                    {data.map((entry, index) => (
+                    {data.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>

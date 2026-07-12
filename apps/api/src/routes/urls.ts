@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { db, urls } from '@snip/db'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, and, count } from 'drizzle-orm'
 import { authMiddleware, AuthUser } from '../middleware/auth'
 import { getNextCounter, setCachedUrl } from '../lib/redis'
 import { toBase62, validateAlias } from '../lib/shortcode'
@@ -118,22 +118,73 @@ router.post('/', async (c) => {
 
 router.get('/', async (c) => {
   const user = c.get('user')
+  const page = parseInt(c.req.query('page') || '1', 10)
+  const limit = parseInt(c.req.query('limit') || '10', 10)
+  const isFavorite = c.req.query('is_favorite') === 'true'
+  const offset = (page - 1) * limit
+
+  const whereCondition = isFavorite 
+    ? and(eq(urls.user_id, user.id), eq(urls.is_favorite, true))
+    : eq(urls.user_id, user.id)
+
   const rows = await db
     .select()
     .from(urls)
-    .where(eq(urls.user_id, user.id))
+    .where(whereCondition)
     .orderBy(desc(urls.created_at))
+    .limit(limit)
+    .offset(offset)
 
-  return c.json(
-    rows.map((r) => ({
+  const [totalResult] = await db
+    .select({ count: count() })
+    .from(urls)
+    .where(whereCondition)
+
+  return c.json({
+    data: rows.map((r) => ({
       id: r.id,
       short_code: r.short_code,
       long_url: r.long_url,
       custom_alias: r.custom_alias,
       expiration_date: r.expiration_date?.toISOString() ?? null,
+      is_favorite: r.is_favorite,
       created_at: r.created_at.toISOString(),
-    }))
-  )
+    })),
+    total: totalResult.count,
+    page,
+    limit,
+  })
+})
+
+router.patch('/:short_code/favorite', async (c) => {
+  const user = c.get('user')
+  const shortCode = c.req.param('short_code')
+  
+  // Also tolerate missing body, just toggle it if missing, or require it?
+  // Let's require it.
+  const body = await c.req.json<{ is_favorite: boolean }>()
+
+  const [updated] = await db
+    .update(urls)
+    .set({ is_favorite: body.is_favorite })
+    .where(and(eq(urls.user_id, user.id), eq(urls.short_code, shortCode)))
+    .returning()
+
+  if (!updated) return c.json({ message: 'Not Found' }, 404)
+  return c.json({ is_favorite: updated.is_favorite })
+})
+
+router.delete('/:short_code', async (c) => {
+  const user = c.get('user')
+  const shortCode = c.req.param('short_code')
+
+  const [deleted] = await db
+    .delete(urls)
+    .where(and(eq(urls.user_id, user.id), eq(urls.short_code, shortCode)))
+    .returning()
+
+  if (!deleted) return c.json({ message: 'Not Found' }, 404)
+  return c.json({ message: 'Deleted successfully' })
 })
 
 function isUniqueViolation(err: unknown): boolean {

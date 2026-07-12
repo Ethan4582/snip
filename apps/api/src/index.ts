@@ -7,6 +7,7 @@ import urlsRouter from './routes/urls'
 import resolveRouter from './routes/resolve'
 import healthRouter from './routes/health'
 import analyticsRouter from './routes/analytics'
+import accountRouter from './routes/account'
 
 const app = new Hono()
 
@@ -24,6 +25,7 @@ app.route('/urls', urlsRouter)
 app.route('/resolve', resolveRouter)
 app.route('/health', healthRouter)
 app.route('/analytics', analyticsRouter)
+app.route('/account', accountRouter)
 
 const port = Number(process.env.PORT ?? 3000)
 console.log(`API listening on port ${port}`)

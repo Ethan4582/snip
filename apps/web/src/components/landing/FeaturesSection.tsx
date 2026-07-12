@@ -30,16 +30,27 @@ export default function FeaturesSection() {
     <div id="features" className="w-full bg-[#fbfaf9] py-24 px-6 border-t border-gray-100 overflow-hidden">
       
       <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial="hidden"
+        whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        variants={{
+          hidden: {},
+          visible: { transition: { staggerChildren: 0.15 } }
+        }}
         className="flex flex-col items-center gap-6 mb-16"
       >
-        <h2 className="font-bold text-[36px] md:text-[44px] tracking-tight text-center">Everything you need.</h2>
-        <p className="text-gray-600 text-[18px] max-w-[640px] text-center leading-relaxed">
+        <motion.h2 
+          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}
+          className="font-bold text-[36px] md:text-[44px] tracking-tight text-center"
+        >
+          Everything you need.
+        </motion.h2>
+        <motion.p 
+          variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}
+          className="text-gray-600 text-[18px] max-w-[640px] text-center leading-relaxed"
+        >
           Snip handles the heavy lifting for your short links, so you can track performance, organize campaigns, and route users instantly without the hassle.
-        </p>
+        </motion.p>
       </motion.div>
       
       <motion.div 

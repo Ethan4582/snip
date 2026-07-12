@@ -195,4 +195,49 @@ router.get('/:short_code/daily', async (c) => {
   return c.json(results)
 })
 
+router.get('/bulk-summary', async (c) => {
+  const user = c.get('user')
+  const shortCodesStr = c.req.query('short_codes')
+  
+  if (!shortCodesStr) {
+    return c.json({})
+  }
+
+  const shortCodes = shortCodesStr.split(',').filter(Boolean)
+  if (shortCodes.length === 0) return c.json({})
+
+  // Verify ownership
+  const userUrls = await db
+    .select({ short_code: urls.short_code })
+    .from(urls)
+    .where(eq(urls.user_id, user.id))
+  
+  const userShortCodes = new Set(userUrls.map(u => u.short_code))
+  const validShortCodes = shortCodes.filter(code => userShortCodes.has(code))
+
+  if (validShortCodes.length === 0) return c.json({})
+
+  const sql = `
+    SELECT 
+      blob1 as short_code,
+      sum(_sample_interval) as clicks
+    FROM ${DATASET}
+    WHERE index1 IN (${buildInClause(validShortCodes)})
+    GROUP BY short_code
+  `
+  
+  const results = await queryAnalytics(sql)
+  
+  const response: Record<string, number> = {}
+  validShortCodes.forEach(code => {
+    response[code] = 0
+  })
+  
+  results.forEach(row => {
+    response[row.short_code] = parseInt(row.clicks || '0', 10)
+  })
+
+  return c.json(response)
+})
+
 export default router

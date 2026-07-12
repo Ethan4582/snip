@@ -78,10 +78,22 @@ export default function HeroSection() {
         className="relative z-10 flex flex-col items-center w-full max-w-[800px] text-center gap-6"
       >
         <div className="flex flex-col gap-4">
-          <h1 className="font-bold text-[56px] md:text-[68px] tracking-tight leading-[1.05]">
-            Snip anything.<br/>
-            <span className="text-[#ff6201]">Find it forever.</span>
-          </h1>
+          <motion.h1 
+            className="font-bold text-[56px] md:text-[68px] tracking-tight leading-[1.05]"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.15 } }
+            }}
+          >
+            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } }}>
+              Snip anything.
+            </motion.div>
+            <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } } }}>
+              <span className="text-[#ff6201]">Find it forever.</span>
+            </motion.div>
+          </motion.h1>
           <p className="text-gray-600 text-[18px] max-w-[500px] mx-auto leading-relaxed mt-2">
             Capture, organize, and access your links instantly.
           </p>
