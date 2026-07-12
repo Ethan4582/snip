@@ -6,6 +6,8 @@ module.exports = {
       colors: {
         border: 'var(--border)',
         input: 'var(--input)',
+        'input-background': 'var(--input-background)',
+        'switch-background': 'var(--switch-background)',
         ring: 'var(--ring)',
         background: 'var(--background)',
         foreground: 'var(--foreground)',

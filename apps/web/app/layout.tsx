@@ -1,10 +1,21 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Navbar from '../src/components/Navbar'
 
 export const metadata: Metadata = {
   title: 'Snip — URL Shortener',
-  description: 'A fast, production-grade URL shortener with analytics.',
+  description: 'A fast, production-grade URL shortener with analytics. Capture links, organize them beautifully, and access anytime, anywhere.',
+  openGraph: {
+    title: 'Snip — URL Shortener',
+    description: 'Capture links, organize them beautifully, and access anytime, anywhere.',
+    url: 'https://snip.app',
+    siteName: 'Snip',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Snip — URL Shortener',
+    description: 'Capture links, organize them beautifully, and access anytime, anywhere.',
+  },
 }
 
 export default function RootLayout({
@@ -23,7 +34,6 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Navbar />
         {children}
       </body>
     </html>
