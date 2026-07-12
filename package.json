@@ -5,9 +5,19 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "type-check": "turbo run type-check"
+    "type-check": "turbo run type-check",
+    "api:dev": "pnpm --filter api dev",
+    "edge:dev": "pnpm --filter edge dev",
+    "web:dev": "pnpm --filter web dev",
+    "db:generate": "pnpm --filter db generate",
+    "db:migrate": "pnpm --filter db migrate"
   },
   "devDependencies": {
-    "turbo": "latest"
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
+    "turbo": "latest",
+    "typescript": "^5.5.4"
   }
 }
