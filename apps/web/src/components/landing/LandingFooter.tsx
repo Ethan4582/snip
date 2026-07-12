@@ -2,8 +2,8 @@ import logo from '../../../assets/logo.png'
 
 export default function LandingFooter() {
   return (
-    <footer className="w-full bg-[#fbfaf9] border-t border-gray-100 pt-16 pb-8 px-6">
-      <div className="w-full max-w-[1200px] mx-auto flex flex-col gap-12">
+    <footer className="w-full bg-[#fbfaf9] border-t border-gray-100 pt-24 pb-8 px-6">
+      <div className="w-full max-w-[1200px] mx-auto flex flex-col gap-8">
         
         {/* Top 4-column section */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8 w-full">
@@ -63,7 +63,7 @@ export default function LandingFooter() {
         </div>
         
         {/* Bottom Section */}
-        <div className="flex flex-col gap-6 mt-6">
+        <div className="flex flex-col gap-6 mt-2">
           <div className="w-full h-[1px] bg-gray-200"></div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-gray-500 text-[14px] font-medium">© 2024 Snip. All rights reserved.</p>
