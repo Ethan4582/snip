@@ -17,6 +17,31 @@ const countryMap: Record<string, string> = {
   SE: 'Sweden', CH: 'Switzerland', SG: 'Singapore', MX: 'Mexico', ZA: 'South Africa'
 }
 
+const getReferrerIcon = (label: string) => {
+  const lower = label.toLowerCase();
+  if (lower.includes('youtube')) return '/assets/youtube-icon.svg';
+  if (lower.includes('twitter') || lower.includes('t.co') || lower.includes('x.com')) return '/assets/x-company-solid.svg';
+  if (lower.includes('discord')) return '/assets/discord.svg';
+  if (lower.includes('facebook') || lower.includes('fb.com')) return '/assets/facebook.svg';
+  if (lower.includes('google')) return '/assets/google.svg';
+  if (lower.includes('instagram')) return '/assets/instagram.svg';
+  if (lower.includes('linkedin')) return '/assets/linkedin.svg';
+  if (lower.includes('pinterest')) return '/assets/pinterest.svg';
+  if (lower.includes('reddit')) return '/assets/reddit-icon.svg';
+  if (lower.includes('telegram')) return '/assets/telegram.svg';
+  if (lower.includes('whatsapp')) return '/assets/whatsapp-icon.svg';
+  if (lower.includes('amazon')) return '/assets/amazon.svg';
+  return '/assets/other.svg';
+}
+
+const getDeviceIcon = (label: string) => {
+  const lower = label.toLowerCase();
+  if (lower.includes('mobile')) return '/assets/mobile.svg';
+  if (lower.includes('tablet')) return '/assets/tablet.svg';
+  if (lower.includes('desktop') || lower.includes('pc') || lower.includes('mac') || lower.includes('windows')) return '/assets/desktop.svg';
+  return '/assets/other.svg';
+}
+
 export function BreakdownCard({ title, data }: BreakdownCardProps) {
   const total = data.reduce((acc, curr) => acc + Number(curr.clicks), 0)
   
@@ -45,7 +70,10 @@ export function BreakdownCard({ title, data }: BreakdownCardProps) {
             <div className="flex flex-col gap-4 mt-2">
               {formattedData.slice(0, 5).map((item, i) => (
                 <div key={i} className="flex items-center text-sm gap-3">
-                  <span className="text-gray-700 capitalize text-xs truncate w-20">{item.displayLabel}</span>
+                  <div className="flex items-center gap-2 w-[120px] shrink-0">
+                    <img src={getReferrerIcon(item.label)} alt={item.displayLabel} className="w-4 h-4 object-contain" />
+                    <span className="text-gray-700 capitalize text-xs truncate w-full" title={item.displayLabel}>{item.displayLabel}</span>
+                  </div>
                   <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div 
                       className="h-full rounded-full" 
@@ -91,20 +119,33 @@ export function BreakdownCard({ title, data }: BreakdownCardProps) {
               </div>
               
               <div className="flex-1 w-full space-y-3">
-                {formattedData.slice(0, 5).map((item, i) => (
-                  <div key={i} className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                      <span className="text-gray-700 capitalize text-xs truncate max-w-[100px]">{item.displayLabel}</span>
+                {formattedData.slice(0, 5).map((item, i) => {
+                  return (
+                    <div key={i} className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        {title === 'Top Countries' ? (
+                          <img 
+                            src={`https://flagcdn.com/w20/${item.label.toLowerCase()}.png`} 
+                            alt={item.displayLabel} 
+                            className="w-4 h-auto object-contain rounded-[2px]" 
+                            onError={(e) => { e.currentTarget.style.display = 'none' }}
+                          />
+                        ) : title === 'Top Devices' ? (
+                          <img src={getDeviceIcon(item.label)} alt={item.displayLabel} className="w-4 h-4 object-contain" />
+                        ) : (
+                          <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                        )}
+                        <span className="text-gray-700 capitalize text-xs truncate max-w-[100px]" title={item.displayLabel}>{item.displayLabel}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold text-gray-900 text-xs">{item.clicks >= 1000 ? (item.clicks/1000).toFixed(1) + 'K' : item.clicks}</span>
+                        <span className="text-gray-400 text-xs w-8 text-right">
+                          {Math.round((item.clicks / total) * 100)}%
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-semibold text-gray-900 text-xs">{item.clicks >= 1000 ? (item.clicks/1000).toFixed(1) + 'K' : item.clicks}</span>
-                      <span className="text-gray-400 text-xs w-8 text-right">
-                        {Math.round((item.clicks / total) * 100)}%
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )

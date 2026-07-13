@@ -1,18 +1,17 @@
+import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export function StatCardSkeleton() {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">
-          <Skeleton className="h-4 w-24" />
-        </CardTitle>
-        <Skeleton className="h-4 w-4 rounded-full" />
-      </CardHeader>
-      <CardContent>
-        <Skeleton className="h-8 w-16 mb-1" />
-        <Skeleton className="h-3 w-32" />
+    <Card className="shadow-sm border-gray-100">
+      <CardContent className="p-6">
+        <div className="flex justify-between items-start">
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-8 w-16" />
+          </div>
+          <Skeleton className="w-10 h-10 rounded-full" />
+        </div>
       </CardContent>
     </Card>
   )

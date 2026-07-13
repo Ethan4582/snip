@@ -14,6 +14,8 @@ import { MousePointerClick, Link2, TrendingUp } from 'lucide-react'
 import type { Url } from '@snip/shared'
 import { StatCardSkeleton } from '@/components/skeletons/StatCardSkeleton'
 import { ChartSkeleton } from '@/components/skeletons/ChartSkeleton'
+import { BreakdownCardSkeleton } from '@/components/skeletons/BreakdownCardSkeleton'
+import { TableSkeleton } from '@/components/skeletons/TableSkeleton'
 import { format, subDays } from 'date-fns'
 
 export default function Dashboard() {
@@ -94,14 +96,14 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="p-8 max-w-[1400px] mx-auto space-y-8 bg-[#fafafa] min-h-screen">
+      <div className="p-8 max-w-[1400px] mx-auto space-y-6 bg-[#fafafa] min-h-screen">
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
             <p className="text-gray-500 mt-1 text-sm">An overview of your links and activity.</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
@@ -111,8 +113,22 @@ export default function Dashboard() {
             <ChartSkeleton />
           </div>
           <div className="h-[350px]">
-            <ChartSkeleton />
+            <BreakdownCardSkeleton />
           </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="h-[280px]">
+            <BreakdownCardSkeleton />
+          </div>
+          <div className="h-[280px]">
+            <BreakdownCardSkeleton />
+          </div>
+          <div className="h-[280px]">
+            <TableSkeleton />
+          </div>
+        </div>
+        <div className="grid grid-cols-1">
+          <TableSkeleton />
         </div>
       </div>
     )
