@@ -2,17 +2,24 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 import logo from '../../../assets/logo.png'
 
 export default function LandingNavbar() {
   const router = useRouter()
   const [scrolled, setScrolled] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50)
     }
     window.addEventListener('scroll', handleScroll)
+    
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session)
+    })
+
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -35,10 +42,10 @@ export default function LandingNavbar() {
         
         <div className="flex items-center gap-3">
           <button 
-            onClick={() => router.push('/login')} 
+            onClick={() => router.push(isLoggedIn ? '/dashboard' : '/login')} 
             className="group flex items-center gap-2 bg-[#ff6201] text-white px-5 py-2 rounded-lg font-semibold shadow-sm hover:bg-[#e05600] transition-colors"
           >
-            Try Snip
+            {isLoggedIn ? 'Dashboard' : 'Try Snip'}
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               width="16" height="16" 

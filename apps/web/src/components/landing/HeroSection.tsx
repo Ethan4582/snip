@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import { supabase } from '@/lib/supabase'
 import bg from '../../../assets/bg.png'
 import L1 from '../../../assets/l1.png'
 import L2 from '../../../assets/l2.png'
@@ -12,7 +13,14 @@ import L4 from '../../../assets/l4.png'
 export default function HeroSection() {
   const router = useRouter()
   const [url, setUrl] = useState('')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session)
+    })
+  }, [])
 
   const { scrollY } = useScroll()
   const rotateX = useTransform(scrollY, [0, 500], [15, 0])
@@ -22,7 +30,13 @@ export default function HeroSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (url) {
-      router.push('/login')
+      if (isLoggedIn) {
+        // Option 1: Just go to dashboard
+        router.push('/dashboard')
+        // Option 2: Pre-fill in dashboard? For now just dashboard.
+      } else {
+        router.push('/login')
+      }
     }
   }
 
