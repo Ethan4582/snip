@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import { supabase } from '@/lib/supabase'
@@ -25,16 +25,7 @@ export default function Dashboard() {
   const [devices, setDevices] = useState([])
   const [topLinks, setTopLinks] = useState([])
   const [recentSnips, setRecentSnips] = useState<Url[]>([])
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) router.push('/login')
-    })
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) router.push('/login')
-    })
-    return () => subscription.unsubscribe()
-  }, [router])
+  const hasFetched = useRef(false)
 
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -49,7 +40,7 @@ export default function Dashboard() {
         apiFetch('/analytics/breakdown?by=referrer').catch(() => []),
         apiFetch('/analytics/breakdown?by=device').catch(() => []),
         apiFetch('/analytics/top-links').catch(() => []),
-        apiFetch<Url[]>('/urls').catch(() => [])
+        apiFetch<{ data: Url[], total: number }>('/urls').catch(() => ({ data: [], total: 0 }))
       ])
 
       setSummary(sumData as any)
@@ -61,7 +52,7 @@ export default function Dashboard() {
       
       // Match clicks to recent snips
       const topLinksMap = new Map((topLinksData as any[]).map(t => [t.short_code, t.clicks]))
-      const enrichedSnips = ((snipsData as any).data as Url[] || []).slice(0, 10).map(snip => ({
+      const enrichedSnips = (snipsData.data || []).slice(0, 10).map(snip => ({
         ...snip,
         clicks: topLinksMap.get(snip.short_code) || 0
       }))
@@ -73,8 +64,27 @@ export default function Dashboard() {
   }, [])
 
   useEffect(() => {
-    fetchDashboardData()
-  }, [fetchDashboardData])
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) { router.push('/login'); return }
+      if (hasFetched.current) return
+      hasFetched.current = true
+      fetchDashboardData()
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) { router.push('/login'); return }
+      if (hasFetched.current) return
+      hasFetched.current = true
+      fetchDashboardData()
+    })
+
+    const handleSnipCreated = () => fetchDashboardData()
+    window.addEventListener('snipCreated', handleSnipCreated)
+
+    return () => {
+      subscription.unsubscribe()
+      window.removeEventListener('snipCreated', handleSnipCreated)
+    }
+  }, [router, fetchDashboardData])
 
   if (loading) {
     return (
@@ -83,6 +93,9 @@ export default function Dashboard() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
             <p className="text-gray-500 mt-1">An overview of your links and activity.</p>
+          </div>
+          <div className="flex gap-3">
+            <CreateSnipDialog />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -111,7 +124,7 @@ export default function Dashboard() {
           <p className="text-gray-500 mt-1">An overview of your links and activity.</p>
         </div>
         <div className="flex gap-3">
-        <CreateSnipDialog onSuccess={fetchDashboardData} />
+          <CreateSnipDialog />
         </div>
       </div>
 

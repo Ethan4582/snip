@@ -5,7 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { format } from 'date-fns'
-import { Copy, Star, Trash2, Search, AlertCircle } from 'lucide-react'
+import { Copy, Star, Trash2, Search, AlertCircle, BarChart2 } from 'lucide-react'
+import Link from 'next/link'
 import { toast } from 'sonner'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
@@ -201,6 +202,13 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/dashboard/analytics/${item.short_code}`}
+                          className="p-1.5 text-gray-400 hover:text-[#ff6201] rounded-md hover:bg-[#fff0e6] transition-colors"
+                          title="View Analytics"
+                        >
+                          <BarChart2 className="w-4 h-4" />
+                        </Link>
                         <button 
                           onClick={() => toggleFavorite(item.short_code, !!item.is_favorite)} 
                           className={`p-1.5 rounded-md hover:bg-gray-100 transition-colors ${item.is_favorite ? 'text-yellow-400' : 'text-gray-400'}`}

@@ -1,5 +1,6 @@
 "use client"
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { CalendarIcon, Link2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -24,10 +25,12 @@ import {
 import { cn } from '@/lib/utils'
 
 export function CreateSnipDialog({ children, onSuccess }: { children?: React.ReactNode, onSuccess?: () => void }) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [longUrl, setLongUrl] = useState('')
   const [customAlias, setCustomAlias] = useState('')
   const [date, setDate] = useState<Date>()
+  const [time, setTime] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -37,12 +40,23 @@ export function CreateSnipDialog({ children, onSuccess }: { children?: React.Rea
     setLoading(true)
 
     try {
+      let expirationDate: Date | undefined;
+      if (date) {
+        expirationDate = new Date(date)
+        if (time) {
+          const [hours, minutes] = time.split(':').map(Number)
+          expirationDate.setHours(hours, minutes)
+        } else {
+          expirationDate.setHours(23, 59, 59) // End of day by default if no time specified
+        }
+      }
+
       await apiFetch('/urls', {
         method: 'POST',
         body: JSON.stringify({
           long_url: longUrl,
           custom_alias: customAlias || undefined,
-          expiration_date: date ? date.toISOString() : undefined,
+          expiration_date: expirationDate ? expirationDate.toISOString() : undefined,
         })
       })
       
@@ -50,8 +64,11 @@ export function CreateSnipDialog({ children, onSuccess }: { children?: React.Rea
       setLongUrl('')
       setCustomAlias('')
       setDate(undefined)
+      setTime('')
       
       onSuccess?.()
+      router.refresh()
+      window.dispatchEvent(new CustomEvent('snipCreated'))
       toast.success('Short URL created successfully!')
     } catch (err: any) {
       setError(err.message || 'Failed to create short URL')
@@ -130,8 +147,17 @@ export function CreateSnipDialog({ children, onSuccess }: { children?: React.Rea
                     onSelect={setDate}
                   />
                   {date && (
-                    <div className="p-2 border-t">
-                      <Button variant="ghost" className="w-full text-primary hover:text-primary hover:bg-orange-50" onClick={(e) => { e.preventDefault(); setDate(undefined); }}>
+                    <div className="p-3 border-t bg-gray-50/50 flex flex-col gap-3">
+                      <div className="flex flex-col gap-1.5">
+                        <Label className="text-xs text-gray-500 font-medium">Expiration Time</Label>
+                        <Input 
+                          type="time" 
+                          value={time} 
+                          onChange={e => setTime(e.target.value)} 
+                          className="h-8 text-sm w-full bg-white" 
+                        />
+                      </div>
+                      <Button variant="ghost" className="w-full text-primary hover:text-primary hover:bg-orange-50 h-8 text-sm" onClick={(e) => { e.preventDefault(); setDate(undefined); setTime(''); }}>
                         Clear date
                       </Button>
                     </div>

@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input"
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { apiFetch } from '@/lib/api'
+import { CreateSnipDialog } from '@/components/CreateSnipDialog'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -63,9 +64,14 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="p-8 max-w-4xl mx-auto space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Settings</h1>
-          <p className="text-gray-500 mt-1">Manage your account preferences.</p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Settings</h1>
+            <p className="text-gray-500 mt-1">Manage your account preferences.</p>
+          </div>
+          <div className="flex gap-3">
+            <CreateSnipDialog />
+          </div>
         </div>
         
         <Card className="shadow-sm border-gray-100">
@@ -94,9 +100,14 @@ export default function SettingsPage() {
 
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Settings</h1>
-        <p className="text-gray-500 mt-1">Manage your account preferences.</p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Settings</h1>
+          <p className="text-gray-500 mt-1">Manage your account preferences.</p>
+        </div>
+        <div className="flex gap-3">
+          <CreateSnipDialog />
+        </div>
       </div>
       
       <Card className="shadow-sm border-gray-100">
