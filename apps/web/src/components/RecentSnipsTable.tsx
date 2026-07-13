@@ -3,28 +3,10 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { format } from 'date-fns'
-import { BarChart2, Copy, MoreVertical, Link2, Trash2, Edit, Star } from 'lucide-react'
+import { BarChart2, Copy, MoreVertical, Link2, Trash2, Edit } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,10 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
 import { apiFetch } from '@/lib/api'
+import { EditSnipDialog } from './EditSnipDialog'
+import { DeleteSnipDialog } from './DeleteSnipDialog'
 
 interface RecentSnipsTableProps {
   data: { short_code: string, long_url: string, created_at: string, clicks?: number, is_favorite?: boolean, custom_alias?: string }[]
@@ -53,49 +34,10 @@ export function RecentSnipsTable({ data: initialData }: RecentSnipsTableProps) {
 
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean, shortCode: string | null }>({ open: false, shortCode: null })
   const [editDialog, setEditDialog] = useState<{ open: boolean, shortCode: string | null, customAlias: string }>({ open: false, shortCode: null, customAlias: '' })
-  const [isEditing, setIsEditing] = useState(false)
 
   const handleCopy = (shortCode: string) => {
     navigator.clipboard.writeText(`${edgeUrl}/${shortCode}`)
     toast.success('Link copied to clipboard')
-  }
-
-  const handleDelete = async () => {
-    if (!deleteDialog.shortCode) return
-    const sc = deleteDialog.shortCode
-    setDeleteDialog({ open: false, shortCode: null })
-
-    try {
-      await apiFetch(`/urls/${sc}`, { method: 'DELETE' })
-      toast.success('Snip deleted successfully')
-      window.dispatchEvent(new Event('snipCreated'))
-    } catch (err) {
-      toast.error('Failed to delete snip')
-    }
-  }
-
-  const handleEdit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!editDialog.shortCode) return
-    setIsEditing(true)
-    
-    try {
-      await apiFetch(`/urls/${editDialog.shortCode}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ custom_alias: editDialog.customAlias })
-      })
-      toast.success('Alias updated successfully')
-      setEditDialog({ open: false, shortCode: null, customAlias: '' })
-      window.dispatchEvent(new Event('snipCreated'))
-    } catch (err: any) {
-      if (err.message?.includes('taken') || err.message?.includes('409')) {
-        toast.error('Custom alias is already taken')
-      } else {
-        toast.error('Failed to update alias')
-      }
-    } finally {
-      setIsEditing(false)
-    }
   }
 
   return (
@@ -205,54 +147,21 @@ export function RecentSnipsTable({ data: initialData }: RecentSnipsTableProps) {
         </Table>
       </CardContent>
 
-      {/* Delete Dialog */}
-      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => !open && setDeleteDialog({ open: false, shortCode: null })}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete this snip?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the shortened link and clear its cache.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteSnipDialog
+        open={deleteDialog.open}
+        shortCode={deleteDialog.shortCode}
+        onClose={() => setDeleteDialog({ open: false, shortCode: null })}
+        onSuccess={() => window.dispatchEvent(new Event('snipCreated'))}
+        onError={() => {}}
+      />
 
-      {/* Edit Dialog */}
-      <Dialog open={editDialog.open} onOpenChange={(open) => !open && setEditDialog({ open: false, shortCode: null, customAlias: '' })}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Custom Alias</DialogTitle>
-            <DialogDescription>
-              Update the custom alias for this shortened link.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleEdit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="alias" className="text-right">
-                  Alias
-                </Label>
-                <Input
-                  id="alias"
-                  value={editDialog.customAlias}
-                  onChange={(e) => setEditDialog(prev => ({ ...prev, customAlias: e.target.value }))}
-                  className="col-span-3"
-                  placeholder="e.g. my-link"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit" disabled={isEditing || !editDialog.customAlias.trim() || editDialog.customAlias === editDialog.shortCode} className="bg-[#ff5f00] hover:bg-[#e65500]">
-                {isEditing ? 'Saving...' : 'Save changes'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <EditSnipDialog
+        open={editDialog.open}
+        shortCode={editDialog.shortCode}
+        initialAlias={editDialog.customAlias}
+        onClose={() => setEditDialog({ open: false, shortCode: null, customAlias: '' })}
+        onSuccess={() => window.dispatchEvent(new Event('snipCreated'))}
+      />
     </Card>
   )
 }

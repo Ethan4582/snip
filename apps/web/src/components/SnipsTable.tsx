@@ -5,28 +5,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { format } from 'date-fns'
-import { Copy, Star, Trash2, Search, BarChart2, Edit, MoreVertical, Link2, ChevronsUpDown, ArrowUp, ArrowDown } from 'lucide-react'
+import { Copy, Star, Search, BarChart2, Edit, MoreVertical, Link2, ChevronsUpDown, ArrowUp, ArrowDown, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +18,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { apiFetch } from '@/lib/api'
 import type { Url } from '@snip/shared'
-import { Label } from '@/components/ui/label'
+import { SnipsTableStats } from './SnipsTableStats'
+import { SnipsTablePagination } from './SnipsTablePagination'
+import { EditSnipDialog } from './EditSnipDialog'
+import { DeleteSnipDialog } from './DeleteSnipDialog'
 
 interface SnipsTableProps {
   title: string
@@ -63,13 +48,10 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
   const [sortOrder, setSortOrder] = useState('desc')
   const limit = 10
 
-  // Global stats
   const [stats, setStats] = useState({ total_snips: 0, total_clicks: 0 })
 
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean, shortCode: string | null }>({ open: false, shortCode: null })
-  
   const [editDialog, setEditDialog] = useState<{ open: boolean, shortCode: string | null, customAlias: string }>({ open: false, shortCode: null, customAlias: '' })
-  const [isEditing, setIsEditing] = useState(false)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -92,7 +74,6 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
       setTotal(res.total)
       setStats(sumData as any)
 
-      // Fetch clicks for these specific snips if we didn't sort by clicks (if sorted by clicks, we already have them but need to map them)
       if (res.data.length > 0) {
         const shortCodes = res.data.map(u => u.short_code).join(',')
         const statsMap = await apiFetch<Record<string, number>>(`/analytics/bulk-summary?short_codes=${shortCodes}`).catch(() => ({}))
@@ -155,49 +136,6 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
     }
   }
 
-  const handleDelete = async () => {
-    if (!deleteDialog.shortCode) return
-    const sc = deleteDialog.shortCode
-    
-    // Optimistic delete
-    setData(prev => prev.filter(u => u.short_code !== sc))
-    setTotal(prev => prev - 1)
-    setDeleteDialog({ open: false, shortCode: null })
-
-    try {
-      await apiFetch(`/urls/${sc}`, { method: 'DELETE' })
-      toast.success('Snip deleted successfully')
-    } catch (err) {
-      toast.error('Failed to delete snip')
-      fetchData() // rollback
-    }
-  }
-
-  const handleEdit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!editDialog.shortCode) return
-    setIsEditing(true)
-    
-    try {
-      const res = await apiFetch<Url>(`/urls/${editDialog.shortCode}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ custom_alias: editDialog.customAlias })
-      })
-      
-      setData(prev => prev.map(u => u.short_code === editDialog.shortCode ? res : u))
-      toast.success('Alias updated successfully')
-      setEditDialog({ open: false, shortCode: null, customAlias: '' })
-    } catch (err: any) {
-      if (err.message.includes('taken') || err.message.includes('409')) {
-        toast.error('Custom alias is already taken')
-      } else {
-        toast.error('Failed to update alias')
-      }
-    } finally {
-      setIsEditing(false)
-    }
-  }
-
   const totalPages = Math.ceil(total / limit)
 
   const SortIcon = ({ field }: { field: string }) => {
@@ -207,8 +145,7 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
 
   return (
     <div className="space-y-6">
-      {/* Search Bar matching image */}
-      <div className="flex items-center gap-3 w-[50%] max-w-lg mb-8">
+      <div className="flex items-center gap-3 w-[50%] max-w-sm mb-8">
         <div className="relative w-full">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
           <Input 
@@ -218,45 +155,14 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
             onChange={handleSearchChange}
           />
           <div className="absolute right-3 top-2.5 flex items-center gap-1 text-xs text-gray-400 border border-gray-200 px-1.5 rounded-md">
-            ⌘K
+            Ctrl + K
           </div>
         </div>
+        
       </div>
 
-      {/* Stats Row */}
-      <Card className="shadow-sm border-gray-100 rounded-xl overflow-hidden bg-white">
-        <CardContent className="p-0 flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-100">
-          <div className="flex-1 p-6 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#fff0e6] flex items-center justify-center">
-              <Link2 className="w-6 h-6 text-[#ff5f00]" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 font-medium">Total Snips</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total_snips >= 1000 ? (stats.total_snips/1000).toFixed(1) + 'K' : stats.total_snips}</p>
-            </div>
-          </div>
-          <div className="flex-1 p-6 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#f0edff] flex items-center justify-center">
-              <Link2 className="w-6 h-6 text-[#6366f1]" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 font-medium">Links Created<br/>This Month</p>
-              <p className="text-2xl font-bold text-gray-900">{Math.floor(stats.total_snips * 0.4) || 0}</p>
-            </div>
-          </div>
-          <div className="flex-1 p-6 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#e0f8f0] flex items-center justify-center">
-              <BarChart2 className="w-6 h-6 text-[#10b981]" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 font-medium">Total Clicks</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total_clicks >= 1000 ? (stats.total_clicks/1000).toFixed(1) + 'K' : stats.total_clicks}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <SnipsTableStats stats={stats} />
 
-      {/* Main Table */}
       <Card className="shadow-sm border-gray-100 rounded-xl bg-white overflow-hidden">
         <CardContent className="p-0 overflow-x-auto">
           <Table>
@@ -322,7 +228,14 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
                         {item.custom_alias || '—'}
                       </TableCell>
                       <TableCell className="py-4 text-sm text-gray-500">
-                        {item.expiration_date ? format(new Date(item.expiration_date), "MMM d, yyyy") : '—'}
+                        {item.expiration_date ? (
+                          <div className="flex flex-col text-sm text-gray-600">
+                            <span className="font-medium text-gray-700">{format(new Date(item.expiration_date), "MMM d, yyyy")}</span>
+                            {format(new Date(item.expiration_date), "hh:mm a") !== "11:59 PM" && (
+                              <span className="text-xs text-gray-400 mt-0.5">{format(new Date(item.expiration_date), "hh:mm a")}</span>
+                            )}
+                          </div>
+                        ) : '—'}
                       </TableCell>
                       <TableCell className="py-4">
                         <div className="flex flex-col text-sm text-gray-600">
@@ -390,106 +303,36 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
           </Table>
         </CardContent>
         
-        {/* Pagination matching reference */}
-        {!loading && total > 0 && (
-          <div className="border-t border-gray-100 p-4 flex items-center justify-between bg-white text-sm">
-            <div className="text-gray-500">
-              Showing {(page - 1) * limit + 1} to {Math.min(page * limit, total)} of {total} results
-            </div>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="w-9 h-9 p-0 text-gray-500 border-gray-200"
-              >
-                &lt;
-              </Button>
-              {Array.from({ length: Math.min(3, totalPages) }).map((_, i) => (
-                <Button
-                  key={i}
-                  variant={page === i + 1 ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setPage(i + 1)}
-                  className={`w-9 h-9 p-0 ${page === i + 1 ? 'bg-[#fff0e6] text-[#ff5f00] hover:bg-[#ffe0cc] border-transparent' : 'text-gray-500 border-gray-200 hover:text-gray-900'}`}
-                >
-                  {i + 1}
-                </Button>
-              ))}
-              {totalPages > 3 && <span className="px-2 text-gray-400">...</span>}
-              {totalPages > 3 && (
-                <Button
-                  variant={page === totalPages ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setPage(totalPages)}
-                  className={`w-9 h-9 p-0 ${page === totalPages ? 'bg-[#fff0e6] text-[#ff5f00] border-transparent' : 'text-gray-500 border-gray-200'}`}
-                >
-                  {totalPages}
-                </Button>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="w-9 h-9 p-0 text-gray-500 border-gray-200"
-              >
-                &gt;
-              </Button>
-            </div>
-          </div>
-        )}
+        <SnipsTablePagination 
+          page={page} 
+          total={total} 
+          limit={limit} 
+          totalPages={totalPages} 
+          setPage={setPage} 
+          loading={loading} 
+        />
       </Card>
 
-      {/* Delete Dialog */}
-      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => !open && setDeleteDialog({ open: false, shortCode: null })}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete this snip?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the shortened link and clear its cache.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteSnipDialog
+        open={deleteDialog.open}
+        shortCode={deleteDialog.shortCode}
+        onClose={() => setDeleteDialog({ open: false, shortCode: null })}
+        onSuccess={(sc) => {
+          setData(prev => prev.filter(u => u.short_code !== sc))
+          setTotal(prev => prev - 1)
+        }}
+        onError={() => fetchData()}
+      />
 
-      {/* Edit Dialog */}
-      <Dialog open={editDialog.open} onOpenChange={(open) => !open && setEditDialog({ open: false, shortCode: null, customAlias: '' })}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Custom Alias</DialogTitle>
-            <DialogDescription>
-              Update the custom alias for this shortened link.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleEdit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="alias" className="text-right">
-                  Alias
-                </Label>
-                <Input
-                  id="alias"
-                  value={editDialog.customAlias}
-                  onChange={(e) => setEditDialog(prev => ({ ...prev, customAlias: e.target.value }))}
-                  className="col-span-3"
-                  placeholder="e.g. my-link"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit" disabled={isEditing || !editDialog.customAlias.trim() || editDialog.customAlias === editDialog.shortCode} className="bg-[#ff5f00] hover:bg-[#e65500]">
-                {isEditing ? 'Saving...' : 'Save changes'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <EditSnipDialog
+        open={editDialog.open}
+        shortCode={editDialog.shortCode}
+        initialAlias={editDialog.customAlias}
+        onClose={() => setEditDialog({ open: false, shortCode: null, customAlias: '' })}
+        onSuccess={(updatedUrl) => {
+          setData(prev => prev.map(u => u.short_code === editDialog.shortCode ? updatedUrl : u))
+        }}
+      />
     </div>
   )
 }
