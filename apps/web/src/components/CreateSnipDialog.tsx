@@ -81,7 +81,7 @@ export function CreateSnipDialog({ children, onSuccess }: { children?: React.Rea
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {children || <Button className="bg-primary hover:bg-primary/90 text-white font-medium rounded-lg">+ New Snip</Button>}
+        {children || <Button className="bg-primary hover:bg-primary/90 text-white font-medium rounded-lg"> New Snip</Button>}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>

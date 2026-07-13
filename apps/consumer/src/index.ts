@@ -23,7 +23,7 @@ const POLL_INTERVAL_MS = 3000
 async function setupConsumerGroup() {
   try {
     // Create the consumer group, starting from '0' to pick up any old events
-    await redis.xgroup('CREATE', STREAM_NAME, GROUP_NAME, '0', { MKSTREAM: true })
+    await redis.xgroup(STREAM_NAME, { type: 'CREATE', group: GROUP_NAME, id: '0', options: { MKSTREAM: true } })
     console.log(`Consumer group ${GROUP_NAME} created.`)
   } catch (error: any) {
     if (error.message && error.message.includes('BUSYGROUP')) {
@@ -76,10 +76,8 @@ async function startPolling() {
   while (true) {
     try {
       const result = await redis.xreadgroup(
-        'GROUP', GROUP_NAME, CONSUMER_NAME,
-        'COUNT', BATCH_SIZE,
-        'BLOCK', POLL_INTERVAL_MS,
-        'STREAMS', STREAM_NAME, '>'
+        GROUP_NAME, CONSUMER_NAME, STREAM_NAME, '>',
+        { count: BATCH_SIZE, blockMS: POLL_INTERVAL_MS }
       )
 
       if (result && result.length > 0) {

@@ -1,12 +1,15 @@
 "use client"
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface ClicksChartProps {
   data: { date: string, clicks: number }[]
+  granularity: string
+  onGranularityChange: (val: string) => void
 }
 
-export function ClicksChart({ data }: ClicksChartProps) {
+export function ClicksChart({ data, granularity, onGranularityChange }: ClicksChartProps) {
   const formattedData = data.map(d => {
     const dateObj = new Date(d.date)
     return {
@@ -15,40 +18,67 @@ export function ClicksChart({ data }: ClicksChartProps) {
     }
   })
 
+  // Format Y-axis ticks to e.g. 1K, 2K
+  const formatYAxis = (tickItem: number) => {
+    if (tickItem === 0) return '0'
+    if (tickItem >= 1000) return (tickItem / 1000).toFixed(0) + 'K'
+    return tickItem.toString()
+  }
+
   return (
-    <Card className="shadow-sm border-gray-100 h-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-medium text-gray-900">Clicks Over Time</CardTitle>
+    <Card className="shadow-sm border-gray-100 h-full rounded-xl">
+      <CardHeader className="pb-0 flex flex-row items-center justify-between">
+        <CardTitle className="text-base font-semibold text-gray-900">Clicks Over Time</CardTitle>
+        <Select value={granularity} onValueChange={onGranularityChange}>
+          <SelectTrigger className="w-[100px] h-8 text-xs bg-white border-gray-200 focus:ring-0">
+            <SelectValue placeholder="Daily" />
+          </SelectTrigger>
+          <SelectContent align="end">
+            <SelectItem value="day" className="text-xs">Daily</SelectItem>
+            <SelectItem value="week" className="text-xs">Weekly</SelectItem>
+            <SelectItem value="month" className="text-xs">Monthly</SelectItem>
+          </SelectContent>
+        </Select>
       </CardHeader>
       <CardContent>
-        <div className="h-[250px] w-full mt-4">
+        <div className="h-[280px] w-full mt-6">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={formattedData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+            <AreaChart data={formattedData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#ff5f00" stopOpacity={0.2}/>
+                  <stop offset="95%" stopColor="#ff5f00" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
               <XAxis 
                 dataKey="displayDate" 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 12, fill: '#64748b' }}
+                tick={{ fontSize: 11, fill: '#94a3b8' }}
                 dy={10}
+                minTickGap={20}
               />
               <YAxis 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 12, fill: '#64748b' }}
+                tick={{ fontSize: 11, fill: '#94a3b8' }}
+                tickFormatter={formatYAxis}
               />
               <Tooltip 
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontSize: '12px' }}
+                itemStyle={{ color: '#ff5f00', fontWeight: 600 }}
               />
-              <Line 
+              <Area 
                 type="monotone" 
                 dataKey="clicks" 
                 stroke="#ff5f00" 
-                strokeWidth={3}
-                dot={false}
-                activeDot={{ r: 6, fill: '#ff5f00' }}
+                strokeWidth={2}
+                fillOpacity={1} 
+                fill="url(#colorClicks)" 
+                activeDot={{ r: 5, fill: '#ff5f00', stroke: '#fff', strokeWidth: 2 }}
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </CardContent>
