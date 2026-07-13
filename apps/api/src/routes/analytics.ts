@@ -244,4 +244,17 @@ router.get('/:short_code/daily', async (c) => {
   } catch { return c.json(redisDaily(await getRedisEvents([shortCode], from, to), granularity)) }
 })
 
+export async function getBulkClicks(shortCodes: string[]): Promise<Record<string, number>> {
+  if (shortCodes.length === 0) return {}
+  try {
+    const results = await queryAnalytics(`SELECT blob1 as short_code, sum(_sample_interval) as clicks FROM ${DATASET} WHERE index1 IN (${buildInClause(shortCodes)}) GROUP BY short_code`)
+    const response: Record<string, number> = {}
+    shortCodes.forEach(code => { response[code] = 0 })
+    results.forEach(row => { response[row.short_code] = parseInt(row.clicks || '0', 10) })
+    return response
+  } catch {
+    return redisBulkSummary(await getRedisEvents(shortCodes), shortCodes)
+  }
+}
+
 export default router

@@ -62,7 +62,7 @@ export default function Dashboard() {
       
       // Match clicks to recent snips
       const topLinksMap = new Map((topLinksData as any[]).map(t => [t.short_code, t.clicks]))
-      const enrichedSnips = (snipsData.data || []).slice(0, 10).map(snip => ({
+      const enrichedSnips = (snipsData.data || []).slice(0, 5).map(snip => ({
         ...snip,
         clicks: topLinksMap.get(snip.short_code) || 0
       }))

@@ -1,9 +1,10 @@
 import { Hono } from 'hono'
 import { db, urls } from '@snip/db'
-import { eq, desc, and, count, ilike, or } from 'drizzle-orm'
+import { eq, desc, asc, and, count, ilike, or } from 'drizzle-orm'
 import { authMiddleware, AuthUser } from '../middleware/auth'
-import { getNextCounter, setCachedUrl } from '../lib/redis'
+import { getNextCounter, setCachedUrl, deleteCachedUrl } from '../lib/redis'
 import { toBase62, validateAlias } from '../lib/shortcode'
+import { getBulkClicks } from './analytics'
 
 type Env = { Variables: { user: AuthUser } }
 
@@ -77,7 +78,7 @@ router.post('/', async (c) => {
     }
   }
 
-  // Generated short code path — retry up to 3 times on collision
+  // Generated short code path
   for (let attempt = 0; attempt < 3; attempt++) {
     const counter = await getNextCounter()
     const shortCode = toBase62(counter)
@@ -122,6 +123,8 @@ router.get('/', async (c) => {
   const limit = parseInt(c.req.query('limit') || '10', 10)
   const isFavorite = c.req.query('is_favorite') === 'true'
   const search = c.req.query('search')
+  const sortBy = c.req.query('sort') || 'created_at' // 'created_at' | 'clicks'
+  const sortOrder = c.req.query('order') || 'desc' // 'asc' | 'desc'
   const offset = (page - 1) * limit
 
   const searchCondition = search 
@@ -136,41 +139,135 @@ router.get('/', async (c) => {
 
   const whereCondition = and(...conditions)
 
-  const rows = await db
-    .select()
-    .from(urls)
-    .where(whereCondition)
-    .orderBy(desc(urls.created_at))
-    .limit(limit)
-    .offset(offset)
-
   const [totalResult] = await db
     .select({ count: count() })
     .from(urls)
     .where(whereCondition)
 
-  return c.json({
-    data: rows.map((r) => ({
-      id: r.id,
-      short_code: r.short_code,
-      long_url: r.long_url,
-      custom_alias: r.custom_alias,
-      expiration_date: r.expiration_date?.toISOString() ?? null,
-      is_favorite: r.is_favorite,
-      created_at: r.created_at.toISOString(),
-    })),
-    total: totalResult.count,
-    page,
-    limit,
-  })
+  if (sortBy === 'clicks') {
+    // Need to fetch ALL and sort in memory
+    const allRows = await db
+      .select()
+      .from(urls)
+      .where(whereCondition)
+    
+    if (allRows.length === 0) {
+      return c.json({ data: [], total: 0, page, limit })
+    }
+
+    const shortCodes = allRows.map(r => r.short_code)
+    const clicksMap = await getBulkClicks(shortCodes)
+
+    const sortedRows = allRows.sort((a, b) => {
+      const clicksA = clicksMap[a.short_code] || 0
+      const clicksB = clicksMap[b.short_code] || 0
+      if (sortOrder === 'asc') return clicksA - clicksB
+      return clicksB - clicksA
+    })
+
+    const paginatedRows = sortedRows.slice(offset, offset + limit)
+
+    return c.json({
+      data: paginatedRows.map((r) => ({
+        id: r.id,
+        short_code: r.short_code,
+        long_url: r.long_url,
+        custom_alias: r.custom_alias,
+        expiration_date: r.expiration_date?.toISOString() ?? null,
+        is_favorite: r.is_favorite,
+        created_at: r.created_at.toISOString(),
+      })),
+      total: totalResult.count,
+      page,
+      limit,
+    })
+  } else {
+    // Sort by created_at in DB
+    const rows = await db
+      .select()
+      .from(urls)
+      .where(whereCondition)
+      .orderBy(sortOrder === 'asc' ? asc(urls.created_at) : desc(urls.created_at))
+      .limit(limit)
+      .offset(offset)
+
+    return c.json({
+      data: rows.map((r) => ({
+        id: r.id,
+        short_code: r.short_code,
+        long_url: r.long_url,
+        custom_alias: r.custom_alias,
+        expiration_date: r.expiration_date?.toISOString() ?? null,
+        is_favorite: r.is_favorite,
+        created_at: r.created_at.toISOString(),
+      })),
+      total: totalResult.count,
+      page,
+      limit,
+    })
+  }
+})
+
+router.patch('/:short_code', async (c) => {
+  const user = c.get('user')
+  const shortCode = c.req.param('short_code')
+  const body = await c.req.json<{ custom_alias: string }>()
+
+  if (!body.custom_alias) {
+    return c.json({ message: 'custom_alias is required' }, 400)
+  }
+
+  const aliasError = validateAlias(body.custom_alias)
+  if (aliasError) return c.json({ message: aliasError }, 400)
+
+  // Fetch the existing URL first to get its long_url
+  const [existing] = await db
+    .select()
+    .from(urls)
+    .where(and(eq(urls.user_id, user.id), eq(urls.short_code, shortCode)))
+
+  if (!existing) {
+    return c.json({ message: 'Not Found' }, 404)
+  }
+
+  try {
+    const [updated] = await db
+      .update(urls)
+      .set({ 
+        custom_alias: body.custom_alias,
+        short_code: body.custom_alias 
+      })
+      .where(and(eq(urls.user_id, user.id), eq(urls.short_code, shortCode)))
+      .returning()
+
+    if (!updated) return c.json({ message: 'Not Found' }, 404)
+
+    // Clear old cache, set new cache
+    if (shortCode !== body.custom_alias) {
+      await deleteCachedUrl(shortCode)
+    }
+    await setCachedUrl(updated.short_code, {
+      long_url: updated.long_url,
+      expires_at: updated.expiration_date?.toISOString() ?? null,
+    }, updated.expiration_date)
+
+    return c.json({
+      short_code: updated.short_code,
+      long_url: updated.long_url,
+      custom_alias: updated.custom_alias,
+      expiration_date: updated.expiration_date?.toISOString() ?? null,
+    })
+  } catch (err: unknown) {
+    if (isUniqueViolation(err)) {
+      return c.json({ message: 'Custom alias is already taken' }, 409)
+    }
+    throw err
+  }
 })
 
 router.patch('/:short_code/favorite', async (c) => {
   const user = c.get('user')
   const shortCode = c.req.param('short_code')
-  
-  // Also tolerate missing body, just toggle it if missing, or require it?
-  // Let's require it.
   const body = await c.req.json<{ is_favorite: boolean }>()
 
   const [updated] = await db
@@ -193,6 +290,9 @@ router.delete('/:short_code', async (c) => {
     .returning()
 
   if (!deleted) return c.json({ message: 'Not Found' }, 404)
+  
+  await deleteCachedUrl(shortCode)
+  
   return c.json({ message: 'Deleted successfully' })
 })
 

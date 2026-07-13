@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { CalendarIcon, Link2 } from 'lucide-react'
@@ -33,6 +33,12 @@ export function CreateSnipDialog({ children, onSuccess }: { children?: React.Rea
   const [time, setTime] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  React.useEffect(() => {
+    const handleOpen = () => setOpen(true)
+    window.addEventListener('openCreateSnip', handleOpen)
+    return () => window.removeEventListener('openCreateSnip', handleOpen)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

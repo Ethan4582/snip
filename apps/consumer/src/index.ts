@@ -75,10 +75,17 @@ async function startPolling() {
   
   while (true) {
     try {
-      const result = await redis.xreadgroup(
-        GROUP_NAME, CONSUMER_NAME, STREAM_NAME, '>',
-        { count: BATCH_SIZE, blockMS: POLL_INTERVAL_MS }
-      )
+      const response = await fetch(`${UPSTASH_REDIS_REST_URL}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${UPSTASH_REDIS_REST_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(["XREADGROUP", "GROUP", GROUP_NAME, CONSUMER_NAME, "COUNT", BATCH_SIZE, "BLOCK", POLL_INTERVAL_MS, "STREAMS", STREAM_NAME, ">"])
+      });
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+      const result = data.result;
 
       if (result && result.length > 0) {
         const stream = result[0]

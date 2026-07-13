@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { Sidebar } from '@/components/Sidebar'
 import { supabase } from '@/lib/supabase'
+import { CommandMenu } from '@/components/CommandMenu'
 
 export default function DashboardLayout({
   children,
@@ -30,6 +31,7 @@ export default function DashboardLayout({
       <main className="flex-1 w-full min-w-0">
         {children}
       </main>
+      <CommandMenu />
     </div>
   )
 }

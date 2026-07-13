@@ -39,3 +39,7 @@ export async function setCachedUrl(shortCode: string, value: CachedUrl, expiresA
     : 86400
   await redis.set(`url:${shortCode}`, value, { ex: ttlSeconds })
 }
+
+export async function deleteCachedUrl(shortCode: string) {
+  await redis.del(`url:${shortCode}`)
+}
