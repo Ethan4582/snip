@@ -1,23 +1,55 @@
+var __create = Object.create;
 var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
 
-// .wrangler/tmp/bundle-LZdFzh/strip-cf-connecting-ip-header.js
+// .wrangler/tmp/bundle-JCEX8l/strip-cf-connecting-ip-header.js
 function stripCfConnectingIPHeader(input, init) {
   const request = new Request(input, init);
   request.headers.delete("CF-Connecting-IP");
   return request;
 }
-__name(stripCfConnectingIPHeader, "stripCfConnectingIPHeader");
-globalThis.fetch = new Proxy(globalThis.fetch, {
-  apply(target, thisArg, argArray) {
-    return Reflect.apply(target, thisArg, [
-      stripCfConnectingIPHeader.apply(null, argArray)
-    ]);
+var init_strip_cf_connecting_ip_header = __esm({
+  ".wrangler/tmp/bundle-JCEX8l/strip-cf-connecting-ip-header.js"() {
+    "use strict";
+    __name(stripCfConnectingIPHeader, "stripCfConnectingIPHeader");
+    globalThis.fetch = new Proxy(globalThis.fetch, {
+      apply(target, thisArg, argArray) {
+        return Reflect.apply(target, thisArg, [
+          stripCfConnectingIPHeader.apply(null, argArray)
+        ]);
+      }
+    });
   }
 });
 
@@ -25,14 +57,12 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
 function createNotImplementedError(name) {
   return new Error(`[unenv] ${name} is not implemented yet!`);
 }
-__name(createNotImplementedError, "createNotImplementedError");
 function notImplemented(name) {
   const fn = /* @__PURE__ */ __name(() => {
     throw createNotImplementedError(name);
   }, "fn");
   return Object.assign(fn, { __unenv__: true });
 }
-__name(notImplemented, "notImplemented");
 function notImplementedClass(name) {
   return class {
     __unenv__ = true;
@@ -41,857 +71,2514 @@ function notImplementedClass(name) {
     }
   };
 }
-__name(notImplementedClass, "notImplementedClass");
+var init_utils = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/_internal/utils.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    __name(createNotImplementedError, "createNotImplementedError");
+    __name(notImplemented, "notImplemented");
+    __name(notImplementedClass, "notImplementedClass");
+  }
+});
 
 // ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/perf_hooks/performance.mjs
-var _timeOrigin = globalThis.performance?.timeOrigin ?? Date.now();
-var _performanceNow = globalThis.performance?.now ? globalThis.performance.now.bind(globalThis.performance) : () => Date.now() - _timeOrigin;
-var nodeTiming = {
-  name: "node",
-  entryType: "node",
-  startTime: 0,
-  duration: 0,
-  nodeStart: 0,
-  v8Start: 0,
-  bootstrapComplete: 0,
-  environment: 0,
-  loopStart: 0,
-  loopExit: 0,
-  idleTime: 0,
-  uvMetricsInfo: {
-    loopCount: 0,
-    events: 0,
-    eventsWaiting: 0
-  },
-  detail: void 0,
-  toJSON() {
-    return this;
-  }
-};
-var PerformanceEntry = class {
-  __unenv__ = true;
-  detail;
-  entryType = "event";
-  name;
-  startTime;
-  constructor(name, options) {
-    this.name = name;
-    this.startTime = options?.startTime || _performanceNow();
-    this.detail = options?.detail;
-  }
-  get duration() {
-    return _performanceNow() - this.startTime;
-  }
-  toJSON() {
-    return {
-      name: this.name,
-      entryType: this.entryType,
-      startTime: this.startTime,
-      duration: this.duration,
-      detail: this.detail
-    };
-  }
-};
-__name(PerformanceEntry, "PerformanceEntry");
-var PerformanceMark = /* @__PURE__ */ __name(class PerformanceMark2 extends PerformanceEntry {
-  entryType = "mark";
-  constructor() {
-    super(...arguments);
-  }
-  get duration() {
-    return 0;
-  }
-}, "PerformanceMark");
-var PerformanceMeasure = class extends PerformanceEntry {
-  entryType = "measure";
-};
-__name(PerformanceMeasure, "PerformanceMeasure");
-var PerformanceResourceTiming = class extends PerformanceEntry {
-  entryType = "resource";
-  serverTiming = [];
-  connectEnd = 0;
-  connectStart = 0;
-  decodedBodySize = 0;
-  domainLookupEnd = 0;
-  domainLookupStart = 0;
-  encodedBodySize = 0;
-  fetchStart = 0;
-  initiatorType = "";
-  name = "";
-  nextHopProtocol = "";
-  redirectEnd = 0;
-  redirectStart = 0;
-  requestStart = 0;
-  responseEnd = 0;
-  responseStart = 0;
-  secureConnectionStart = 0;
-  startTime = 0;
-  transferSize = 0;
-  workerStart = 0;
-  responseStatus = 0;
-};
-__name(PerformanceResourceTiming, "PerformanceResourceTiming");
-var PerformanceObserverEntryList = class {
-  __unenv__ = true;
-  getEntries() {
-    return [];
-  }
-  getEntriesByName(_name, _type) {
-    return [];
-  }
-  getEntriesByType(type) {
-    return [];
-  }
-};
-__name(PerformanceObserverEntryList, "PerformanceObserverEntryList");
-var Performance = class {
-  __unenv__ = true;
-  timeOrigin = _timeOrigin;
-  eventCounts = /* @__PURE__ */ new Map();
-  _entries = [];
-  _resourceTimingBufferSize = 0;
-  navigation = void 0;
-  timing = void 0;
-  timerify(_fn, _options) {
-    throw createNotImplementedError("Performance.timerify");
-  }
-  get nodeTiming() {
-    return nodeTiming;
-  }
-  eventLoopUtilization() {
-    return {};
-  }
-  markResourceTiming() {
-    return new PerformanceResourceTiming("");
-  }
-  onresourcetimingbufferfull = null;
-  now() {
-    if (this.timeOrigin === _timeOrigin) {
-      return _performanceNow();
-    }
-    return Date.now() - this.timeOrigin;
-  }
-  clearMarks(markName) {
-    this._entries = markName ? this._entries.filter((e) => e.name !== markName) : this._entries.filter((e) => e.entryType !== "mark");
-  }
-  clearMeasures(measureName) {
-    this._entries = measureName ? this._entries.filter((e) => e.name !== measureName) : this._entries.filter((e) => e.entryType !== "measure");
-  }
-  clearResourceTimings() {
-    this._entries = this._entries.filter((e) => e.entryType !== "resource" || e.entryType !== "navigation");
-  }
-  getEntries() {
-    return this._entries;
-  }
-  getEntriesByName(name, type) {
-    return this._entries.filter((e) => e.name === name && (!type || e.entryType === type));
-  }
-  getEntriesByType(type) {
-    return this._entries.filter((e) => e.entryType === type);
-  }
-  mark(name, options) {
-    const entry = new PerformanceMark(name, options);
-    this._entries.push(entry);
-    return entry;
-  }
-  measure(measureName, startOrMeasureOptions, endMark) {
-    let start;
-    let end;
-    if (typeof startOrMeasureOptions === "string") {
-      start = this.getEntriesByName(startOrMeasureOptions, "mark")[0]?.startTime;
-      end = this.getEntriesByName(endMark, "mark")[0]?.startTime;
-    } else {
-      start = Number.parseFloat(startOrMeasureOptions?.start) || this.now();
-      end = Number.parseFloat(startOrMeasureOptions?.end) || this.now();
-    }
-    const entry = new PerformanceMeasure(measureName, {
-      startTime: start,
-      detail: {
-        start,
-        end
+var _timeOrigin, _performanceNow, nodeTiming, PerformanceEntry, PerformanceMark, PerformanceMeasure, PerformanceResourceTiming, PerformanceObserverEntryList, Performance, PerformanceObserver, performance2;
+var init_performance = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/perf_hooks/performance.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    init_utils();
+    _timeOrigin = globalThis.performance?.timeOrigin ?? Date.now();
+    _performanceNow = globalThis.performance?.now ? globalThis.performance.now.bind(globalThis.performance) : () => Date.now() - _timeOrigin;
+    nodeTiming = {
+      name: "node",
+      entryType: "node",
+      startTime: 0,
+      duration: 0,
+      nodeStart: 0,
+      v8Start: 0,
+      bootstrapComplete: 0,
+      environment: 0,
+      loopStart: 0,
+      loopExit: 0,
+      idleTime: 0,
+      uvMetricsInfo: {
+        loopCount: 0,
+        events: 0,
+        eventsWaiting: 0
+      },
+      detail: void 0,
+      toJSON() {
+        return this;
       }
-    });
-    this._entries.push(entry);
-    return entry;
+    };
+    PerformanceEntry = class {
+      __unenv__ = true;
+      detail;
+      entryType = "event";
+      name;
+      startTime;
+      constructor(name, options) {
+        this.name = name;
+        this.startTime = options?.startTime || _performanceNow();
+        this.detail = options?.detail;
+      }
+      get duration() {
+        return _performanceNow() - this.startTime;
+      }
+      toJSON() {
+        return {
+          name: this.name,
+          entryType: this.entryType,
+          startTime: this.startTime,
+          duration: this.duration,
+          detail: this.detail
+        };
+      }
+    };
+    __name(PerformanceEntry, "PerformanceEntry");
+    PerformanceMark = /* @__PURE__ */ __name(class PerformanceMark2 extends PerformanceEntry {
+      entryType = "mark";
+      constructor() {
+        super(...arguments);
+      }
+      get duration() {
+        return 0;
+      }
+    }, "PerformanceMark");
+    PerformanceMeasure = class extends PerformanceEntry {
+      entryType = "measure";
+    };
+    __name(PerformanceMeasure, "PerformanceMeasure");
+    PerformanceResourceTiming = class extends PerformanceEntry {
+      entryType = "resource";
+      serverTiming = [];
+      connectEnd = 0;
+      connectStart = 0;
+      decodedBodySize = 0;
+      domainLookupEnd = 0;
+      domainLookupStart = 0;
+      encodedBodySize = 0;
+      fetchStart = 0;
+      initiatorType = "";
+      name = "";
+      nextHopProtocol = "";
+      redirectEnd = 0;
+      redirectStart = 0;
+      requestStart = 0;
+      responseEnd = 0;
+      responseStart = 0;
+      secureConnectionStart = 0;
+      startTime = 0;
+      transferSize = 0;
+      workerStart = 0;
+      responseStatus = 0;
+    };
+    __name(PerformanceResourceTiming, "PerformanceResourceTiming");
+    PerformanceObserverEntryList = class {
+      __unenv__ = true;
+      getEntries() {
+        return [];
+      }
+      getEntriesByName(_name, _type) {
+        return [];
+      }
+      getEntriesByType(type) {
+        return [];
+      }
+    };
+    __name(PerformanceObserverEntryList, "PerformanceObserverEntryList");
+    Performance = class {
+      __unenv__ = true;
+      timeOrigin = _timeOrigin;
+      eventCounts = /* @__PURE__ */ new Map();
+      _entries = [];
+      _resourceTimingBufferSize = 0;
+      navigation = void 0;
+      timing = void 0;
+      timerify(_fn, _options) {
+        throw createNotImplementedError("Performance.timerify");
+      }
+      get nodeTiming() {
+        return nodeTiming;
+      }
+      eventLoopUtilization() {
+        return {};
+      }
+      markResourceTiming() {
+        return new PerformanceResourceTiming("");
+      }
+      onresourcetimingbufferfull = null;
+      now() {
+        if (this.timeOrigin === _timeOrigin) {
+          return _performanceNow();
+        }
+        return Date.now() - this.timeOrigin;
+      }
+      clearMarks(markName) {
+        this._entries = markName ? this._entries.filter((e) => e.name !== markName) : this._entries.filter((e) => e.entryType !== "mark");
+      }
+      clearMeasures(measureName) {
+        this._entries = measureName ? this._entries.filter((e) => e.name !== measureName) : this._entries.filter((e) => e.entryType !== "measure");
+      }
+      clearResourceTimings() {
+        this._entries = this._entries.filter((e) => e.entryType !== "resource" || e.entryType !== "navigation");
+      }
+      getEntries() {
+        return this._entries;
+      }
+      getEntriesByName(name, type) {
+        return this._entries.filter((e) => e.name === name && (!type || e.entryType === type));
+      }
+      getEntriesByType(type) {
+        return this._entries.filter((e) => e.entryType === type);
+      }
+      mark(name, options) {
+        const entry = new PerformanceMark(name, options);
+        this._entries.push(entry);
+        return entry;
+      }
+      measure(measureName, startOrMeasureOptions, endMark) {
+        let start;
+        let end;
+        if (typeof startOrMeasureOptions === "string") {
+          start = this.getEntriesByName(startOrMeasureOptions, "mark")[0]?.startTime;
+          end = this.getEntriesByName(endMark, "mark")[0]?.startTime;
+        } else {
+          start = Number.parseFloat(startOrMeasureOptions?.start) || this.now();
+          end = Number.parseFloat(startOrMeasureOptions?.end) || this.now();
+        }
+        const entry = new PerformanceMeasure(measureName, {
+          startTime: start,
+          detail: {
+            start,
+            end
+          }
+        });
+        this._entries.push(entry);
+        return entry;
+      }
+      setResourceTimingBufferSize(maxSize) {
+        this._resourceTimingBufferSize = maxSize;
+      }
+      addEventListener(type, listener, options) {
+        throw createNotImplementedError("Performance.addEventListener");
+      }
+      removeEventListener(type, listener, options) {
+        throw createNotImplementedError("Performance.removeEventListener");
+      }
+      dispatchEvent(event) {
+        throw createNotImplementedError("Performance.dispatchEvent");
+      }
+      toJSON() {
+        return this;
+      }
+    };
+    __name(Performance, "Performance");
+    PerformanceObserver = class {
+      __unenv__ = true;
+      _callback = null;
+      constructor(callback) {
+        this._callback = callback;
+      }
+      takeRecords() {
+        return [];
+      }
+      disconnect() {
+        throw createNotImplementedError("PerformanceObserver.disconnect");
+      }
+      observe(options) {
+        throw createNotImplementedError("PerformanceObserver.observe");
+      }
+      bind(fn) {
+        return fn;
+      }
+      runInAsyncScope(fn, thisArg, ...args) {
+        return fn.call(thisArg, ...args);
+      }
+      asyncId() {
+        return 0;
+      }
+      triggerAsyncId() {
+        return 0;
+      }
+      emitDestroy() {
+        return this;
+      }
+    };
+    __name(PerformanceObserver, "PerformanceObserver");
+    __publicField(PerformanceObserver, "supportedEntryTypes", []);
+    performance2 = globalThis.performance && "addEventListener" in globalThis.performance ? globalThis.performance : new Performance();
   }
-  setResourceTimingBufferSize(maxSize) {
-    this._resourceTimingBufferSize = maxSize;
+});
+
+// ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/perf_hooks.mjs
+var init_perf_hooks = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/perf_hooks.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    init_performance();
   }
-  addEventListener(type, listener, options) {
-    throw createNotImplementedError("Performance.addEventListener");
-  }
-  removeEventListener(type, listener, options) {
-    throw createNotImplementedError("Performance.removeEventListener");
-  }
-  dispatchEvent(event) {
-    throw createNotImplementedError("Performance.dispatchEvent");
-  }
-  toJSON() {
-    return this;
-  }
-};
-__name(Performance, "Performance");
-var PerformanceObserver = class {
-  __unenv__ = true;
-  _callback = null;
-  constructor(callback) {
-    this._callback = callback;
-  }
-  takeRecords() {
-    return [];
-  }
-  disconnect() {
-    throw createNotImplementedError("PerformanceObserver.disconnect");
-  }
-  observe(options) {
-    throw createNotImplementedError("PerformanceObserver.observe");
-  }
-  bind(fn) {
-    return fn;
-  }
-  runInAsyncScope(fn, thisArg, ...args) {
-    return fn.call(thisArg, ...args);
-  }
-  asyncId() {
-    return 0;
-  }
-  triggerAsyncId() {
-    return 0;
-  }
-  emitDestroy() {
-    return this;
-  }
-};
-__name(PerformanceObserver, "PerformanceObserver");
-__publicField(PerformanceObserver, "supportedEntryTypes", []);
-var performance2 = globalThis.performance && "addEventListener" in globalThis.performance ? globalThis.performance : new Performance();
+});
 
 // ../../node_modules/.pnpm/@cloudflare+unenv-preset@2._2c4214a3e65f1ca7ba28eec8e1e8cbc6/node_modules/@cloudflare/unenv-preset/dist/runtime/polyfill/performance.mjs
-globalThis.performance = performance2;
-globalThis.Performance = Performance;
-globalThis.PerformanceEntry = PerformanceEntry;
-globalThis.PerformanceMark = PerformanceMark;
-globalThis.PerformanceMeasure = PerformanceMeasure;
-globalThis.PerformanceObserver = PerformanceObserver;
-globalThis.PerformanceObserverEntryList = PerformanceObserverEntryList;
-globalThis.PerformanceResourceTiming = PerformanceResourceTiming;
+var init_performance2 = __esm({
+  "../../node_modules/.pnpm/@cloudflare+unenv-preset@2._2c4214a3e65f1ca7ba28eec8e1e8cbc6/node_modules/@cloudflare/unenv-preset/dist/runtime/polyfill/performance.mjs"() {
+    init_perf_hooks();
+    globalThis.performance = performance2;
+    globalThis.Performance = Performance;
+    globalThis.PerformanceEntry = PerformanceEntry;
+    globalThis.PerformanceMark = PerformanceMark;
+    globalThis.PerformanceMeasure = PerformanceMeasure;
+    globalThis.PerformanceObserver = PerformanceObserver;
+    globalThis.PerformanceObserverEntryList = PerformanceObserverEntryList;
+    globalThis.PerformanceResourceTiming = PerformanceResourceTiming;
+  }
+});
+
+// ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/mock/noop.mjs
+var noop_default;
+var init_noop = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/mock/noop.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    noop_default = Object.assign(() => {
+    }, { __unenv__: true });
+  }
+});
 
 // ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/console.mjs
 import { Writable } from "node:stream";
-
-// ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/mock/noop.mjs
-var noop_default = Object.assign(() => {
-}, { __unenv__: true });
-
-// ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/console.mjs
-var _console = globalThis.console;
-var _ignoreErrors = true;
-var _stderr = new Writable();
-var _stdout = new Writable();
-var log = _console?.log ?? noop_default;
-var info = _console?.info ?? log;
-var trace = _console?.trace ?? info;
-var debug = _console?.debug ?? log;
-var table = _console?.table ?? log;
-var error = _console?.error ?? log;
-var warn = _console?.warn ?? error;
-var createTask = _console?.createTask ?? /* @__PURE__ */ notImplemented("console.createTask");
-var clear = _console?.clear ?? noop_default;
-var count = _console?.count ?? noop_default;
-var countReset = _console?.countReset ?? noop_default;
-var dir = _console?.dir ?? noop_default;
-var dirxml = _console?.dirxml ?? noop_default;
-var group = _console?.group ?? noop_default;
-var groupEnd = _console?.groupEnd ?? noop_default;
-var groupCollapsed = _console?.groupCollapsed ?? noop_default;
-var profile = _console?.profile ?? noop_default;
-var profileEnd = _console?.profileEnd ?? noop_default;
-var time = _console?.time ?? noop_default;
-var timeEnd = _console?.timeEnd ?? noop_default;
-var timeLog = _console?.timeLog ?? noop_default;
-var timeStamp = _console?.timeStamp ?? noop_default;
-var Console = _console?.Console ?? /* @__PURE__ */ notImplementedClass("console.Console");
-var _times = /* @__PURE__ */ new Map();
-var _stdoutErrorHandler = noop_default;
-var _stderrErrorHandler = noop_default;
+var _console, _ignoreErrors, _stderr, _stdout, log, info, trace, debug, table, error, warn, createTask, clear, count, countReset, dir, dirxml, group, groupEnd, groupCollapsed, profile, profileEnd, time, timeEnd, timeLog, timeStamp, Console, _times, _stdoutErrorHandler, _stderrErrorHandler;
+var init_console = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/console.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    init_noop();
+    init_utils();
+    _console = globalThis.console;
+    _ignoreErrors = true;
+    _stderr = new Writable();
+    _stdout = new Writable();
+    log = _console?.log ?? noop_default;
+    info = _console?.info ?? log;
+    trace = _console?.trace ?? info;
+    debug = _console?.debug ?? log;
+    table = _console?.table ?? log;
+    error = _console?.error ?? log;
+    warn = _console?.warn ?? error;
+    createTask = _console?.createTask ?? /* @__PURE__ */ notImplemented("console.createTask");
+    clear = _console?.clear ?? noop_default;
+    count = _console?.count ?? noop_default;
+    countReset = _console?.countReset ?? noop_default;
+    dir = _console?.dir ?? noop_default;
+    dirxml = _console?.dirxml ?? noop_default;
+    group = _console?.group ?? noop_default;
+    groupEnd = _console?.groupEnd ?? noop_default;
+    groupCollapsed = _console?.groupCollapsed ?? noop_default;
+    profile = _console?.profile ?? noop_default;
+    profileEnd = _console?.profileEnd ?? noop_default;
+    time = _console?.time ?? noop_default;
+    timeEnd = _console?.timeEnd ?? noop_default;
+    timeLog = _console?.timeLog ?? noop_default;
+    timeStamp = _console?.timeStamp ?? noop_default;
+    Console = _console?.Console ?? /* @__PURE__ */ notImplementedClass("console.Console");
+    _times = /* @__PURE__ */ new Map();
+    _stdoutErrorHandler = noop_default;
+    _stderrErrorHandler = noop_default;
+  }
+});
 
 // ../../node_modules/.pnpm/@cloudflare+unenv-preset@2._2c4214a3e65f1ca7ba28eec8e1e8cbc6/node_modules/@cloudflare/unenv-preset/dist/runtime/node/console.mjs
-var workerdConsole = globalThis["console"];
-var {
-  assert,
-  clear: clear2,
-  // @ts-expect-error undocumented public API
-  context,
-  count: count2,
-  countReset: countReset2,
-  // @ts-expect-error undocumented public API
-  createTask: createTask2,
-  debug: debug2,
-  dir: dir2,
-  dirxml: dirxml2,
-  error: error2,
-  group: group2,
-  groupCollapsed: groupCollapsed2,
-  groupEnd: groupEnd2,
-  info: info2,
-  log: log2,
-  profile: profile2,
-  profileEnd: profileEnd2,
-  table: table2,
-  time: time2,
-  timeEnd: timeEnd2,
-  timeLog: timeLog2,
-  timeStamp: timeStamp2,
-  trace: trace2,
-  warn: warn2
-} = workerdConsole;
-Object.assign(workerdConsole, {
-  Console,
-  _ignoreErrors,
-  _stderr,
-  _stderrErrorHandler,
-  _stdout,
-  _stdoutErrorHandler,
-  _times
+var workerdConsole, assert, clear2, context, count2, countReset2, createTask2, debug2, dir2, dirxml2, error2, group2, groupCollapsed2, groupEnd2, info2, log2, profile2, profileEnd2, table2, time2, timeEnd2, timeLog2, timeStamp2, trace2, warn2, console_default;
+var init_console2 = __esm({
+  "../../node_modules/.pnpm/@cloudflare+unenv-preset@2._2c4214a3e65f1ca7ba28eec8e1e8cbc6/node_modules/@cloudflare/unenv-preset/dist/runtime/node/console.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    init_console();
+    workerdConsole = globalThis["console"];
+    ({
+      assert,
+      clear: clear2,
+      context: (
+        // @ts-expect-error undocumented public API
+        context
+      ),
+      count: count2,
+      countReset: countReset2,
+      createTask: (
+        // @ts-expect-error undocumented public API
+        createTask2
+      ),
+      debug: debug2,
+      dir: dir2,
+      dirxml: dirxml2,
+      error: error2,
+      group: group2,
+      groupCollapsed: groupCollapsed2,
+      groupEnd: groupEnd2,
+      info: info2,
+      log: log2,
+      profile: profile2,
+      profileEnd: profileEnd2,
+      table: table2,
+      time: time2,
+      timeEnd: timeEnd2,
+      timeLog: timeLog2,
+      timeStamp: timeStamp2,
+      trace: trace2,
+      warn: warn2
+    } = workerdConsole);
+    Object.assign(workerdConsole, {
+      Console,
+      _ignoreErrors,
+      _stderr,
+      _stderrErrorHandler,
+      _stdout,
+      _stdoutErrorHandler,
+      _times
+    });
+    console_default = workerdConsole;
+  }
 });
-var console_default = workerdConsole;
 
 // ../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/_virtual_unenv_global_polyfill-@cloudflare-unenv-preset-node-console
-globalThis.console = console_default;
+var init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console = __esm({
+  "../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/_virtual_unenv_global_polyfill-@cloudflare-unenv-preset-node-console"() {
+    init_console2();
+    globalThis.console = console_default;
+  }
+});
 
 // ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/process/hrtime.mjs
-var hrtime = /* @__PURE__ */ Object.assign(/* @__PURE__ */ __name(function hrtime2(startTime) {
-  const now = Date.now();
-  const seconds = Math.trunc(now / 1e3);
-  const nanos = now % 1e3 * 1e6;
-  if (startTime) {
-    let diffSeconds = seconds - startTime[0];
-    let diffNanos = nanos - startTime[0];
-    if (diffNanos < 0) {
-      diffSeconds = diffSeconds - 1;
-      diffNanos = 1e9 + diffNanos;
-    }
-    return [diffSeconds, diffNanos];
+var hrtime;
+var init_hrtime = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/process/hrtime.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    hrtime = /* @__PURE__ */ Object.assign(/* @__PURE__ */ __name(function hrtime2(startTime) {
+      const now = Date.now();
+      const seconds = Math.trunc(now / 1e3);
+      const nanos = now % 1e3 * 1e6;
+      if (startTime) {
+        let diffSeconds = seconds - startTime[0];
+        let diffNanos = nanos - startTime[0];
+        if (diffNanos < 0) {
+          diffSeconds = diffSeconds - 1;
+          diffNanos = 1e9 + diffNanos;
+        }
+        return [diffSeconds, diffNanos];
+      }
+      return [seconds, nanos];
+    }, "hrtime"), { bigint: /* @__PURE__ */ __name(function bigint() {
+      return BigInt(Date.now() * 1e6);
+    }, "bigint") });
   }
-  return [seconds, nanos];
-}, "hrtime"), { bigint: /* @__PURE__ */ __name(function bigint() {
-  return BigInt(Date.now() * 1e6);
-}, "bigint") });
-
-// ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/process/process.mjs
-import { EventEmitter } from "node:events";
+});
 
 // ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/tty/read-stream.mjs
 import { Socket } from "node:net";
-var ReadStream = class extends Socket {
-  fd;
-  constructor(fd) {
-    super();
-    this.fd = fd;
+var ReadStream;
+var init_read_stream = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/tty/read-stream.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    ReadStream = class extends Socket {
+      fd;
+      constructor(fd) {
+        super();
+        this.fd = fd;
+      }
+      isRaw = false;
+      setRawMode(mode) {
+        this.isRaw = mode;
+        return this;
+      }
+      isTTY = false;
+    };
+    __name(ReadStream, "ReadStream");
   }
-  isRaw = false;
-  setRawMode(mode) {
-    this.isRaw = mode;
-    return this;
-  }
-  isTTY = false;
-};
-__name(ReadStream, "ReadStream");
+});
 
 // ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/tty/write-stream.mjs
 import { Socket as Socket2 } from "node:net";
-var WriteStream = class extends Socket2 {
-  fd;
-  constructor(fd) {
-    super();
-    this.fd = fd;
+var WriteStream;
+var init_write_stream = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/tty/write-stream.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    WriteStream = class extends Socket2 {
+      fd;
+      constructor(fd) {
+        super();
+        this.fd = fd;
+      }
+      clearLine(dir3, callback) {
+        callback && callback();
+        return false;
+      }
+      clearScreenDown(callback) {
+        callback && callback();
+        return false;
+      }
+      cursorTo(x, y, callback) {
+        callback && typeof callback === "function" && callback();
+        return false;
+      }
+      moveCursor(dx, dy, callback) {
+        callback && callback();
+        return false;
+      }
+      getColorDepth(env2) {
+        return 1;
+      }
+      hasColors(count3, env2) {
+        return false;
+      }
+      getWindowSize() {
+        return [this.columns, this.rows];
+      }
+      columns = 80;
+      rows = 24;
+      isTTY = false;
+    };
+    __name(WriteStream, "WriteStream");
   }
-  clearLine(dir3, callback) {
-    callback && callback();
-    return false;
+});
+
+// ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/tty.mjs
+var init_tty = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/tty.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    init_read_stream();
+    init_write_stream();
   }
-  clearScreenDown(callback) {
-    callback && callback();
-    return false;
-  }
-  cursorTo(x, y, callback) {
-    callback && typeof callback === "function" && callback();
-    return false;
-  }
-  moveCursor(dx, dy, callback) {
-    callback && callback();
-    return false;
-  }
-  getColorDepth(env2) {
-    return 1;
-  }
-  hasColors(count3, env2) {
-    return false;
-  }
-  getWindowSize() {
-    return [this.columns, this.rows];
-  }
-  columns = 80;
-  rows = 24;
-  isTTY = false;
-};
-__name(WriteStream, "WriteStream");
+});
 
 // ../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/process/process.mjs
-var Process = class extends EventEmitter {
-  env;
-  hrtime;
-  nextTick;
-  constructor(impl) {
-    super();
-    this.env = impl.env;
-    this.hrtime = impl.hrtime;
-    this.nextTick = impl.nextTick;
-    for (const prop of [...Object.getOwnPropertyNames(Process.prototype), ...Object.getOwnPropertyNames(EventEmitter.prototype)]) {
-      const value = this[prop];
-      if (typeof value === "function") {
-        this[prop] = value.bind(this);
+import { EventEmitter } from "node:events";
+var Process;
+var init_process = __esm({
+  "../../node_modules/.pnpm/unenv@2.0.0-rc.14/node_modules/unenv/dist/runtime/node/internal/process/process.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    init_tty();
+    init_utils();
+    Process = class extends EventEmitter {
+      env;
+      hrtime;
+      nextTick;
+      constructor(impl) {
+        super();
+        this.env = impl.env;
+        this.hrtime = impl.hrtime;
+        this.nextTick = impl.nextTick;
+        for (const prop of [...Object.getOwnPropertyNames(Process.prototype), ...Object.getOwnPropertyNames(EventEmitter.prototype)]) {
+          const value = this[prop];
+          if (typeof value === "function") {
+            this[prop] = value.bind(this);
+          }
+        }
       }
-    }
+      emitWarning(warning, type, code) {
+        console.warn(`${code ? `[${code}] ` : ""}${type ? `${type}: ` : ""}${warning}`);
+      }
+      emit(...args) {
+        return super.emit(...args);
+      }
+      listeners(eventName) {
+        return super.listeners(eventName);
+      }
+      #stdin;
+      #stdout;
+      #stderr;
+      get stdin() {
+        return this.#stdin ??= new ReadStream(0);
+      }
+      get stdout() {
+        return this.#stdout ??= new WriteStream(1);
+      }
+      get stderr() {
+        return this.#stderr ??= new WriteStream(2);
+      }
+      #cwd = "/";
+      chdir(cwd2) {
+        this.#cwd = cwd2;
+      }
+      cwd() {
+        return this.#cwd;
+      }
+      arch = "";
+      platform = "";
+      argv = [];
+      argv0 = "";
+      execArgv = [];
+      execPath = "";
+      title = "";
+      pid = 200;
+      ppid = 100;
+      get version() {
+        return "";
+      }
+      get versions() {
+        return {};
+      }
+      get allowedNodeEnvironmentFlags() {
+        return /* @__PURE__ */ new Set();
+      }
+      get sourceMapsEnabled() {
+        return false;
+      }
+      get debugPort() {
+        return 0;
+      }
+      get throwDeprecation() {
+        return false;
+      }
+      get traceDeprecation() {
+        return false;
+      }
+      get features() {
+        return {};
+      }
+      get release() {
+        return {};
+      }
+      get connected() {
+        return false;
+      }
+      get config() {
+        return {};
+      }
+      get moduleLoadList() {
+        return [];
+      }
+      constrainedMemory() {
+        return 0;
+      }
+      availableMemory() {
+        return 0;
+      }
+      uptime() {
+        return 0;
+      }
+      resourceUsage() {
+        return {};
+      }
+      ref() {
+      }
+      unref() {
+      }
+      umask() {
+        throw createNotImplementedError("process.umask");
+      }
+      getBuiltinModule() {
+        return void 0;
+      }
+      getActiveResourcesInfo() {
+        throw createNotImplementedError("process.getActiveResourcesInfo");
+      }
+      exit() {
+        throw createNotImplementedError("process.exit");
+      }
+      reallyExit() {
+        throw createNotImplementedError("process.reallyExit");
+      }
+      kill() {
+        throw createNotImplementedError("process.kill");
+      }
+      abort() {
+        throw createNotImplementedError("process.abort");
+      }
+      dlopen() {
+        throw createNotImplementedError("process.dlopen");
+      }
+      setSourceMapsEnabled() {
+        throw createNotImplementedError("process.setSourceMapsEnabled");
+      }
+      loadEnvFile() {
+        throw createNotImplementedError("process.loadEnvFile");
+      }
+      disconnect() {
+        throw createNotImplementedError("process.disconnect");
+      }
+      cpuUsage() {
+        throw createNotImplementedError("process.cpuUsage");
+      }
+      setUncaughtExceptionCaptureCallback() {
+        throw createNotImplementedError("process.setUncaughtExceptionCaptureCallback");
+      }
+      hasUncaughtExceptionCaptureCallback() {
+        throw createNotImplementedError("process.hasUncaughtExceptionCaptureCallback");
+      }
+      initgroups() {
+        throw createNotImplementedError("process.initgroups");
+      }
+      openStdin() {
+        throw createNotImplementedError("process.openStdin");
+      }
+      assert() {
+        throw createNotImplementedError("process.assert");
+      }
+      binding() {
+        throw createNotImplementedError("process.binding");
+      }
+      permission = { has: /* @__PURE__ */ notImplemented("process.permission.has") };
+      report = {
+        directory: "",
+        filename: "",
+        signal: "SIGUSR2",
+        compact: false,
+        reportOnFatalError: false,
+        reportOnSignal: false,
+        reportOnUncaughtException: false,
+        getReport: /* @__PURE__ */ notImplemented("process.report.getReport"),
+        writeReport: /* @__PURE__ */ notImplemented("process.report.writeReport")
+      };
+      finalization = {
+        register: /* @__PURE__ */ notImplemented("process.finalization.register"),
+        unregister: /* @__PURE__ */ notImplemented("process.finalization.unregister"),
+        registerBeforeExit: /* @__PURE__ */ notImplemented("process.finalization.registerBeforeExit")
+      };
+      memoryUsage = Object.assign(() => ({
+        arrayBuffers: 0,
+        rss: 0,
+        external: 0,
+        heapTotal: 0,
+        heapUsed: 0
+      }), { rss: () => 0 });
+      mainModule = void 0;
+      domain = void 0;
+      send = void 0;
+      exitCode = void 0;
+      channel = void 0;
+      getegid = void 0;
+      geteuid = void 0;
+      getgid = void 0;
+      getgroups = void 0;
+      getuid = void 0;
+      setegid = void 0;
+      seteuid = void 0;
+      setgid = void 0;
+      setgroups = void 0;
+      setuid = void 0;
+      _events = void 0;
+      _eventsCount = void 0;
+      _exiting = void 0;
+      _maxListeners = void 0;
+      _debugEnd = void 0;
+      _debugProcess = void 0;
+      _fatalException = void 0;
+      _getActiveHandles = void 0;
+      _getActiveRequests = void 0;
+      _kill = void 0;
+      _preload_modules = void 0;
+      _rawDebug = void 0;
+      _startProfilerIdleNotifier = void 0;
+      _stopProfilerIdleNotifier = void 0;
+      _tickCallback = void 0;
+      _disconnect = void 0;
+      _handleQueue = void 0;
+      _pendingMessage = void 0;
+      _channel = void 0;
+      _send = void 0;
+      _linkedBinding = void 0;
+    };
+    __name(Process, "Process");
   }
-  emitWarning(warning, type, code) {
-    console.warn(`${code ? `[${code}] ` : ""}${type ? `${type}: ` : ""}${warning}`);
-  }
-  emit(...args) {
-    return super.emit(...args);
-  }
-  listeners(eventName) {
-    return super.listeners(eventName);
-  }
-  #stdin;
-  #stdout;
-  #stderr;
-  get stdin() {
-    return this.#stdin ??= new ReadStream(0);
-  }
-  get stdout() {
-    return this.#stdout ??= new WriteStream(1);
-  }
-  get stderr() {
-    return this.#stderr ??= new WriteStream(2);
-  }
-  #cwd = "/";
-  chdir(cwd2) {
-    this.#cwd = cwd2;
-  }
-  cwd() {
-    return this.#cwd;
-  }
-  arch = "";
-  platform = "";
-  argv = [];
-  argv0 = "";
-  execArgv = [];
-  execPath = "";
-  title = "";
-  pid = 200;
-  ppid = 100;
-  get version() {
-    return "";
-  }
-  get versions() {
-    return {};
-  }
-  get allowedNodeEnvironmentFlags() {
-    return /* @__PURE__ */ new Set();
-  }
-  get sourceMapsEnabled() {
-    return false;
-  }
-  get debugPort() {
-    return 0;
-  }
-  get throwDeprecation() {
-    return false;
-  }
-  get traceDeprecation() {
-    return false;
-  }
-  get features() {
-    return {};
-  }
-  get release() {
-    return {};
-  }
-  get connected() {
-    return false;
-  }
-  get config() {
-    return {};
-  }
-  get moduleLoadList() {
-    return [];
-  }
-  constrainedMemory() {
-    return 0;
-  }
-  availableMemory() {
-    return 0;
-  }
-  uptime() {
-    return 0;
-  }
-  resourceUsage() {
-    return {};
-  }
-  ref() {
-  }
-  unref() {
-  }
-  umask() {
-    throw createNotImplementedError("process.umask");
-  }
-  getBuiltinModule() {
-    return void 0;
-  }
-  getActiveResourcesInfo() {
-    throw createNotImplementedError("process.getActiveResourcesInfo");
-  }
-  exit() {
-    throw createNotImplementedError("process.exit");
-  }
-  reallyExit() {
-    throw createNotImplementedError("process.reallyExit");
-  }
-  kill() {
-    throw createNotImplementedError("process.kill");
-  }
-  abort() {
-    throw createNotImplementedError("process.abort");
-  }
-  dlopen() {
-    throw createNotImplementedError("process.dlopen");
-  }
-  setSourceMapsEnabled() {
-    throw createNotImplementedError("process.setSourceMapsEnabled");
-  }
-  loadEnvFile() {
-    throw createNotImplementedError("process.loadEnvFile");
-  }
-  disconnect() {
-    throw createNotImplementedError("process.disconnect");
-  }
-  cpuUsage() {
-    throw createNotImplementedError("process.cpuUsage");
-  }
-  setUncaughtExceptionCaptureCallback() {
-    throw createNotImplementedError("process.setUncaughtExceptionCaptureCallback");
-  }
-  hasUncaughtExceptionCaptureCallback() {
-    throw createNotImplementedError("process.hasUncaughtExceptionCaptureCallback");
-  }
-  initgroups() {
-    throw createNotImplementedError("process.initgroups");
-  }
-  openStdin() {
-    throw createNotImplementedError("process.openStdin");
-  }
-  assert() {
-    throw createNotImplementedError("process.assert");
-  }
-  binding() {
-    throw createNotImplementedError("process.binding");
-  }
-  permission = { has: /* @__PURE__ */ notImplemented("process.permission.has") };
-  report = {
-    directory: "",
-    filename: "",
-    signal: "SIGUSR2",
-    compact: false,
-    reportOnFatalError: false,
-    reportOnSignal: false,
-    reportOnUncaughtException: false,
-    getReport: /* @__PURE__ */ notImplemented("process.report.getReport"),
-    writeReport: /* @__PURE__ */ notImplemented("process.report.writeReport")
-  };
-  finalization = {
-    register: /* @__PURE__ */ notImplemented("process.finalization.register"),
-    unregister: /* @__PURE__ */ notImplemented("process.finalization.unregister"),
-    registerBeforeExit: /* @__PURE__ */ notImplemented("process.finalization.registerBeforeExit")
-  };
-  memoryUsage = Object.assign(() => ({
-    arrayBuffers: 0,
-    rss: 0,
-    external: 0,
-    heapTotal: 0,
-    heapUsed: 0
-  }), { rss: () => 0 });
-  mainModule = void 0;
-  domain = void 0;
-  send = void 0;
-  exitCode = void 0;
-  channel = void 0;
-  getegid = void 0;
-  geteuid = void 0;
-  getgid = void 0;
-  getgroups = void 0;
-  getuid = void 0;
-  setegid = void 0;
-  seteuid = void 0;
-  setgid = void 0;
-  setgroups = void 0;
-  setuid = void 0;
-  _events = void 0;
-  _eventsCount = void 0;
-  _exiting = void 0;
-  _maxListeners = void 0;
-  _debugEnd = void 0;
-  _debugProcess = void 0;
-  _fatalException = void 0;
-  _getActiveHandles = void 0;
-  _getActiveRequests = void 0;
-  _kill = void 0;
-  _preload_modules = void 0;
-  _rawDebug = void 0;
-  _startProfilerIdleNotifier = void 0;
-  _stopProfilerIdleNotifier = void 0;
-  _tickCallback = void 0;
-  _disconnect = void 0;
-  _handleQueue = void 0;
-  _pendingMessage = void 0;
-  _channel = void 0;
-  _send = void 0;
-  _linkedBinding = void 0;
-};
-__name(Process, "Process");
+});
 
 // ../../node_modules/.pnpm/@cloudflare+unenv-preset@2._2c4214a3e65f1ca7ba28eec8e1e8cbc6/node_modules/@cloudflare/unenv-preset/dist/runtime/node/process.mjs
-var globalProcess = globalThis["process"];
-var getBuiltinModule = globalProcess.getBuiltinModule;
-var { exit, platform, nextTick } = getBuiltinModule(
-  "node:process"
-);
-var unenvProcess = new Process({
-  env: globalProcess.env,
-  hrtime,
-  nextTick
+var globalProcess, getBuiltinModule, exit, platform, nextTick, unenvProcess, abort, addListener, allowedNodeEnvironmentFlags, hasUncaughtExceptionCaptureCallback, setUncaughtExceptionCaptureCallback, loadEnvFile, sourceMapsEnabled, arch, argv, argv0, chdir, config, connected, constrainedMemory, availableMemory, cpuUsage, cwd, debugPort, dlopen, disconnect, emit, emitWarning, env, eventNames, execArgv, execPath, finalization, features, getActiveResourcesInfo, getMaxListeners, hrtime3, kill, listeners, listenerCount, memoryUsage, on, off, once, pid, ppid, prependListener, prependOnceListener, rawListeners, release, removeAllListeners, removeListener, report, resourceUsage, setMaxListeners, setSourceMapsEnabled, stderr, stdin, stdout, title, throwDeprecation, traceDeprecation, umask, uptime, version, versions, domain, initgroups, moduleLoadList, reallyExit, openStdin, assert2, binding, send, exitCode, channel, getegid, geteuid, getgid, getgroups, getuid, setegid, seteuid, setgid, setgroups, setuid, permission, mainModule, _events, _eventsCount, _exiting, _maxListeners, _debugEnd, _debugProcess, _fatalException, _getActiveHandles, _getActiveRequests, _kill, _preload_modules, _rawDebug, _startProfilerIdleNotifier, _stopProfilerIdleNotifier, _tickCallback, _disconnect, _handleQueue, _pendingMessage, _channel, _send, _linkedBinding, _process, process_default;
+var init_process2 = __esm({
+  "../../node_modules/.pnpm/@cloudflare+unenv-preset@2._2c4214a3e65f1ca7ba28eec8e1e8cbc6/node_modules/@cloudflare/unenv-preset/dist/runtime/node/process.mjs"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    init_hrtime();
+    init_process();
+    globalProcess = globalThis["process"];
+    getBuiltinModule = globalProcess.getBuiltinModule;
+    ({ exit, platform, nextTick } = getBuiltinModule(
+      "node:process"
+    ));
+    unenvProcess = new Process({
+      env: globalProcess.env,
+      hrtime,
+      nextTick
+    });
+    ({
+      abort,
+      addListener,
+      allowedNodeEnvironmentFlags,
+      hasUncaughtExceptionCaptureCallback,
+      setUncaughtExceptionCaptureCallback,
+      loadEnvFile,
+      sourceMapsEnabled,
+      arch,
+      argv,
+      argv0,
+      chdir,
+      config,
+      connected,
+      constrainedMemory,
+      availableMemory,
+      cpuUsage,
+      cwd,
+      debugPort,
+      dlopen,
+      disconnect,
+      emit,
+      emitWarning,
+      env,
+      eventNames,
+      execArgv,
+      execPath,
+      finalization,
+      features,
+      getActiveResourcesInfo,
+      getMaxListeners,
+      hrtime: hrtime3,
+      kill,
+      listeners,
+      listenerCount,
+      memoryUsage,
+      on,
+      off,
+      once,
+      pid,
+      ppid,
+      prependListener,
+      prependOnceListener,
+      rawListeners,
+      release,
+      removeAllListeners,
+      removeListener,
+      report,
+      resourceUsage,
+      setMaxListeners,
+      setSourceMapsEnabled,
+      stderr,
+      stdin,
+      stdout,
+      title,
+      throwDeprecation,
+      traceDeprecation,
+      umask,
+      uptime,
+      version,
+      versions,
+      domain,
+      initgroups,
+      moduleLoadList,
+      reallyExit,
+      openStdin,
+      assert: assert2,
+      binding,
+      send,
+      exitCode,
+      channel,
+      getegid,
+      geteuid,
+      getgid,
+      getgroups,
+      getuid,
+      setegid,
+      seteuid,
+      setgid,
+      setgroups,
+      setuid,
+      permission,
+      mainModule,
+      _events,
+      _eventsCount,
+      _exiting,
+      _maxListeners,
+      _debugEnd,
+      _debugProcess,
+      _fatalException,
+      _getActiveHandles,
+      _getActiveRequests,
+      _kill,
+      _preload_modules,
+      _rawDebug,
+      _startProfilerIdleNotifier,
+      _stopProfilerIdleNotifier,
+      _tickCallback,
+      _disconnect,
+      _handleQueue,
+      _pendingMessage,
+      _channel,
+      _send,
+      _linkedBinding
+    } = unenvProcess);
+    _process = {
+      abort,
+      addListener,
+      allowedNodeEnvironmentFlags,
+      hasUncaughtExceptionCaptureCallback,
+      setUncaughtExceptionCaptureCallback,
+      loadEnvFile,
+      sourceMapsEnabled,
+      arch,
+      argv,
+      argv0,
+      chdir,
+      config,
+      connected,
+      constrainedMemory,
+      availableMemory,
+      cpuUsage,
+      cwd,
+      debugPort,
+      dlopen,
+      disconnect,
+      emit,
+      emitWarning,
+      env,
+      eventNames,
+      execArgv,
+      execPath,
+      exit,
+      finalization,
+      features,
+      getBuiltinModule,
+      getActiveResourcesInfo,
+      getMaxListeners,
+      hrtime: hrtime3,
+      kill,
+      listeners,
+      listenerCount,
+      memoryUsage,
+      nextTick,
+      on,
+      off,
+      once,
+      pid,
+      platform,
+      ppid,
+      prependListener,
+      prependOnceListener,
+      rawListeners,
+      release,
+      removeAllListeners,
+      removeListener,
+      report,
+      resourceUsage,
+      setMaxListeners,
+      setSourceMapsEnabled,
+      stderr,
+      stdin,
+      stdout,
+      title,
+      throwDeprecation,
+      traceDeprecation,
+      umask,
+      uptime,
+      version,
+      versions,
+      // @ts-expect-error old API
+      domain,
+      initgroups,
+      moduleLoadList,
+      reallyExit,
+      openStdin,
+      assert: assert2,
+      binding,
+      send,
+      exitCode,
+      channel,
+      getegid,
+      geteuid,
+      getgid,
+      getgroups,
+      getuid,
+      setegid,
+      seteuid,
+      setgid,
+      setgroups,
+      setuid,
+      permission,
+      mainModule,
+      _events,
+      _eventsCount,
+      _exiting,
+      _maxListeners,
+      _debugEnd,
+      _debugProcess,
+      _fatalException,
+      _getActiveHandles,
+      _getActiveRequests,
+      _kill,
+      _preload_modules,
+      _rawDebug,
+      _startProfilerIdleNotifier,
+      _stopProfilerIdleNotifier,
+      _tickCallback,
+      _disconnect,
+      _handleQueue,
+      _pendingMessage,
+      _channel,
+      _send,
+      _linkedBinding
+    };
+    process_default = _process;
+  }
 });
-var {
-  abort,
-  addListener,
-  allowedNodeEnvironmentFlags,
-  hasUncaughtExceptionCaptureCallback,
-  setUncaughtExceptionCaptureCallback,
-  loadEnvFile,
-  sourceMapsEnabled,
-  arch,
-  argv,
-  argv0,
-  chdir,
-  config,
-  connected,
-  constrainedMemory,
-  availableMemory,
-  cpuUsage,
-  cwd,
-  debugPort,
-  dlopen,
-  disconnect,
-  emit,
-  emitWarning,
-  env,
-  eventNames,
-  execArgv,
-  execPath,
-  finalization,
-  features,
-  getActiveResourcesInfo,
-  getMaxListeners,
-  hrtime: hrtime3,
-  kill,
-  listeners,
-  listenerCount,
-  memoryUsage,
-  on,
-  off,
-  once,
-  pid,
-  ppid,
-  prependListener,
-  prependOnceListener,
-  rawListeners,
-  release,
-  removeAllListeners,
-  removeListener,
-  report,
-  resourceUsage,
-  setMaxListeners,
-  setSourceMapsEnabled,
-  stderr,
-  stdin,
-  stdout,
-  title,
-  throwDeprecation,
-  traceDeprecation,
-  umask,
-  uptime,
-  version,
-  versions,
-  domain,
-  initgroups,
-  moduleLoadList,
-  reallyExit,
-  openStdin,
-  assert: assert2,
-  binding,
-  send,
-  exitCode,
-  channel,
-  getegid,
-  geteuid,
-  getgid,
-  getgroups,
-  getuid,
-  setegid,
-  seteuid,
-  setgid,
-  setgroups,
-  setuid,
-  permission,
-  mainModule,
-  _events,
-  _eventsCount,
-  _exiting,
-  _maxListeners,
-  _debugEnd,
-  _debugProcess,
-  _fatalException,
-  _getActiveHandles,
-  _getActiveRequests,
-  _kill,
-  _preload_modules,
-  _rawDebug,
-  _startProfilerIdleNotifier,
-  _stopProfilerIdleNotifier,
-  _tickCallback,
-  _disconnect,
-  _handleQueue,
-  _pendingMessage,
-  _channel,
-  _send,
-  _linkedBinding
-} = unenvProcess;
-var _process = {
-  abort,
-  addListener,
-  allowedNodeEnvironmentFlags,
-  hasUncaughtExceptionCaptureCallback,
-  setUncaughtExceptionCaptureCallback,
-  loadEnvFile,
-  sourceMapsEnabled,
-  arch,
-  argv,
-  argv0,
-  chdir,
-  config,
-  connected,
-  constrainedMemory,
-  availableMemory,
-  cpuUsage,
-  cwd,
-  debugPort,
-  dlopen,
-  disconnect,
-  emit,
-  emitWarning,
-  env,
-  eventNames,
-  execArgv,
-  execPath,
-  exit,
-  finalization,
-  features,
-  getBuiltinModule,
-  getActiveResourcesInfo,
-  getMaxListeners,
-  hrtime: hrtime3,
-  kill,
-  listeners,
-  listenerCount,
-  memoryUsage,
-  nextTick,
-  on,
-  off,
-  once,
-  pid,
-  platform,
-  ppid,
-  prependListener,
-  prependOnceListener,
-  rawListeners,
-  release,
-  removeAllListeners,
-  removeListener,
-  report,
-  resourceUsage,
-  setMaxListeners,
-  setSourceMapsEnabled,
-  stderr,
-  stdin,
-  stdout,
-  title,
-  throwDeprecation,
-  traceDeprecation,
-  umask,
-  uptime,
-  version,
-  versions,
-  // @ts-expect-error old API
-  domain,
-  initgroups,
-  moduleLoadList,
-  reallyExit,
-  openStdin,
-  assert: assert2,
-  binding,
-  send,
-  exitCode,
-  channel,
-  getegid,
-  geteuid,
-  getgid,
-  getgroups,
-  getuid,
-  setegid,
-  seteuid,
-  setgid,
-  setgroups,
-  setuid,
-  permission,
-  mainModule,
-  _events,
-  _eventsCount,
-  _exiting,
-  _maxListeners,
-  _debugEnd,
-  _debugProcess,
-  _fatalException,
-  _getActiveHandles,
-  _getActiveRequests,
-  _kill,
-  _preload_modules,
-  _rawDebug,
-  _startProfilerIdleNotifier,
-  _stopProfilerIdleNotifier,
-  _tickCallback,
-  _disconnect,
-  _handleQueue,
-  _pendingMessage,
-  _channel,
-  _send,
-  _linkedBinding
-};
-var process_default = _process;
 
 // ../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/_virtual_unenv_global_polyfill-@cloudflare-unenv-preset-node-process
-globalThis.process = process_default;
+var init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process = __esm({
+  "../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/_virtual_unenv_global_polyfill-@cloudflare-unenv-preset-node-process"() {
+    init_process2();
+    globalThis.process = process_default;
+  }
+});
+
+// wrangler-modules-watch:wrangler:modules-watch
+var init_wrangler_modules_watch = __esm({
+  "wrangler-modules-watch:wrangler:modules-watch"() {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+  }
+});
+
+// ../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/templates/modules-watch-stub.js
+var init_modules_watch_stub = __esm({
+  "../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/templates/modules-watch-stub.js"() {
+    init_wrangler_modules_watch();
+  }
+});
+
+// ../../node_modules/.pnpm/ua-parser-js@1.0.41/node_modules/ua-parser-js/src/ua-parser.js
+var require_ua_parser = __commonJS({
+  "../../node_modules/.pnpm/ua-parser-js@1.0.41/node_modules/ua-parser-js/src/ua-parser.js"(exports, module) {
+    init_strip_cf_connecting_ip_header();
+    init_modules_watch_stub();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+    init_performance2();
+    (function(window2, undefined2) {
+      "use strict";
+      var LIBVERSION = "1.0.41", EMPTY = "", UNKNOWN = "?", FUNC_TYPE = "function", UNDEF_TYPE = "undefined", OBJ_TYPE = "object", STR_TYPE = "string", MAJOR = "major", MODEL = "model", NAME = "name", TYPE = "type", VENDOR = "vendor", VERSION2 = "version", ARCHITECTURE = "architecture", CONSOLE = "console", MOBILE = "mobile", TABLET = "tablet", SMARTTV = "smarttv", WEARABLE = "wearable", EMBEDDED = "embedded", UA_MAX_LENGTH = 500;
+      var AMAZON = "Amazon", APPLE = "Apple", ASUS = "ASUS", BLACKBERRY = "BlackBerry", BROWSER = "Browser", CHROME = "Chrome", EDGE = "Edge", FIREFOX = "Firefox", GOOGLE = "Google", HONOR = "Honor", HUAWEI = "Huawei", LENOVO = "Lenovo", LG = "LG", MICROSOFT = "Microsoft", MOTOROLA = "Motorola", NVIDIA = "Nvidia", ONEPLUS = "OnePlus", OPERA = "Opera", OPPO = "OPPO", SAMSUNG = "Samsung", SHARP = "Sharp", SONY = "Sony", XIAOMI = "Xiaomi", ZEBRA = "Zebra", FACEBOOK = "Facebook", CHROMIUM_OS = "Chromium OS", MAC_OS = "Mac OS", SUFFIX_BROWSER = " Browser";
+      var extend = /* @__PURE__ */ __name(function(regexes2, extensions) {
+        var mergedRegexes = {};
+        for (var i in regexes2) {
+          if (extensions[i] && extensions[i].length % 2 === 0) {
+            mergedRegexes[i] = extensions[i].concat(regexes2[i]);
+          } else {
+            mergedRegexes[i] = regexes2[i];
+          }
+        }
+        return mergedRegexes;
+      }, "extend"), enumerize = /* @__PURE__ */ __name(function(arr) {
+        var enums = {};
+        for (var i = 0; i < arr.length; i++) {
+          enums[arr[i].toUpperCase()] = arr[i];
+        }
+        return enums;
+      }, "enumerize"), has = /* @__PURE__ */ __name(function(str1, str2) {
+        return typeof str1 === STR_TYPE ? lowerize(str2).indexOf(lowerize(str1)) !== -1 : false;
+      }, "has"), lowerize = /* @__PURE__ */ __name(function(str) {
+        return str.toLowerCase();
+      }, "lowerize"), majorize = /* @__PURE__ */ __name(function(version2) {
+        return typeof version2 === STR_TYPE ? version2.replace(/[^\d\.]/g, EMPTY).split(".")[0] : undefined2;
+      }, "majorize"), trim = /* @__PURE__ */ __name(function(str, len) {
+        if (typeof str === STR_TYPE) {
+          str = str.replace(/^\s\s*/, EMPTY);
+          return typeof len === UNDEF_TYPE ? str : str.substring(0, UA_MAX_LENGTH);
+        }
+      }, "trim");
+      var rgxMapper = /* @__PURE__ */ __name(function(ua, arrays) {
+        var i = 0, j, k, p, q, matches, match;
+        while (i < arrays.length && !matches) {
+          var regex = arrays[i], props = arrays[i + 1];
+          j = k = 0;
+          while (j < regex.length && !matches) {
+            if (!regex[j]) {
+              break;
+            }
+            matches = regex[j++].exec(ua);
+            if (!!matches) {
+              for (p = 0; p < props.length; p++) {
+                match = matches[++k];
+                q = props[p];
+                if (typeof q === OBJ_TYPE && q.length > 0) {
+                  if (q.length === 2) {
+                    if (typeof q[1] == FUNC_TYPE) {
+                      this[q[0]] = q[1].call(this, match);
+                    } else {
+                      this[q[0]] = q[1];
+                    }
+                  } else if (q.length === 3) {
+                    if (typeof q[1] === FUNC_TYPE && !(q[1].exec && q[1].test)) {
+                      this[q[0]] = match ? q[1].call(this, match, q[2]) : undefined2;
+                    } else {
+                      this[q[0]] = match ? match.replace(q[1], q[2]) : undefined2;
+                    }
+                  } else if (q.length === 4) {
+                    this[q[0]] = match ? q[3].call(this, match.replace(q[1], q[2])) : undefined2;
+                  }
+                } else {
+                  this[q] = match ? match : undefined2;
+                }
+              }
+            }
+          }
+          i += 2;
+        }
+      }, "rgxMapper"), strMapper = /* @__PURE__ */ __name(function(str, map) {
+        for (var i in map) {
+          if (typeof map[i] === OBJ_TYPE && map[i].length > 0) {
+            for (var j = 0; j < map[i].length; j++) {
+              if (has(map[i][j], str)) {
+                return i === UNKNOWN ? undefined2 : i;
+              }
+            }
+          } else if (has(map[i], str)) {
+            return i === UNKNOWN ? undefined2 : i;
+          }
+        }
+        return map.hasOwnProperty("*") ? map["*"] : str;
+      }, "strMapper");
+      var oldSafariMap = {
+        "1.0": "/8",
+        "1.2": "/1",
+        "1.3": "/3",
+        "2.0": "/412",
+        "2.0.2": "/416",
+        "2.0.3": "/417",
+        "2.0.4": "/419",
+        "?": "/"
+      }, windowsVersionMap = {
+        "ME": "4.90",
+        "NT 3.11": "NT3.51",
+        "NT 4.0": "NT4.0",
+        "2000": "NT 5.0",
+        "XP": ["NT 5.1", "NT 5.2"],
+        "Vista": "NT 6.0",
+        "7": "NT 6.1",
+        "8": "NT 6.2",
+        "8.1": "NT 6.3",
+        "10": ["NT 6.4", "NT 10.0"],
+        "RT": "ARM"
+      };
+      var regexes = {
+        browser: [
+          [
+            /\b(?:crmo|crios)\/([\w\.]+)/i
+            // Chrome for Android/iOS
+          ],
+          [VERSION2, [NAME, "Chrome"]],
+          [
+            /edg(?:e|ios|a)?\/([\w\.]+)/i
+            // Microsoft Edge
+          ],
+          [VERSION2, [NAME, "Edge"]],
+          [
+            // Presto based
+            /(opera mini)\/([-\w\.]+)/i,
+            // Opera Mini
+            /(opera [mobiletab]{3,6})\b.+version\/([-\w\.]+)/i,
+            // Opera Mobi/Tablet
+            /(opera)(?:.+version\/|[\/ ]+)([\w\.]+)/i
+            // Opera
+          ],
+          [NAME, VERSION2],
+          [
+            /opios[\/ ]+([\w\.]+)/i
+            // Opera mini on iphone >= 8.0
+          ],
+          [VERSION2, [NAME, OPERA + " Mini"]],
+          [
+            /\bop(?:rg)?x\/([\w\.]+)/i
+            // Opera GX
+          ],
+          [VERSION2, [NAME, OPERA + " GX"]],
+          [
+            /\bopr\/([\w\.]+)/i
+            // Opera Webkit
+          ],
+          [VERSION2, [NAME, OPERA]],
+          [
+            // Mixed
+            /\bb[ai]*d(?:uhd|[ub]*[aekoprswx]{5,6})[\/ ]?([\w\.]+)/i
+            // Baidu
+          ],
+          [VERSION2, [NAME, "Baidu"]],
+          [
+            /\b(?:mxbrowser|mxios|myie2)\/?([-\w\.]*)\b/i
+            // Maxthon
+          ],
+          [VERSION2, [NAME, "Maxthon"]],
+          [
+            /(kindle)\/([\w\.]+)/i,
+            // Kindle
+            /(lunascape|maxthon|netfront|jasmine|blazer|sleipnir)[\/ ]?([\w\.]*)/i,
+            // Lunascape/Maxthon/Netfront/Jasmine/Blazer/Sleipnir
+            // Trident based
+            /(avant|iemobile|slim(?:browser|boat|jet))[\/ ]?([\d\.]*)/i,
+            // Avant/IEMobile/SlimBrowser/SlimBoat/Slimjet
+            /(?:ms|\()(ie) ([\w\.]+)/i,
+            // Internet Explorer
+            // Blink/Webkit/KHTML based                                         // Flock/RockMelt/Midori/Epiphany/Silk/Skyfire/Bolt/Iron/Iridium/PhantomJS/Bowser/QupZilla/Falkon
+            /(flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron|vivaldi|iridium|phantomjs|bowser|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|duckduckgo|klar|helio|(?=comodo_)?dragon)\/([-\w\.]+)/i,
+            // Rekonq/Puffin/Brave/Whale/QQBrowserLite/QQ//Vivaldi/DuckDuckGo/Klar/Helio/Dragon
+            /(heytap|ovi|115)browser\/([\d\.]+)/i,
+            // HeyTap/Ovi/115
+            /(weibo)__([\d\.]+)/i
+            // Weibo
+          ],
+          [NAME, VERSION2],
+          [
+            /quark(?:pc)?\/([-\w\.]+)/i
+            // Quark
+          ],
+          [VERSION2, [NAME, "Quark"]],
+          [
+            /\bddg\/([\w\.]+)/i
+            // DuckDuckGo
+          ],
+          [VERSION2, [NAME, "DuckDuckGo"]],
+          [
+            /(?:\buc? ?browser|(?:juc.+)ucweb)[\/ ]?([\w\.]+)/i
+            // UCBrowser
+          ],
+          [VERSION2, [NAME, "UC" + BROWSER]],
+          [
+            /microm.+\bqbcore\/([\w\.]+)/i,
+            // WeChat Desktop for Windows Built-in Browser
+            /\bqbcore\/([\w\.]+).+microm/i,
+            /micromessenger\/([\w\.]+)/i
+            // WeChat
+          ],
+          [VERSION2, [NAME, "WeChat"]],
+          [
+            /konqueror\/([\w\.]+)/i
+            // Konqueror
+          ],
+          [VERSION2, [NAME, "Konqueror"]],
+          [
+            /trident.+rv[: ]([\w\.]{1,9})\b.+like gecko/i
+            // IE11
+          ],
+          [VERSION2, [NAME, "IE"]],
+          [
+            /ya(?:search)?browser\/([\w\.]+)/i
+            // Yandex
+          ],
+          [VERSION2, [NAME, "Yandex"]],
+          [
+            /slbrowser\/([\w\.]+)/i
+            // Smart Lenovo Browser
+          ],
+          [VERSION2, [NAME, "Smart Lenovo " + BROWSER]],
+          [
+            /(avast|avg)\/([\w\.]+)/i
+            // Avast/AVG Secure Browser
+          ],
+          [[NAME, /(.+)/, "$1 Secure " + BROWSER], VERSION2],
+          [
+            /\bfocus\/([\w\.]+)/i
+            // Firefox Focus
+          ],
+          [VERSION2, [NAME, FIREFOX + " Focus"]],
+          [
+            /\bopt\/([\w\.]+)/i
+            // Opera Touch
+          ],
+          [VERSION2, [NAME, OPERA + " Touch"]],
+          [
+            /coc_coc\w+\/([\w\.]+)/i
+            // Coc Coc Browser
+          ],
+          [VERSION2, [NAME, "Coc Coc"]],
+          [
+            /dolfin\/([\w\.]+)/i
+            // Dolphin
+          ],
+          [VERSION2, [NAME, "Dolphin"]],
+          [
+            /coast\/([\w\.]+)/i
+            // Opera Coast
+          ],
+          [VERSION2, [NAME, OPERA + " Coast"]],
+          [
+            /miuibrowser\/([\w\.]+)/i
+            // MIUI Browser
+          ],
+          [VERSION2, [NAME, "MIUI" + SUFFIX_BROWSER]],
+          [
+            /fxios\/([\w\.-]+)/i
+            // Firefox for iOS
+          ],
+          [VERSION2, [NAME, FIREFOX]],
+          [
+            /\bqihoobrowser\/?([\w\.]*)/i
+            // 360
+          ],
+          [VERSION2, [NAME, "360"]],
+          [
+            /\b(qq)\/([\w\.]+)/i
+            // QQ
+          ],
+          [[NAME, /(.+)/, "$1Browser"], VERSION2],
+          [
+            /(oculus|sailfish|huawei|vivo|pico)browser\/([\w\.]+)/i
+          ],
+          [[NAME, /(.+)/, "$1" + SUFFIX_BROWSER], VERSION2],
+          [
+            // Oculus/Sailfish/HuaweiBrowser/VivoBrowser/PicoBrowser
+            /samsungbrowser\/([\w\.]+)/i
+            // Samsung Internet
+          ],
+          [VERSION2, [NAME, SAMSUNG + " Internet"]],
+          [
+            /metasr[\/ ]?([\d\.]+)/i
+            // Sogou Explorer
+          ],
+          [VERSION2, [NAME, "Sogou Explorer"]],
+          [
+            /(sogou)mo\w+\/([\d\.]+)/i
+            // Sogou Mobile
+          ],
+          [[NAME, "Sogou Mobile"], VERSION2],
+          [
+            /(electron)\/([\w\.]+) safari/i,
+            // Electron-based App
+            /(tesla)(?: qtcarbrowser|\/(20\d\d\.[-\w\.]+))/i,
+            // Tesla
+            /m?(qqbrowser|2345(?=browser|chrome|explorer))\w*[\/ ]?v?([\w\.]+)/i
+            // QQ/2345
+          ],
+          [NAME, VERSION2],
+          [
+            /(lbbrowser|rekonq)/i,
+            // LieBao Browser/Rekonq
+            /\[(linkedin)app\]/i
+            // LinkedIn App for iOS & Android
+          ],
+          [NAME],
+          [
+            /ome\/([\w\.]+) \w* ?(iron) saf/i,
+            // Iron
+            /ome\/([\w\.]+).+qihu (360)[es]e/i
+            // 360
+          ],
+          [VERSION2, NAME],
+          [
+            // WebView
+            /((?:fban\/fbios|fb_iab\/fb4a)(?!.+fbav)|;fbav\/([\w\.]+);)/i
+            // Facebook App for iOS & Android
+          ],
+          [[NAME, FACEBOOK], VERSION2],
+          [
+            /(Klarna)\/([\w\.]+)/i,
+            // Klarna Shopping Browser for iOS & Android
+            /(kakao(?:talk|story))[\/ ]([\w\.]+)/i,
+            // Kakao App
+            /(naver)\(.*?(\d+\.[\w\.]+).*\)/i,
+            // Naver InApp
+            /(daum)apps[\/ ]([\w\.]+)/i,
+            // Daum App
+            /safari (line)\/([\w\.]+)/i,
+            // Line App for iOS
+            /\b(line)\/([\w\.]+)\/iab/i,
+            // Line App for Android
+            /(alipay)client\/([\w\.]+)/i,
+            // Alipay
+            /(twitter)(?:and| f.+e\/([\w\.]+))/i,
+            // Twitter
+            /(chromium|instagram|snapchat)[\/ ]([-\w\.]+)/i
+            // Chromium/Instagram/Snapchat
+          ],
+          [NAME, VERSION2],
+          [
+            /\bgsa\/([\w\.]+) .*safari\//i
+            // Google Search Appliance on iOS
+          ],
+          [VERSION2, [NAME, "GSA"]],
+          [
+            /musical_ly(?:.+app_?version\/|_)([\w\.]+)/i
+            // TikTok
+          ],
+          [VERSION2, [NAME, "TikTok"]],
+          [
+            /headlesschrome(?:\/([\w\.]+)| )/i
+            // Chrome Headless
+          ],
+          [VERSION2, [NAME, CHROME + " Headless"]],
+          [
+            / wv\).+(chrome)\/([\w\.]+)/i
+            // Chrome WebView
+          ],
+          [[NAME, CHROME + " WebView"], VERSION2],
+          [
+            /droid.+ version\/([\w\.]+)\b.+(?:mobile safari|safari)/i
+            // Android Browser
+          ],
+          [VERSION2, [NAME, "Android " + BROWSER]],
+          [
+            /(chrome|omniweb|arora|[tizenoka]{5} ?browser)\/v?([\w\.]+)/i
+            // Chrome/OmniWeb/Arora/Tizen/Nokia
+          ],
+          [NAME, VERSION2],
+          [
+            /version\/([\w\.\,]+) .*mobile\/\w+ (safari)/i
+            // Mobile Safari
+          ],
+          [VERSION2, [NAME, "Mobile Safari"]],
+          [
+            /version\/([\w(\.|\,)]+) .*(mobile ?safari|safari)/i
+            // Safari & Safari Mobile
+          ],
+          [VERSION2, NAME],
+          [
+            /webkit.+?(mobile ?safari|safari)(\/[\w\.]+)/i
+            // Safari < 3.0
+          ],
+          [NAME, [VERSION2, strMapper, oldSafariMap]],
+          [
+            /(webkit|khtml)\/([\w\.]+)/i
+          ],
+          [NAME, VERSION2],
+          [
+            // Gecko based
+            /(navigator|netscape\d?)\/([-\w\.]+)/i
+            // Netscape
+          ],
+          [[NAME, "Netscape"], VERSION2],
+          [
+            /(wolvic|librewolf)\/([\w\.]+)/i
+            // Wolvic/LibreWolf
+          ],
+          [NAME, VERSION2],
+          [
+            /mobile vr; rv:([\w\.]+)\).+firefox/i
+            // Firefox Reality
+          ],
+          [VERSION2, [NAME, FIREFOX + " Reality"]],
+          [
+            /ekiohf.+(flow)\/([\w\.]+)/i,
+            // Flow
+            /(swiftfox)/i,
+            // Swiftfox
+            /(icedragon|iceweasel|camino|chimera|fennec|maemo browser|minimo|conkeror)[\/ ]?([\w\.\+]+)/i,
+            // IceDragon/Iceweasel/Camino/Chimera/Fennec/Maemo/Minimo/Conkeror
+            /(seamonkey|k-meleon|icecat|iceape|firebird|phoenix|palemoon|basilisk|waterfox)\/([-\w\.]+)$/i,
+            // Firefox/SeaMonkey/K-Meleon/IceCat/IceApe/Firebird/Phoenix
+            /(firefox)\/([\w\.]+)/i,
+            // Other Firefox-based
+            /(mozilla)\/([\w\.]+) .+rv\:.+gecko\/\d+/i,
+            // Mozilla
+            // Other
+            /(amaya|dillo|doris|icab|ladybird|lynx|mosaic|netsurf|obigo|polaris|w3m|(?:go|ice|up)[\. ]?browser)[-\/ ]?v?([\w\.]+)/i,
+            // Polaris/Lynx/Dillo/iCab/Doris/Amaya/w3m/NetSurf/Obigo/Mosaic/Go/ICE/UP.Browser/Ladybird
+            /\b(links) \(([\w\.]+)/i
+            // Links
+          ],
+          [NAME, [VERSION2, /_/g, "."]],
+          [
+            /(cobalt)\/([\w\.]+)/i
+            // Cobalt
+          ],
+          [NAME, [VERSION2, /master.|lts./, ""]]
+        ],
+        cpu: [
+          [
+            /\b((amd|x|x86[-_]?|wow|win)64)\b/i
+            // AMD64 (x64)
+          ],
+          [[ARCHITECTURE, "amd64"]],
+          [
+            /(ia32(?=;))/i,
+            // IA32 (quicktime)
+            /\b((i[346]|x)86)(pc)?\b/i
+            // IA32 (x86)
+          ],
+          [[ARCHITECTURE, "ia32"]],
+          [
+            /\b(aarch64|arm(v?[89]e?l?|_?64))\b/i
+            // ARM64
+          ],
+          [[ARCHITECTURE, "arm64"]],
+          [
+            /\b(arm(v[67])?ht?n?[fl]p?)\b/i
+            // ARMHF
+          ],
+          [[ARCHITECTURE, "armhf"]],
+          [
+            // PocketPC mistakenly identified as PowerPC
+            /( (ce|mobile); ppc;|\/[\w\.]+arm\b)/i
+          ],
+          [[ARCHITECTURE, "arm"]],
+          [
+            /((ppc|powerpc)(64)?)( mac|;|\))/i
+            // PowerPC
+          ],
+          [[ARCHITECTURE, /ower/, EMPTY, lowerize]],
+          [
+            / sun4\w[;\)]/i
+            // SPARC
+          ],
+          [[ARCHITECTURE, "sparc"]],
+          [
+            /\b(avr32|ia64(?=;)|68k(?=\))|\barm(?=v([1-7]|[5-7]1)l?|;|eabi)|(irix|mips|sparc)(64)?\b|pa-risc)/i
+            // IA64, 68K, ARM/64, AVR/32, IRIX/64, MIPS/64, SPARC/64, PA-RISC
+          ],
+          [[ARCHITECTURE, lowerize]]
+        ],
+        device: [
+          [
+            //////////////////////////
+            // MOBILES & TABLETS
+            /////////////////////////
+            // Samsung
+            /\b(sch-i[89]0\d|shw-m380s|sm-[ptx]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i
+          ],
+          [MODEL, [VENDOR, SAMSUNG], [TYPE, TABLET]],
+          [
+            /\b((?:s[cgp]h|gt|sm)-(?![lr])\w+|sc[g-]?[\d]+a?|galaxy nexus)/i,
+            /samsung[- ]((?!sm-[lr])[-\w]+)/i,
+            /sec-(sgh\w+)/i
+          ],
+          [MODEL, [VENDOR, SAMSUNG], [TYPE, MOBILE]],
+          [
+            // Apple
+            /(?:\/|\()(ip(?:hone|od)[\w, ]*)(?:\/|;)/i
+            // iPod/iPhone
+          ],
+          [MODEL, [VENDOR, APPLE], [TYPE, MOBILE]],
+          [
+            /\((ipad);[-\w\),; ]+apple/i,
+            // iPad
+            /applecoremedia\/[\w\.]+ \((ipad)/i,
+            /\b(ipad)\d\d?,\d\d?[;\]].+ios/i
+          ],
+          [MODEL, [VENDOR, APPLE], [TYPE, TABLET]],
+          [
+            /(macintosh);/i
+          ],
+          [MODEL, [VENDOR, APPLE]],
+          [
+            // Sharp
+            /\b(sh-?[altvz]?\d\d[a-ekm]?)/i
+          ],
+          [MODEL, [VENDOR, SHARP], [TYPE, MOBILE]],
+          [
+            // Honor
+            /\b((?:brt|eln|hey2?|gdi|jdn)-a?[lnw]09|(?:ag[rm]3?|jdn2|kob2)-a?[lw]0[09]hn)(?: bui|\)|;)/i
+          ],
+          [MODEL, [VENDOR, HONOR], [TYPE, TABLET]],
+          [
+            /honor([-\w ]+)[;\)]/i
+          ],
+          [MODEL, [VENDOR, HONOR], [TYPE, MOBILE]],
+          [
+            // Huawei
+            /\b((?:ag[rs][2356]?k?|bah[234]?|bg[2o]|bt[kv]|cmr|cpn|db[ry]2?|jdn2|got|kob2?k?|mon|pce|scm|sht?|[tw]gr|vrd)-[ad]?[lw][0125][09]b?|605hw|bg2-u03|(?:gem|fdr|m2|ple|t1)-[7a]0[1-4][lu]|t1-a2[13][lw]|mediapad[\w\. ]*(?= bui|\)))\b(?!.+d\/s)/i
+          ],
+          [MODEL, [VENDOR, HUAWEI], [TYPE, TABLET]],
+          [
+            /(?:huawei)([-\w ]+)[;\)]/i,
+            /\b(nexus 6p|\w{2,4}e?-[atu]?[ln][\dx][012359c][adn]?)\b(?!.+d\/s)/i
+          ],
+          [MODEL, [VENDOR, HUAWEI], [TYPE, MOBILE]],
+          [
+            // Xiaomi
+            /oid[^\)]+; (2[\dbc]{4}(182|283|rp\w{2})[cgl]|m2105k81a?c)(?: bui|\))/i,
+            /\b((?:red)?mi[-_ ]?pad[\w- ]*)(?: bui|\))/i
+            // Mi Pad tablets
+          ],
+          [[MODEL, /_/g, " "], [VENDOR, XIAOMI], [TYPE, TABLET]],
+          [
+            /\b(poco[\w ]+|m2\d{3}j\d\d[a-z]{2})(?: bui|\))/i,
+            // Xiaomi POCO
+            /\b; (\w+) build\/hm\1/i,
+            // Xiaomi Hongmi 'numeric' models
+            /\b(hm[-_ ]?note?[_ ]?(?:\d\w)?) bui/i,
+            // Xiaomi Hongmi
+            /\b(redmi[\-_ ]?(?:note|k)?[\w_ ]+)(?: bui|\))/i,
+            // Xiaomi Redmi
+            /oid[^\)]+; (m?[12][0-389][01]\w{3,6}[c-y])( bui|; wv|\))/i,
+            // Xiaomi Redmi 'numeric' models
+            /\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note lte|max|cc)?[_ ]?(?:\d?\w?)[_ ]?(?:plus|se|lite|pro)?)(?: bui|\))/i,
+            // Xiaomi Mi
+            / ([\w ]+) miui\/v?\d/i
+          ],
+          [[MODEL, /_/g, " "], [VENDOR, XIAOMI], [TYPE, MOBILE]],
+          [
+            // OPPO
+            /; (\w+) bui.+ oppo/i,
+            /\b(cph[12]\d{3}|p(?:af|c[al]|d\w|e[ar])[mt]\d0|x9007|a101op)\b/i
+          ],
+          [MODEL, [VENDOR, OPPO], [TYPE, MOBILE]],
+          [
+            /\b(opd2(\d{3}a?))(?: bui|\))/i
+          ],
+          [MODEL, [VENDOR, strMapper, { "OnePlus": ["304", "403", "203"], "*": OPPO }], [TYPE, TABLET]],
+          [
+            // Vivo
+            /vivo (\w+)(?: bui|\))/i,
+            /\b(v[12]\d{3}\w?[at])(?: bui|;)/i
+          ],
+          [MODEL, [VENDOR, "Vivo"], [TYPE, MOBILE]],
+          [
+            // Realme
+            /\b(rmx[1-3]\d{3})(?: bui|;|\))/i
+          ],
+          [MODEL, [VENDOR, "Realme"], [TYPE, MOBILE]],
+          [
+            // Motorola
+            /\b(milestone|droid(?:[2-4x]| (?:bionic|x2|pro|razr))?:?( 4g)?)\b[\w ]+build\//i,
+            /\bmot(?:orola)?[- ](\w*)/i,
+            /((?:moto(?! 360)[\w\(\) ]+|xt\d{3,4}|nexus 6)(?= bui|\)))/i
+          ],
+          [MODEL, [VENDOR, MOTOROLA], [TYPE, MOBILE]],
+          [
+            /\b(mz60\d|xoom[2 ]{0,2}) build\//i
+          ],
+          [MODEL, [VENDOR, MOTOROLA], [TYPE, TABLET]],
+          [
+            // LG
+            /((?=lg)?[vl]k\-?\d{3}) bui| 3\.[-\w; ]{10}lg?-([06cv9]{3,4})/i
+          ],
+          [MODEL, [VENDOR, LG], [TYPE, TABLET]],
+          [
+            /(lm(?:-?f100[nv]?|-[\w\.]+)(?= bui|\))|nexus [45])/i,
+            /\blg[-e;\/ ]+((?!browser|netcast|android tv|watch)\w+)/i,
+            /\blg-?([\d\w]+) bui/i
+          ],
+          [MODEL, [VENDOR, LG], [TYPE, MOBILE]],
+          [
+            // Lenovo
+            /(ideatab[-\w ]+|602lv|d-42a|a101lv|a2109a|a3500-hv|s[56]000|pb-6505[my]|tb-?x?\d{3,4}(?:f[cu]|xu|[av])|yt\d?-[jx]?\d+[lfmx])( bui|;|\)|\/)/i,
+            /lenovo ?(b[68]0[08]0-?[hf]?|tab(?:[\w- ]+?)|tb[\w-]{6,7})( bui|;|\)|\/)/i
+          ],
+          [MODEL, [VENDOR, LENOVO], [TYPE, TABLET]],
+          [
+            // Nokia
+            /(nokia) (t[12][01])/i
+          ],
+          [VENDOR, MODEL, [TYPE, TABLET]],
+          [
+            /(?:maemo|nokia).*(n900|lumia \d+|rm-\d+)/i,
+            /nokia[-_ ]?(([-\w\. ]*))/i
+          ],
+          [[MODEL, /_/g, " "], [TYPE, MOBILE], [VENDOR, "Nokia"]],
+          [
+            // Google
+            /(pixel (c|tablet))\b/i
+            // Google Pixel C/Tablet
+          ],
+          [MODEL, [VENDOR, GOOGLE], [TYPE, TABLET]],
+          [
+            /droid.+; (pixel[\daxl ]{0,6})(?: bui|\))/i
+            // Google Pixel
+          ],
+          [MODEL, [VENDOR, GOOGLE], [TYPE, MOBILE]],
+          [
+            // Sony
+            /droid.+; (a?\d[0-2]{2}so|[c-g]\d{4}|so[-gl]\w+|xq-a\w[4-7][12])(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i
+          ],
+          [MODEL, [VENDOR, SONY], [TYPE, MOBILE]],
+          [
+            /sony tablet [ps]/i,
+            /\b(?:sony)?sgp\w+(?: bui|\))/i
+          ],
+          [[MODEL, "Xperia Tablet"], [VENDOR, SONY], [TYPE, TABLET]],
+          [
+            // OnePlus
+            / (kb2005|in20[12]5|be20[12][59])\b/i,
+            /(?:one)?(?:plus)? (a\d0\d\d)(?: b|\))/i
+          ],
+          [MODEL, [VENDOR, ONEPLUS], [TYPE, MOBILE]],
+          [
+            // Amazon
+            /(alexa)webm/i,
+            /(kf[a-z]{2}wi|aeo(?!bc)\w\w)( bui|\))/i,
+            // Kindle Fire without Silk / Echo Show
+            /(kf[a-z]+)( bui|\)).+silk\//i
+            // Kindle Fire HD
+          ],
+          [MODEL, [VENDOR, AMAZON], [TYPE, TABLET]],
+          [
+            /((?:sd|kf)[0349hijorstuw]+)( bui|\)).+silk\//i
+            // Fire Phone
+          ],
+          [[MODEL, /(.+)/g, "Fire Phone $1"], [VENDOR, AMAZON], [TYPE, MOBILE]],
+          [
+            // BlackBerry
+            /(playbook);[-\w\),; ]+(rim)/i
+            // BlackBerry PlayBook
+          ],
+          [MODEL, VENDOR, [TYPE, TABLET]],
+          [
+            /\b((?:bb[a-f]|st[hv])100-\d)/i,
+            /\(bb10; (\w+)/i
+            // BlackBerry 10
+          ],
+          [MODEL, [VENDOR, BLACKBERRY], [TYPE, MOBILE]],
+          [
+            // Asus
+            /(?:\b|asus_)(transfo[prime ]{4,10} \w+|eeepc|slider \w+|nexus 7|padfone|p00[cj])/i
+          ],
+          [MODEL, [VENDOR, ASUS], [TYPE, TABLET]],
+          [
+            / (z[bes]6[027][012][km][ls]|zenfone \d\w?)\b/i
+          ],
+          [MODEL, [VENDOR, ASUS], [TYPE, MOBILE]],
+          [
+            // HTC
+            /(nexus 9)/i
+            // HTC Nexus 9
+          ],
+          [MODEL, [VENDOR, "HTC"], [TYPE, TABLET]],
+          [
+            /(htc)[-;_ ]{1,2}([\w ]+(?=\)| bui)|\w+)/i,
+            // HTC
+            // ZTE
+            /(zte)[- ]([\w ]+?)(?: bui|\/|\))/i,
+            /(alcatel|geeksphone|nexian|panasonic(?!(?:;|\.))|sony(?!-bra))[-_ ]?([-\w]*)/i
+            // Alcatel/GeeksPhone/Nexian/Panasonic/Sony
+          ],
+          [VENDOR, [MODEL, /_/g, " "], [TYPE, MOBILE]],
+          [
+            // TCL
+            /droid [\w\.]+; ((?:8[14]9[16]|9(?:0(?:48|60|8[01])|1(?:3[27]|66)|2(?:6[69]|9[56])|466))[gqswx])\w*(\)| bui)/i
+          ],
+          [MODEL, [VENDOR, "TCL"], [TYPE, TABLET]],
+          [
+            // itel
+            /(itel) ((\w+))/i
+          ],
+          [[VENDOR, lowerize], MODEL, [TYPE, strMapper, { "tablet": ["p10001l", "w7001"], "*": "mobile" }]],
+          [
+            // Acer
+            /droid.+; ([ab][1-7]-?[0178a]\d\d?)/i
+          ],
+          [MODEL, [VENDOR, "Acer"], [TYPE, TABLET]],
+          [
+            // Meizu
+            /droid.+; (m[1-5] note) bui/i,
+            /\bmz-([-\w]{2,})/i
+          ],
+          [MODEL, [VENDOR, "Meizu"], [TYPE, MOBILE]],
+          [
+            // Ulefone
+            /; ((?:power )?armor(?:[\w ]{0,8}))(?: bui|\))/i
+          ],
+          [MODEL, [VENDOR, "Ulefone"], [TYPE, MOBILE]],
+          [
+            // Energizer
+            /; (energy ?\w+)(?: bui|\))/i,
+            /; energizer ([\w ]+)(?: bui|\))/i
+          ],
+          [MODEL, [VENDOR, "Energizer"], [TYPE, MOBILE]],
+          [
+            // Cat
+            /; cat (b35);/i,
+            /; (b15q?|s22 flip|s48c|s62 pro)(?: bui|\))/i
+          ],
+          [MODEL, [VENDOR, "Cat"], [TYPE, MOBILE]],
+          [
+            // Smartfren
+            /((?:new )?andromax[\w- ]+)(?: bui|\))/i
+          ],
+          [MODEL, [VENDOR, "Smartfren"], [TYPE, MOBILE]],
+          [
+            // Nothing
+            /droid.+; (a(?:015|06[35]|142p?))/i
+          ],
+          [MODEL, [VENDOR, "Nothing"], [TYPE, MOBILE]],
+          [
+            // Archos
+            /; (x67 5g|tikeasy \w+|ac[1789]\d\w+)( b|\))/i,
+            /archos ?(5|gamepad2?|([\w ]*[t1789]|hello) ?\d+[\w ]*)( b|\))/i
+          ],
+          [MODEL, [VENDOR, "Archos"], [TYPE, TABLET]],
+          [
+            /archos ([\w ]+)( b|\))/i,
+            /; (ac[3-6]\d\w{2,8})( b|\))/i
+          ],
+          [MODEL, [VENDOR, "Archos"], [TYPE, MOBILE]],
+          [
+            // MIXED
+            /(imo) (tab \w+)/i,
+            // IMO
+            /(infinix) (x1101b?)/i
+            // Infinix XPad
+          ],
+          [VENDOR, MODEL, [TYPE, TABLET]],
+          [
+            /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus(?! zenw)|dell|jolla|meizu|motorola|polytron|infinix|tecno|micromax|advan)[-_ ]?([-\w]*)/i,
+            // BlackBerry/BenQ/Palm/Sony-Ericsson/Acer/Asus/Dell/Meizu/Motorola/Polytron/Infinix/Tecno/Micromax/Advan
+            /; (hmd|imo) ([\w ]+?)(?: bui|\))/i,
+            // HMD/IMO
+            /(hp) ([\w ]+\w)/i,
+            // HP iPAQ
+            /(microsoft); (lumia[\w ]+)/i,
+            // Microsoft Lumia
+            /(lenovo)[-_ ]?([-\w ]+?)(?: bui|\)|\/)/i,
+            // Lenovo
+            /(oppo) ?([\w ]+) bui/i
+            // OPPO
+          ],
+          [VENDOR, MODEL, [TYPE, MOBILE]],
+          [
+            /(kobo)\s(ereader|touch)/i,
+            // Kobo
+            /(hp).+(touchpad(?!.+tablet)|tablet)/i,
+            // HP TouchPad
+            /(kindle)\/([\w\.]+)/i,
+            // Kindle
+            /(nook)[\w ]+build\/(\w+)/i,
+            // Nook
+            /(dell) (strea[kpr\d ]*[\dko])/i,
+            // Dell Streak
+            /(le[- ]+pan)[- ]+(\w{1,9}) bui/i,
+            // Le Pan Tablets
+            /(trinity)[- ]*(t\d{3}) bui/i,
+            // Trinity Tablets
+            /(gigaset)[- ]+(q\w{1,9}) bui/i,
+            // Gigaset Tablets
+            /(vodafone) ([\w ]+)(?:\)| bui)/i
+            // Vodafone
+          ],
+          [VENDOR, MODEL, [TYPE, TABLET]],
+          [
+            /(surface duo)/i
+            // Surface Duo
+          ],
+          [MODEL, [VENDOR, MICROSOFT], [TYPE, TABLET]],
+          [
+            /droid [\d\.]+; (fp\du?)(?: b|\))/i
+            // Fairphone
+          ],
+          [MODEL, [VENDOR, "Fairphone"], [TYPE, MOBILE]],
+          [
+            /(u304aa)/i
+            // AT&T
+          ],
+          [MODEL, [VENDOR, "AT&T"], [TYPE, MOBILE]],
+          [
+            /\bsie-(\w*)/i
+            // Siemens
+          ],
+          [MODEL, [VENDOR, "Siemens"], [TYPE, MOBILE]],
+          [
+            /\b(rct\w+) b/i
+            // RCA Tablets
+          ],
+          [MODEL, [VENDOR, "RCA"], [TYPE, TABLET]],
+          [
+            /\b(venue[\d ]{2,7}) b/i
+            // Dell Venue Tablets
+          ],
+          [MODEL, [VENDOR, "Dell"], [TYPE, TABLET]],
+          [
+            /\b(q(?:mv|ta)\w+) b/i
+            // Verizon Tablet
+          ],
+          [MODEL, [VENDOR, "Verizon"], [TYPE, TABLET]],
+          [
+            /\b(?:barnes[& ]+noble |bn[rt])([\w\+ ]*) b/i
+            // Barnes & Noble Tablet
+          ],
+          [MODEL, [VENDOR, "Barnes & Noble"], [TYPE, TABLET]],
+          [
+            /\b(tm\d{3}\w+) b/i
+          ],
+          [MODEL, [VENDOR, "NuVision"], [TYPE, TABLET]],
+          [
+            /\b(k88) b/i
+            // ZTE K Series Tablet
+          ],
+          [MODEL, [VENDOR, "ZTE"], [TYPE, TABLET]],
+          [
+            /\b(nx\d{3}j) b/i
+            // ZTE Nubia
+          ],
+          [MODEL, [VENDOR, "ZTE"], [TYPE, MOBILE]],
+          [
+            /\b(gen\d{3}) b.+49h/i
+            // Swiss GEN Mobile
+          ],
+          [MODEL, [VENDOR, "Swiss"], [TYPE, MOBILE]],
+          [
+            /\b(zur\d{3}) b/i
+            // Swiss ZUR Tablet
+          ],
+          [MODEL, [VENDOR, "Swiss"], [TYPE, TABLET]],
+          [
+            /\b((zeki)?tb.*\b) b/i
+            // Zeki Tablets
+          ],
+          [MODEL, [VENDOR, "Zeki"], [TYPE, TABLET]],
+          [
+            /\b([yr]\d{2}) b/i,
+            /\b(dragon[- ]+touch |dt)(\w{5}) b/i
+            // Dragon Touch Tablet
+          ],
+          [[VENDOR, "Dragon Touch"], MODEL, [TYPE, TABLET]],
+          [
+            /\b(ns-?\w{0,9}) b/i
+            // Insignia Tablets
+          ],
+          [MODEL, [VENDOR, "Insignia"], [TYPE, TABLET]],
+          [
+            /\b((nxa|next)-?\w{0,9}) b/i
+            // NextBook Tablets
+          ],
+          [MODEL, [VENDOR, "NextBook"], [TYPE, TABLET]],
+          [
+            /\b(xtreme\_)?(v(1[045]|2[015]|[3469]0|7[05])) b/i
+            // Voice Xtreme Phones
+          ],
+          [[VENDOR, "Voice"], MODEL, [TYPE, MOBILE]],
+          [
+            /\b(lvtel\-)?(v1[12]) b/i
+            // LvTel Phones
+          ],
+          [[VENDOR, "LvTel"], MODEL, [TYPE, MOBILE]],
+          [
+            /\b(ph-1) /i
+            // Essential PH-1
+          ],
+          [MODEL, [VENDOR, "Essential"], [TYPE, MOBILE]],
+          [
+            /\b(v(100md|700na|7011|917g).*\b) b/i
+            // Envizen Tablets
+          ],
+          [MODEL, [VENDOR, "Envizen"], [TYPE, TABLET]],
+          [
+            /\b(trio[-\w\. ]+) b/i
+            // MachSpeed Tablets
+          ],
+          [MODEL, [VENDOR, "MachSpeed"], [TYPE, TABLET]],
+          [
+            /\btu_(1491) b/i
+            // Rotor Tablets
+          ],
+          [MODEL, [VENDOR, "Rotor"], [TYPE, TABLET]],
+          [
+            /((?:tegranote|shield t(?!.+d tv))[\w- ]*?)(?: b|\))/i
+            // Nvidia Tablets
+          ],
+          [MODEL, [VENDOR, NVIDIA], [TYPE, TABLET]],
+          [
+            /(sprint) (\w+)/i
+            // Sprint Phones
+          ],
+          [VENDOR, MODEL, [TYPE, MOBILE]],
+          [
+            /(kin\.[onetw]{3})/i
+            // Microsoft Kin
+          ],
+          [[MODEL, /\./g, " "], [VENDOR, MICROSOFT], [TYPE, MOBILE]],
+          [
+            /droid.+; (cc6666?|et5[16]|mc[239][23]x?|vc8[03]x?)\)/i
+            // Zebra
+          ],
+          [MODEL, [VENDOR, ZEBRA], [TYPE, TABLET]],
+          [
+            /droid.+; (ec30|ps20|tc[2-8]\d[kx])\)/i
+          ],
+          [MODEL, [VENDOR, ZEBRA], [TYPE, MOBILE]],
+          [
+            ///////////////////
+            // SMARTTVS
+            ///////////////////
+            /smart-tv.+(samsung)/i
+            // Samsung
+          ],
+          [VENDOR, [TYPE, SMARTTV]],
+          [
+            /hbbtv.+maple;(\d+)/i
+          ],
+          [[MODEL, /^/, "SmartTV"], [VENDOR, SAMSUNG], [TYPE, SMARTTV]],
+          [
+            /(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i
+            // LG SmartTV
+          ],
+          [[VENDOR, LG], [TYPE, SMARTTV]],
+          [
+            /(apple) ?tv/i
+            // Apple TV
+          ],
+          [VENDOR, [MODEL, APPLE + " TV"], [TYPE, SMARTTV]],
+          [
+            /crkey/i
+            // Google Chromecast
+          ],
+          [[MODEL, CHROME + "cast"], [VENDOR, GOOGLE], [TYPE, SMARTTV]],
+          [
+            /droid.+aft(\w+)( bui|\))/i
+            // Fire TV
+          ],
+          [MODEL, [VENDOR, AMAZON], [TYPE, SMARTTV]],
+          [
+            /(shield \w+ tv)/i
+            // Nvidia Shield TV
+          ],
+          [MODEL, [VENDOR, NVIDIA], [TYPE, SMARTTV]],
+          [
+            /\(dtv[\);].+(aquos)/i,
+            /(aquos-tv[\w ]+)\)/i
+            // Sharp
+          ],
+          [MODEL, [VENDOR, SHARP], [TYPE, SMARTTV]],
+          [
+            /(bravia[\w ]+)( bui|\))/i
+            // Sony
+          ],
+          [MODEL, [VENDOR, SONY], [TYPE, SMARTTV]],
+          [
+            /(mi(tv|box)-?\w+) bui/i
+            // Xiaomi
+          ],
+          [MODEL, [VENDOR, XIAOMI], [TYPE, SMARTTV]],
+          [
+            /Hbbtv.*(technisat) (.*);/i
+            // TechniSAT
+          ],
+          [VENDOR, MODEL, [TYPE, SMARTTV]],
+          [
+            /\b(roku)[\dx]*[\)\/]((?:dvp-)?[\d\.]*)/i,
+            // Roku
+            /hbbtv\/\d+\.\d+\.\d+ +\([\w\+ ]*; *([\w\d][^;]*);([^;]*)/i
+            // HbbTV devices
+          ],
+          [[VENDOR, trim], [MODEL, trim], [TYPE, SMARTTV]],
+          [
+            // SmartTV from Unidentified Vendors
+            /droid.+; ([\w- ]+) (?:android tv|smart[- ]?tv)/i
+          ],
+          [MODEL, [TYPE, SMARTTV]],
+          [
+            /\b(android tv|smart[- ]?tv|opera tv|tv; rv:)\b/i
+          ],
+          [[TYPE, SMARTTV]],
+          [
+            ///////////////////
+            // CONSOLES
+            ///////////////////
+            /(ouya)/i,
+            // Ouya
+            /(nintendo) ([wids3utch]+)/i
+            // Nintendo
+          ],
+          [VENDOR, MODEL, [TYPE, CONSOLE]],
+          [
+            /droid.+; (shield)( bui|\))/i
+            // Nvidia Portable
+          ],
+          [MODEL, [VENDOR, NVIDIA], [TYPE, CONSOLE]],
+          [
+            /(playstation \w+)/i
+            // Playstation
+          ],
+          [MODEL, [VENDOR, SONY], [TYPE, CONSOLE]],
+          [
+            /\b(xbox(?: one)?(?!; xbox))[\); ]/i
+            // Microsoft Xbox
+          ],
+          [MODEL, [VENDOR, MICROSOFT], [TYPE, CONSOLE]],
+          [
+            ///////////////////
+            // WEARABLES
+            ///////////////////
+            /\b(sm-[lr]\d\d[0156][fnuw]?s?|gear live)\b/i
+            // Samsung Galaxy Watch
+          ],
+          [MODEL, [VENDOR, SAMSUNG], [TYPE, WEARABLE]],
+          [
+            /((pebble))app/i,
+            // Pebble
+            /(asus|google|lg|oppo) ((pixel |zen)?watch[\w ]*)( bui|\))/i
+            // Asus ZenWatch / LG Watch / Pixel Watch
+          ],
+          [VENDOR, MODEL, [TYPE, WEARABLE]],
+          [
+            /(ow(?:19|20)?we?[1-3]{1,3})/i
+            // Oppo Watch
+          ],
+          [MODEL, [VENDOR, OPPO], [TYPE, WEARABLE]],
+          [
+            /(watch)(?: ?os[,\/]|\d,\d\/)[\d\.]+/i
+            // Apple Watch
+          ],
+          [MODEL, [VENDOR, APPLE], [TYPE, WEARABLE]],
+          [
+            /(opwwe\d{3})/i
+            // OnePlus Watch
+          ],
+          [MODEL, [VENDOR, ONEPLUS], [TYPE, WEARABLE]],
+          [
+            /(moto 360)/i
+            // Motorola 360
+          ],
+          [MODEL, [VENDOR, MOTOROLA], [TYPE, WEARABLE]],
+          [
+            /(smartwatch 3)/i
+            // Sony SmartWatch
+          ],
+          [MODEL, [VENDOR, SONY], [TYPE, WEARABLE]],
+          [
+            /(g watch r)/i
+            // LG G Watch R
+          ],
+          [MODEL, [VENDOR, LG], [TYPE, WEARABLE]],
+          [
+            /droid.+; (wt63?0{2,3})\)/i
+          ],
+          [MODEL, [VENDOR, ZEBRA], [TYPE, WEARABLE]],
+          [
+            ///////////////////
+            // XR
+            ///////////////////
+            /droid.+; (glass) \d/i
+            // Google Glass
+          ],
+          [MODEL, [VENDOR, GOOGLE], [TYPE, WEARABLE]],
+          [
+            /(pico) (4|neo3(?: link|pro)?)/i
+            // Pico
+          ],
+          [VENDOR, MODEL, [TYPE, WEARABLE]],
+          [
+            /; (quest( \d| pro)?)/i
+            // Oculus Quest
+          ],
+          [MODEL, [VENDOR, FACEBOOK], [TYPE, WEARABLE]],
+          [
+            ///////////////////
+            // EMBEDDED
+            ///////////////////
+            /(tesla)(?: qtcarbrowser|\/[-\w\.]+)/i
+            // Tesla
+          ],
+          [VENDOR, [TYPE, EMBEDDED]],
+          [
+            /(aeobc)\b/i
+            // Echo Dot
+          ],
+          [MODEL, [VENDOR, AMAZON], [TYPE, EMBEDDED]],
+          [
+            /(homepod).+mac os/i
+            // Apple HomePod
+          ],
+          [MODEL, [VENDOR, APPLE], [TYPE, EMBEDDED]],
+          [
+            /windows iot/i
+          ],
+          [[TYPE, EMBEDDED]],
+          [
+            ////////////////////
+            // MIXED (GENERIC)
+            ///////////////////
+            /droid .+?; ([^;]+?)(?: bui|; wv\)|\) applew).+? mobile safari/i
+            // Android Phones from Unidentified Vendors
+          ],
+          [MODEL, [TYPE, MOBILE]],
+          [
+            /droid .+?; ([^;]+?)(?: bui|\) applew).+?(?! mobile) safari/i
+            // Android Tablets from Unidentified Vendors
+          ],
+          [MODEL, [TYPE, TABLET]],
+          [
+            /\b((tablet|tab)[;\/]|focus\/\d(?!.+mobile))/i
+            // Unidentifiable Tablet
+          ],
+          [[TYPE, TABLET]],
+          [
+            /(phone|mobile(?:[;\/]| [ \w\/\.]*safari)|pda(?=.+windows ce))/i
+            // Unidentifiable Mobile
+          ],
+          [[TYPE, MOBILE]],
+          [
+            /droid .+?; ([\w\. -]+)( bui|\))/i
+            // Generic Android Device
+          ],
+          [MODEL, [VENDOR, "Generic"]]
+        ],
+        engine: [
+          [
+            /windows.+ edge\/([\w\.]+)/i
+            // EdgeHTML
+          ],
+          [VERSION2, [NAME, EDGE + "HTML"]],
+          [
+            /(arkweb)\/([\w\.]+)/i
+            // ArkWeb
+          ],
+          [NAME, VERSION2],
+          [
+            /webkit\/537\.36.+chrome\/(?!27)([\w\.]+)/i
+            // Blink
+          ],
+          [VERSION2, [NAME, "Blink"]],
+          [
+            /(presto)\/([\w\.]+)/i,
+            // Presto
+            /(webkit|trident|netfront|netsurf|amaya|lynx|w3m|goanna|servo)\/([\w\.]+)/i,
+            // WebKit/Trident/NetFront/NetSurf/Amaya/Lynx/w3m/Goanna/Servo
+            /ekioh(flow)\/([\w\.]+)/i,
+            // Flow
+            /(khtml|tasman|links)[\/ ]\(?([\w\.]+)/i,
+            // KHTML/Tasman/Links
+            /(icab)[\/ ]([23]\.[\d\.]+)/i,
+            // iCab
+            /\b(libweb)/i
+            // LibWeb
+          ],
+          [NAME, VERSION2],
+          [
+            /ladybird\//i
+          ],
+          [[NAME, "LibWeb"]],
+          [
+            /rv\:([\w\.]{1,9})\b.+(gecko)/i
+            // Gecko
+          ],
+          [VERSION2, NAME]
+        ],
+        os: [
+          [
+            // Windows
+            /microsoft (windows) (vista|xp)/i
+            // Windows (iTunes)
+          ],
+          [NAME, VERSION2],
+          [
+            /(windows (?:phone(?: os)?|mobile|iot))[\/ ]?([\d\.\w ]*)/i
+            // Windows Phone
+          ],
+          [NAME, [VERSION2, strMapper, windowsVersionMap]],
+          [
+            /windows nt 6\.2; (arm)/i,
+            // Windows RT
+            /windows[\/ ]([ntce\d\. ]+\w)(?!.+xbox)/i,
+            /(?:win(?=3|9|n)|win 9x )([nt\d\.]+)/i
+          ],
+          [[VERSION2, strMapper, windowsVersionMap], [NAME, "Windows"]],
+          [
+            // iOS/macOS
+            /[adehimnop]{4,7}\b(?:.*os ([\w]+) like mac|; opera)/i,
+            // iOS
+            /(?:ios;fbsv\/|iphone.+ios[\/ ])([\d\.]+)/i,
+            /cfnetwork\/.+darwin/i
+          ],
+          [[VERSION2, /_/g, "."], [NAME, "iOS"]],
+          [
+            /(mac os x) ?([\w\. ]*)/i,
+            /(macintosh|mac_powerpc\b)(?!.+haiku)/i
+            // Mac OS
+          ],
+          [[NAME, MAC_OS], [VERSION2, /_/g, "."]],
+          [
+            // Mobile OSes
+            /droid ([\w\.]+)\b.+(android[- ]x86|harmonyos)/i
+            // Android-x86/HarmonyOS
+          ],
+          [VERSION2, NAME],
+          [
+            /(ubuntu) ([\w\.]+) like android/i
+            // Ubuntu Touch
+          ],
+          [[NAME, /(.+)/, "$1 Touch"], VERSION2],
+          [
+            // Android/Blackberry/WebOS/QNX/Bada/RIM/KaiOS/Maemo/MeeGo/S40/Sailfish OS/OpenHarmony/Tizen
+            /(android|bada|blackberry|kaios|maemo|meego|openharmony|qnx|rim tablet os|sailfish|series40|symbian|tizen|webos)\w*[-\/; ]?([\d\.]*)/i
+          ],
+          [NAME, VERSION2],
+          [
+            /\(bb(10);/i
+            // BlackBerry 10
+          ],
+          [VERSION2, [NAME, BLACKBERRY]],
+          [
+            /(?:symbian ?os|symbos|s60(?=;)|series ?60)[-\/ ]?([\w\.]*)/i
+            // Symbian
+          ],
+          [VERSION2, [NAME, "Symbian"]],
+          [
+            /mozilla\/[\d\.]+ \((?:mobile|tablet|tv|mobile; [\w ]+); rv:.+ gecko\/([\w\.]+)/i
+            // Firefox OS
+          ],
+          [VERSION2, [NAME, FIREFOX + " OS"]],
+          [
+            /web0s;.+rt(tv)/i,
+            /\b(?:hp)?wos(?:browser)?\/([\w\.]+)/i
+            // WebOS
+          ],
+          [VERSION2, [NAME, "webOS"]],
+          [
+            /watch(?: ?os[,\/]|\d,\d\/)([\d\.]+)/i
+            // watchOS
+          ],
+          [VERSION2, [NAME, "watchOS"]],
+          [
+            // Google Chromecast
+            /crkey\/([\d\.]+)/i
+            // Google Chromecast
+          ],
+          [VERSION2, [NAME, CHROME + "cast"]],
+          [
+            /(cros) [\w]+(?:\)| ([\w\.]+)\b)/i
+            // Chromium OS
+          ],
+          [[NAME, CHROMIUM_OS], VERSION2],
+          [
+            // Smart TVs
+            /panasonic;(viera)/i,
+            // Panasonic Viera
+            /(netrange)mmh/i,
+            // Netrange
+            /(nettv)\/(\d+\.[\w\.]+)/i,
+            // NetTV
+            // Console
+            /(nintendo|playstation) ([wids345portablevuch]+)/i,
+            // Nintendo/Playstation
+            /(xbox); +xbox ([^\);]+)/i,
+            // Microsoft Xbox (360, One, X, S, Series X, Series S)
+            // Other
+            /\b(joli|palm)\b ?(?:os)?\/?([\w\.]*)/i,
+            // Joli/Palm
+            /(mint)[\/\(\) ]?(\w*)/i,
+            // Mint
+            /(mageia|vectorlinux)[; ]/i,
+            // Mageia/VectorLinux
+            /([kxln]?ubuntu|debian|suse|opensuse|gentoo|arch(?= linux)|slackware|fedora|mandriva|centos|pclinuxos|red ?hat|zenwalk|linpus|raspbian|plan 9|minix|risc os|contiki|deepin|manjaro|elementary os|sabayon|linspire)(?: gnu\/linux)?(?: enterprise)?(?:[- ]linux)?(?:-gnu)?[-\/ ]?(?!chrom|package)([-\w\.]*)/i,
+            // Ubuntu/Debian/SUSE/Gentoo/Arch/Slackware/Fedora/Mandriva/CentOS/PCLinuxOS/RedHat/Zenwalk/Linpus/Raspbian/Plan9/Minix/RISCOS/Contiki/Deepin/Manjaro/elementary/Sabayon/Linspire
+            /(hurd|linux)(?: arm\w*| x86\w*| ?)([\w\.]*)/i,
+            // Hurd/Linux
+            /(gnu) ?([\w\.]*)/i,
+            // GNU
+            /\b([-frentopcghs]{0,5}bsd|dragonfly)[\/ ]?(?!amd|[ix346]{1,2}86)([\w\.]*)/i,
+            // FreeBSD/NetBSD/OpenBSD/PC-BSD/GhostBSD/DragonFly
+            /(haiku) (\w+)/i
+            // Haiku
+          ],
+          [NAME, VERSION2],
+          [
+            /(sunos) ?([\w\.\d]*)/i
+            // Solaris
+          ],
+          [[NAME, "Solaris"], VERSION2],
+          [
+            /((?:open)?solaris)[-\/ ]?([\w\.]*)/i,
+            // Solaris
+            /(aix) ((\d)(?=\.|\)| )[\w\.])*/i,
+            // AIX
+            /\b(beos|os\/2|amigaos|morphos|openvms|fuchsia|hp-ux|serenityos)/i,
+            // BeOS/OS2/AmigaOS/MorphOS/OpenVMS/Fuchsia/HP-UX/SerenityOS
+            /(unix) ?([\w\.]*)/i
+            // UNIX
+          ],
+          [NAME, VERSION2]
+        ]
+      };
+      var UAParser2 = /* @__PURE__ */ __name(function(ua, extensions) {
+        if (typeof ua === OBJ_TYPE) {
+          extensions = ua;
+          ua = undefined2;
+        }
+        if (!(this instanceof UAParser2)) {
+          return new UAParser2(ua, extensions).getResult();
+        }
+        var _navigator = typeof window2 !== UNDEF_TYPE && window2.navigator ? window2.navigator : undefined2;
+        var _ua = ua || (_navigator && _navigator.userAgent ? _navigator.userAgent : EMPTY);
+        var _uach = _navigator && _navigator.userAgentData ? _navigator.userAgentData : undefined2;
+        var _rgxmap = extensions ? extend(regexes, extensions) : regexes;
+        var _isSelfNav = _navigator && _navigator.userAgent == _ua;
+        this.getBrowser = function() {
+          var _browser = {};
+          _browser[NAME] = undefined2;
+          _browser[VERSION2] = undefined2;
+          rgxMapper.call(_browser, _ua, _rgxmap.browser);
+          _browser[MAJOR] = majorize(_browser[VERSION2]);
+          if (_isSelfNav && _navigator && _navigator.brave && typeof _navigator.brave.isBrave == FUNC_TYPE) {
+            _browser[NAME] = "Brave";
+          }
+          return _browser;
+        };
+        this.getCPU = function() {
+          var _cpu = {};
+          _cpu[ARCHITECTURE] = undefined2;
+          rgxMapper.call(_cpu, _ua, _rgxmap.cpu);
+          return _cpu;
+        };
+        this.getDevice = function() {
+          var _device = {};
+          _device[VENDOR] = undefined2;
+          _device[MODEL] = undefined2;
+          _device[TYPE] = undefined2;
+          rgxMapper.call(_device, _ua, _rgxmap.device);
+          if (_isSelfNav && !_device[TYPE] && _uach && _uach.mobile) {
+            _device[TYPE] = MOBILE;
+          }
+          if (_isSelfNav && _device[MODEL] == "Macintosh" && _navigator && typeof _navigator.standalone !== UNDEF_TYPE && _navigator.maxTouchPoints && _navigator.maxTouchPoints > 2) {
+            _device[MODEL] = "iPad";
+            _device[TYPE] = TABLET;
+          }
+          return _device;
+        };
+        this.getEngine = function() {
+          var _engine = {};
+          _engine[NAME] = undefined2;
+          _engine[VERSION2] = undefined2;
+          rgxMapper.call(_engine, _ua, _rgxmap.engine);
+          return _engine;
+        };
+        this.getOS = function() {
+          var _os = {};
+          _os[NAME] = undefined2;
+          _os[VERSION2] = undefined2;
+          rgxMapper.call(_os, _ua, _rgxmap.os);
+          if (_isSelfNav && !_os[NAME] && _uach && _uach.platform && _uach.platform != "Unknown") {
+            _os[NAME] = _uach.platform.replace(/chrome os/i, CHROMIUM_OS).replace(/macos/i, MAC_OS);
+          }
+          return _os;
+        };
+        this.getResult = function() {
+          return {
+            ua: this.getUA(),
+            browser: this.getBrowser(),
+            engine: this.getEngine(),
+            os: this.getOS(),
+            device: this.getDevice(),
+            cpu: this.getCPU()
+          };
+        };
+        this.getUA = function() {
+          return _ua;
+        };
+        this.setUA = function(ua2) {
+          _ua = typeof ua2 === STR_TYPE && ua2.length > UA_MAX_LENGTH ? trim(ua2, UA_MAX_LENGTH) : ua2;
+          return this;
+        };
+        this.setUA(_ua);
+        return this;
+      }, "UAParser");
+      UAParser2.VERSION = LIBVERSION;
+      UAParser2.BROWSER = enumerize([NAME, VERSION2, MAJOR]);
+      UAParser2.CPU = enumerize([ARCHITECTURE]);
+      UAParser2.DEVICE = enumerize([MODEL, VENDOR, TYPE, CONSOLE, MOBILE, SMARTTV, TABLET, WEARABLE, EMBEDDED]);
+      UAParser2.ENGINE = UAParser2.OS = enumerize([NAME, VERSION2]);
+      if (typeof exports !== UNDEF_TYPE) {
+        if (typeof module !== UNDEF_TYPE && module.exports) {
+          exports = module.exports = UAParser2;
+        }
+        exports.UAParser = UAParser2;
+      } else {
+        if (typeof define === FUNC_TYPE && define.amd) {
+          define(function() {
+            return UAParser2;
+          });
+        } else if (typeof window2 !== UNDEF_TYPE) {
+          window2.UAParser = UAParser2;
+        }
+      }
+      var $ = typeof window2 !== UNDEF_TYPE && (window2.jQuery || window2.Zepto);
+      if ($ && !$.ua) {
+        var parser = new UAParser2();
+        $.ua = parser.getResult();
+        $.ua.get = function() {
+          return parser.getUA();
+        };
+        $.ua.set = function(ua) {
+          parser.setUA(ua);
+          var result = parser.getResult();
+          for (var prop in result) {
+            $.ua[prop] = result[prop];
+          }
+        };
+      }
+    })(typeof window === "object" ? window : exports);
+  }
+});
+
+// .wrangler/tmp/bundle-JCEX8l/middleware-loader.entry.ts
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
+
+// .wrangler/tmp/bundle-JCEX8l/middleware-insertion-facade.js
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
+
+// src/index.ts
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
+
+// ../../node_modules/.pnpm/@upstash+redis@1.38.0/node_modules/@upstash/redis/cloudflare.mjs
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
+
+// ../../node_modules/.pnpm/@upstash+redis@1.38.0/node_modules/@upstash/redis/chunk-2X4SLXT7.mjs
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
 
 // ../../node_modules/.pnpm/uncrypto@0.1.3/node_modules/uncrypto/dist/crypto.web.mjs
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
 var webCrypto = globalThis.crypto;
 var subtle = webCrypto.subtle;
 
@@ -6029,6 +7716,7 @@ var Redis2 = /* @__PURE__ */ __name(class _Redis extends Redis {
 }, "_Redis");
 
 // src/index.ts
+var import_ua_parser_js = __toESM(require_ua_parser());
 async function publishClickEvent(env2, request, shortCode) {
   try {
     const redis = new Redis2({
@@ -6086,35 +7774,6 @@ __name(errorPage, "errorPage");
 var src_default = {
   async fetch(request, env2, ctx) {
     const url = new URL(request.url);
-    if (url.pathname === "/internal/analytics-write" && request.method === "POST") {
-      const secret = request.headers.get("x-internal-secret");
-      if (!env2.INTERNAL_ANALYTICS_SECRET || secret !== env2.INTERNAL_ANALYTICS_SECRET) {
-        return new Response("Unauthorized", { status: 401 });
-      }
-      try {
-        const events = await request.json();
-        if (Array.isArray(events)) {
-          for (const e of events) {
-            if (env2.ANALYTICS_ENGINE) {
-              env2.ANALYTICS_ENGINE.writeDataPoint({
-                blobs: [
-                  e.short_code || "",
-                  e.country || "Unknown",
-                  e.referrer || "",
-                  e.device_type || "desktop",
-                  e.browser || "unknown"
-                ],
-                doubles: [1],
-                indexes: [e.short_code || ""]
-              });
-            }
-          }
-        }
-        return new Response("OK", { status: 200 });
-      } catch (err) {
-        return new Response("Bad Request", { status: 400 });
-      }
-    }
     const shortCode = url.pathname.slice(1);
     const appUrl = env2.APP_URL || "http://localhost:5173";
     if (!shortCode || shortCode === "") {
@@ -6147,8 +7806,93 @@ var src_default = {
     await env2.URL_CACHE.put(shortCode, JSON.stringify(data), { expirationTtl: ttlSeconds });
     ctx.waitUntil(publishClickEvent(env2, request, shortCode));
     return Response.redirect(data.long_url, 302);
+  },
+  async scheduled(_event, env2, _ctx) {
+    const BATCH_SIZE = 50;
+    const STREAM_NAME = "click-events";
+    const GROUP_NAME = "snap-consumer-group";
+    const CONSUMER_NAME = "edge-cron-consumer";
+    try {
+      const redis = new Redis2({
+        url: env2.UPSTASH_REDIS_REST_URL,
+        token: env2.UPSTASH_REDIS_REST_TOKEN
+      });
+      try {
+        await redis.xgroup(STREAM_NAME, { type: "CREATE", group: GROUP_NAME, id: "0", options: { MKSTREAM: true } });
+      } catch (error3) {
+        if (!error3.message?.includes("BUSYGROUP")) {
+          console.error("Error creating group:", error3);
+        }
+      }
+      const res = await fetch(env2.UPSTASH_REDIS_REST_URL, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${env2.UPSTASH_REDIS_REST_TOKEN}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(["XREADGROUP", "GROUP", GROUP_NAME, CONSUMER_NAME, "COUNT", BATCH_SIZE, "STREAMS", STREAM_NAME, ">"])
+      });
+      const data = await res.json();
+      if (data.error)
+        throw new Error(data.error);
+      const result = data.result;
+      if (result && result.length > 0) {
+        const stream = result[0];
+        const messages = stream[1];
+        if (messages.length > 0) {
+          const parsedEvents = messages.map((msg) => {
+            const id = msg[0];
+            const fields = msg[1];
+            const eventObj = { _id: id };
+            if (!Array.isArray(fields) && typeof fields === "object") {
+              Object.assign(eventObj, fields);
+            } else if (Array.isArray(fields)) {
+              for (let i = 0; i < fields.length; i += 2) {
+                eventObj[fields[i]] = fields[i + 1];
+              }
+            }
+            return eventObj;
+          });
+          let success = true;
+          try {
+            for (const e of parsedEvents) {
+              if (env2.ANALYTICS_ENGINE) {
+                const ua = new import_ua_parser_js.UAParser(e.user_agent || "").getResult();
+                env2.ANALYTICS_ENGINE.writeDataPoint({
+                  blobs: [
+                    e.short_code || "",
+                    e.country || "Unknown",
+                    e.referrer || "",
+                    ua.device.type || "desktop",
+                    ua.browser.name || "unknown"
+                  ],
+                  doubles: [1],
+                  indexes: [e.short_code || ""]
+                });
+              }
+            }
+          } catch (writeErr) {
+            console.error("Error writing to analytics engine", writeErr);
+            success = false;
+          }
+          if (success) {
+            const ids = parsedEvents.map((e) => e._id);
+            await redis.xack(STREAM_NAME, GROUP_NAME, ...ids);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Scheduled error:", err);
+    }
   }
 };
+
+// ../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/templates/middleware/middleware-mock-analytics-engine.ts
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
 
 // wrangler-config:config:middleware/mock-analytics-engine
 var bindings = ["ANALYTICS_ENGINE"];
@@ -6172,6 +7916,11 @@ var analyticsEngine = /* @__PURE__ */ __name(async (request, env2, _ctx, middlew
 var middleware_mock_analytics_engine_default = analyticsEngine;
 
 // ../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
 var drainBody = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env2);
@@ -6190,6 +7939,11 @@ var drainBody = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx
 var middleware_ensure_req_body_drained_default = drainBody;
 
 // ../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
 function reduceError(e) {
   return {
     name: e?.name,
@@ -6212,7 +7966,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-LZdFzh/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-JCEX8l/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_mock_analytics_engine_default,
   middleware_ensure_req_body_drained_default,
@@ -6221,6 +7975,11 @@ var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
 var middleware_insertion_facade_default = src_default;
 
 // ../../node_modules/.pnpm/wrangler@3.114.17_@cloudflare+workers-types@4.20260702.1/node_modules/wrangler/templates/middleware/common.ts
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
+init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
+init_performance2();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
@@ -6245,7 +8004,7 @@ function __facade_invoke__(request, env2, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-LZdFzh/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-JCEX8l/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

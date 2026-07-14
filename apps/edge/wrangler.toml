@@ -15,3 +15,6 @@ APP_URL = "http://localhost:5173"
 [[analytics_engine_datasets]]
 binding = "ANALYTICS_ENGINE"
 dataset = "snap_click_events"
+
+[triggers]
+crons = ["*/1 * * * *"]

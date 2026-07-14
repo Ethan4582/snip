@@ -1,5 +1,7 @@
 packages:
-  - 'apps/*'
+  - 'apps/api'
+  - 'apps/edge'
+  - 'apps/web'
   - 'packages/*'
 
 allowBuilds:

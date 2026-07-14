@@ -1,4 +1,5 @@
 import { Redis } from '@upstash/redis/cloudflare'
+import { UAParser } from 'ua-parser-js'
 
 export interface Env {
   URL_CACHE: KVNamespace
@@ -7,7 +8,6 @@ export interface Env {
   UPSTASH_REDIS_REST_URL: string
   UPSTASH_REDIS_REST_TOKEN: string
   ANALYTICS_ENGINE: any
-  INTERNAL_ANALYTICS_SECRET: string
 }
 
 async function publishClickEvent(env: Env, request: Request, shortCode: string) {
@@ -76,38 +76,6 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url)
 
-    // Handle internal analytics write
-    if (url.pathname === '/internal/analytics-write' && request.method === 'POST') {
-      const secret = request.headers.get('x-internal-secret')
-      if (!env.INTERNAL_ANALYTICS_SECRET || secret !== env.INTERNAL_ANALYTICS_SECRET) {
-        return new Response('Unauthorized', { status: 401 })
-      }
-      
-      try {
-        const events = (await request.json()) as any[]
-        if (Array.isArray(events)) {
-          for (const e of events) {
-            if (env.ANALYTICS_ENGINE) {
-              env.ANALYTICS_ENGINE.writeDataPoint({
-                blobs: [
-                  e.short_code || '',
-                  e.country || 'Unknown',
-                  e.referrer || '',
-                  e.device_type || 'desktop',
-                  e.browser || 'unknown'
-                ],
-                doubles: [1],
-                indexes: [e.short_code || '']
-              })
-            }
-          }
-        }
-        return new Response('OK', { status: 200 })
-      } catch (err) {
-        return new Response('Bad Request', { status: 400 })
-      }
-    }
-
     const shortCode = url.pathname.slice(1)
     const appUrl = env.APP_URL || 'http://localhost:5173'
 
@@ -151,4 +119,93 @@ export default {
     ctx.waitUntil(publishClickEvent(env, request, shortCode))
     return Response.redirect(data.long_url, 302)
   },
+  
+  async scheduled(_event: any, env: Env, _ctx: ExecutionContext) {
+    const BATCH_SIZE = 50
+    const STREAM_NAME = 'click-events'
+    const GROUP_NAME = 'snap-consumer-group'
+    const CONSUMER_NAME = 'edge-cron-consumer'
+    
+    try {
+      const redis = new Redis({
+        url: env.UPSTASH_REDIS_REST_URL,
+        token: env.UPSTASH_REDIS_REST_TOKEN,
+      })
+      
+      // Ensure group exists
+      try {
+        await redis.xgroup(STREAM_NAME, { type: 'CREATE', group: GROUP_NAME, id: '0', options: { MKSTREAM: true } })
+      } catch (error: any) {
+        if (!error.message?.includes('BUSYGROUP')) {
+          console.error('Error creating group:', error)
+        }
+      }
+
+      // Read from stream
+      const res = await fetch(env.UPSTASH_REDIS_REST_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(["XREADGROUP", "GROUP", GROUP_NAME, CONSUMER_NAME, "COUNT", BATCH_SIZE, "STREAMS", STREAM_NAME, ">"])
+      })
+      
+      const data: any = await res.json()
+      if (data.error) throw new Error(data.error)
+      
+      const result = data.result
+      if (result && result.length > 0) {
+        const stream = result[0]
+        const messages = stream[1] as any[]
+        
+        if (messages.length > 0) {
+          const parsedEvents = messages.map(msg => {
+            const id = msg[0]
+            const fields = msg[1]
+            const eventObj: any = { _id: id }
+            if (!Array.isArray(fields) && typeof fields === 'object') {
+              Object.assign(eventObj, fields)
+            } else if (Array.isArray(fields)) {
+              for (let i = 0; i < fields.length; i += 2) {
+                eventObj[fields[i]] = fields[i + 1]
+              }
+            }
+            return eventObj
+          })
+          
+          let success = true
+          try {
+            for (const e of parsedEvents) {
+              if (env.ANALYTICS_ENGINE) {
+                const ua = new UAParser(e.user_agent || '').getResult()
+                env.ANALYTICS_ENGINE.writeDataPoint({
+                  blobs: [
+                    e.short_code || '',
+                    e.country || 'Unknown',
+                    e.referrer || '',
+                    ua.device.type || 'desktop',
+                    ua.browser.name || 'unknown'
+                  ],
+                  doubles: [1],
+                  indexes: [e.short_code || '']
+                })
+              }
+            }
+          } catch (writeErr) {
+            console.error('Error writing to analytics engine', writeErr)
+            success = false
+          }
+          
+          if (success) {
+            const ids: string[] = parsedEvents.map(e => e._id as string)
+            // @ts-ignore
+            await redis.xack(STREAM_NAME, GROUP_NAME, ...ids)
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Scheduled error:', err)
+    }
+  }
 }

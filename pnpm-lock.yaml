@@ -64,31 +64,6 @@ importers:
         specifier: ^5.5.4
         version: 5.9.3
 
-  apps/consumer:
-    dependencies:
-      '@upstash/redis':
-        specifier: ^1.34.3
-        version: 1.38.0
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.6.1
-      ua-parser-js:
-        specifier: ^1.0.38
-        version: 1.0.41
-    devDependencies:
-      '@types/node':
-        specifier: ^22.0.0
-        version: 22.20.1
-      '@types/ua-parser-js':
-        specifier: ^0.7.39
-        version: 0.7.39
-      tsx:
-        specifier: ^4.19.1
-        version: 4.23.0
-      typescript:
-        specifier: ^5.5.4
-        version: 5.9.3
-
   apps/edge:
     dependencies:
       '@upstash/redis':
@@ -97,10 +72,16 @@ importers:
       hono:
         specifier: ^4.6.14
         version: 4.12.29
+      ua-parser-js:
+        specifier: ^1.0.41
+        version: 1.0.41
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241218.0
         version: 4.20260702.1
+      '@types/ua-parser-js':
+        specifier: ^0.7.39
+        version: 0.7.39
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
