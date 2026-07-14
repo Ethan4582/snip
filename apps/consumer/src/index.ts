@@ -114,7 +114,8 @@ async function startPolling() {
           const success = await flushToEdgeWorker(parsedEvents)
           
           if (success) {
-            const ids = parsedEvents.map(e => e._id)
+            const ids: string[] = parsedEvents.map(e => e._id as string)
+            // @ts-ignore: Upstash Redis types for xack rest parameters cause strictness issues
             await redis.xack(STREAM_NAME, GROUP_NAME, ...ids)
             console.log(`Successfully acknowledged ${ids.length} events.`)
           }

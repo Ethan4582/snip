@@ -176,7 +176,16 @@ router.get('/breakdown', async (c) => {
   const user = c.get('user')
   const { from, to } = getDateParams(c)
   const by = c.req.query('by') || 'country'
-  const shortCodes = await getUserShortCodes(user.id)
+  const filterShortCode = c.req.query('short_code')
+  
+  let shortCodes = await getUserShortCodes(user.id)
+  if (filterShortCode && shortCodes.includes(filterShortCode)) {
+    shortCodes = [filterShortCode]
+  } else if (filterShortCode) {
+    // If the short_code doesn't belong to the user
+    return c.json([])
+  }
+
   if (shortCodes.length === 0) return c.json([])
   const fieldMap: Record<string, string> = { country: 'blob2', referrer: 'blob3', device: 'blob4', browser: 'blob5' }
   const field = fieldMap[by] || 'blob2'
