@@ -9,6 +9,7 @@ import L1 from '../../../assets/l1.png'
 import L2 from '../../../assets/l2.png'
 import L3 from '../../../assets/l3.png'
 import L4 from '../../../assets/l4.png'
+import r2 from '../../../assets/r2.png'
 
 export default function HeroSection() {
   const router = useRouter()
@@ -139,7 +140,7 @@ export default function HeroSection() {
       >
         <div className="w-full aspect-[1.7/1] md:aspect-[1.92/1] rounded-2xl border border-gray-200 shadow-2xl overflow-hidden bg-white relative transition-transform duration-500 ease-out hover:shadow-3xl">
           <img 
-            src="https://storage.googleapis.com/download/storage/v1/b/prd-shared-services.firebasestorage.app/o/h2m-assets%2F06004201aefafa88530c2f7e8245aa5933cffc82.png?generation=1783850838670922&alt=media" 
+            src={r2.src} 
             className="absolute inset-0 w-full h-full object-cover object-top" 
             alt="Dashboard Preview" 
           />

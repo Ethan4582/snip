@@ -37,7 +37,7 @@ export default function LandingNavbar() {
         
         <div className="hidden md:flex items-center gap-6">
           <a href="#features" className="font-medium text-gray-700 hover:text-black transition-colors">Features</a>
-          <a href="#docs" className="font-medium text-gray-700 hover:text-black transition-colors">Docs</a>
+          <a href="https://github.com/Ethan4582/snip/blob/main/system_design.md" className="font-medium text-gray-700 hover:text-black transition-colors">Docs</a>
         </div>
         
         <div className="flex items-center gap-3">
