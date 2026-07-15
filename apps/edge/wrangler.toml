@@ -9,7 +9,7 @@ id = "b2f671c466d8403180a3644afe9e614d"
 preview_id = "b2f671c466d8403180a3644afe9e614d"
 
 [vars]
-API_ORIGIN_URL = "http://localhost:3000"
+API_ORIGIN_URL = "https://snap-api-o3sv.onrender.com"
 APP_URL = "http://localhost:5173"
 
 [[analytics_engine_datasets]]
