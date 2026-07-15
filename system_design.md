@@ -1,3 +1,7 @@
+**[Readme](./Readme.md)** | **[System Design](./system_design.md)** | **[Initial Design](./Intial_design.md)**
+
+---
+
 # System Design — Snip
 
 This document walks through how Snip was actually designed, the tradeoffs

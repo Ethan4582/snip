@@ -1,3 +1,6 @@
+**[Readme](./Readme.md)** | **[System Design](./system_design.md)** | **[Initial Design](./Intial_design.md)**
+
+
 # Snip
 
 A production-ready URL shortener with edge redirects and real-time analytics.
@@ -18,11 +21,12 @@ A production-ready URL shortener with edge redirects and real-time analytics.
 
 ## Architecture
 
-<iframe src="https://excalidraw.com/#json=APihXorJWF7IWtyYGSubv,swIdospY7r8b5ManR_P3nA" width="100%" height="500" style="border: none; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);"></iframe>
+
+![Snip banner](./docs/r4.png)
 
 For the full reasoning behind these choices  why Redis Streams instead of
 Kafka, why Analytics Engine instead of ClickHouse, the free-tier tradeoffs,
-CAP considerations, and everything cut from the original design — see
+CAP considerations, and everything cut from the original design  see
 [`system_design.md`](./system_design.md).
 
 
