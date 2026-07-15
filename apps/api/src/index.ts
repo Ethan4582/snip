@@ -47,6 +47,8 @@ app.route('/analytics', analyticsRouter)
 app.route('/account', accountRouter)
 app.route('/internal', internalRouter)
 
+
+
 const port = Number(process.env.PORT ?? 3000)
 console.log(`API listening on port ${port}`)
 
