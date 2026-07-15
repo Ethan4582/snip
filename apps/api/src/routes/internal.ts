@@ -11,7 +11,7 @@ router.use('*', async (c, next) => {
   if (!process.env.INTERNAL_SECRET || secret !== process.env.INTERNAL_SECRET) {
     return c.json({ message: 'Unauthorized' }, 401)
   }
-  await next()
+  return next()
 })
 
 router.post('/cleanup-expired', async (c) => {

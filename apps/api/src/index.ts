@@ -21,7 +21,7 @@ if (process.env.SENTRY_DSN) {
 }
 
 app.use('*', logger())
-app.use('*', async (c, next) => {
+app.use('*', async (_c, next) => {
   try {
     await next()
   } catch (err) {
