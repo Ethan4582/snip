@@ -20,10 +20,10 @@ export async function middleware(request: NextRequest) {
   // Clone original headers so we preserve User-Agent, X-Forwarded-For, etc.
   const headers = new Headers(request.headers)
   
-  // Next.js exposes request.geo on Vercel/Cloudflare edge
-  if (request.geo?.country) {
-    headers.set('cf-ipcountry', request.geo.country)
-  }
+  // Cloudflare automatically sets cf-ipcountry in headers. 
+  // By cloning request.headers, we pass it automatically!
+  const country = request.headers.get('cf-ipcountry')
+  if (country) headers.set('cf-ipcountry', country)
   
   try {
     const response = await fetch(targetUrl, {
