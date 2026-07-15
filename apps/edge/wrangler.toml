@@ -10,7 +10,7 @@ preview_id = "b2f671c466d8403180a3644afe9e614d"
 
 [vars]
 API_ORIGIN_URL = "https://snap-api-o3sv.onrender.com"
-APP_URL = "http://localhost:5173"
+APP_URL = "https://snip.t7blocks.xyz"
 
 [[analytics_engine_datasets]]
 binding = "ANALYTICS_ENGINE"
