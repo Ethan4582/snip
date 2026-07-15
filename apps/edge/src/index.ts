@@ -1,5 +1,6 @@
 import { Redis } from '@upstash/redis/cloudflare'
 import { UAParser } from 'ua-parser-js'
+import { withSentry } from '@sentry/cloudflare'
 
 export interface Env {
   URL_CACHE: KVNamespace
@@ -72,7 +73,7 @@ function errorPage(title: string, message: string, status: number, appUrl: strin
   })
 }
 
-export default {
+const workerConfig = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url)
 
@@ -204,8 +205,31 @@ export default {
           }
         }
       }
+
+      // 2. Trigger expiration cleanup in API
+      try {
+        const cleanupUrl = `${env.API_ORIGIN_URL}/internal/cleanup-expired`
+        const cleanupRes = await fetch(cleanupUrl, {
+          method: 'POST',
+          headers: {
+            'x-internal-secret': (env as any).INTERNAL_SECRET || ''
+          }
+        })
+        if (!cleanupRes.ok) {
+          console.error('API Cleanup failed:', await cleanupRes.text())
+        }
+      } catch (cleanupErr) {
+        console.error('API Cleanup request failed:', cleanupErr)
+      }
+
     } catch (err) {
       console.error('Scheduled error:', err)
+      throw err // Let Sentry catch it
     }
   }
 }
+
+export default withSentry(
+  env => env.SENTRY_DSN,
+  workerConfig
+)
