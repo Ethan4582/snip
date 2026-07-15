@@ -4,7 +4,10 @@ import { useRouter } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import { supabase } from '@/lib/supabase'
 import { StatCard } from '@/components/StatCard'
-import { SnipsTable, SnipRow } from '@/components/SnipsTable'
+import { SnipsTable } from '@/components/SnipsTable'
+import type { Url } from '@snip/shared'
+
+type SnipRow = Url & { clicks?: number }
 import { StatCardSkeleton } from '@/components/skeletons/StatCardSkeleton'
 import { TableSkeleton } from '@/components/skeletons/TableRowSkeleton'
 import { Star, TrendingUp, MousePointerClick } from 'lucide-react'
@@ -104,7 +107,7 @@ export default function FavoritesPage() {
             </div>
           </div>
         ) : (
-          <SnipsTable data={urls} onDataChange={fetchData} />
+          <SnipsTable isFavorite={true} />
         )}
       </Card>
     </div>

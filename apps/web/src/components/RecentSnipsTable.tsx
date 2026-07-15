@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { apiFetch } from '@/lib/api'
+
 import { EditSnipDialog } from './EditSnipDialog'
 import { DeleteSnipDialog } from './DeleteSnipDialog'
 

@@ -20,7 +20,7 @@ export default function AllSnipsPage() {
         </div>
       </div>
       
-      <SnipsTable title="Your Links" />
+      <SnipsTable />
     </div>
   )
 }

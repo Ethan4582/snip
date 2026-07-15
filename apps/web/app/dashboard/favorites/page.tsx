@@ -20,7 +20,7 @@ export default function FavoritesPage() {
         </div>
       </div>
       
-      <SnipsTable title="Favorite Links" isFavorite={true} />
+      <SnipsTable isFavorite={true} />
     </div>
   )
 }

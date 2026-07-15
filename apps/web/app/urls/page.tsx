@@ -5,7 +5,10 @@ import { apiFetch } from '@/lib/api'
 import { supabase } from '@/lib/supabase'
 import { StatCard } from '@/components/StatCard'
 import { SearchBar } from '@/components/SearchBar'
-import { SnipsTable, SnipRow } from '@/components/SnipsTable'
+import { SnipsTable } from '@/components/SnipsTable'
+import type { Url } from '@snip/shared'
+
+type SnipRow = Url & { clicks?: number }
 import { StatCardSkeleton } from '@/components/skeletons/StatCardSkeleton'
 import { TableSkeleton } from '@/components/skeletons/TableRowSkeleton'
 import { MousePointerClick, Link2, CalendarPlus } from 'lucide-react'
@@ -139,7 +142,7 @@ function AllSnipsContent() {
           </div>
         ) : (
           <>
-            <SnipsTable data={urls} onDataChange={fetchData} />
+            <SnipsTable />
             {totalPages > 1 && (
               <div className="flex justify-center items-center mt-6 gap-2">
                 <Button 

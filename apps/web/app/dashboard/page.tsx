@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiFetch } from '@/lib/api'
 import { supabase } from '@/lib/supabase'
@@ -16,7 +16,7 @@ import { StatCardSkeleton } from '@/components/skeletons/StatCardSkeleton'
 import { ChartSkeleton } from '@/components/skeletons/ChartSkeleton'
 import { BreakdownCardSkeleton } from '@/components/skeletons/BreakdownCardSkeleton'
 import { TableSkeleton } from '@/components/skeletons/TableSkeleton'
-import { format, subDays } from 'date-fns'
+import { subDays } from 'date-fns'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -29,7 +29,7 @@ export default function Dashboard() {
   const [devices, setDevices] = useState([])
   const [topLinks, setTopLinks] = useState([])
   const [recentSnips, setRecentSnips] = useState<Url[]>([])
-  const hasFetched = useRef(false)
+
 
   const [dateRange, setDateRange] = useState({ 
     from: subDays(new Date(), 30), 
@@ -192,7 +192,7 @@ export default function Dashboard() {
 
       {/* Tables Row */}
       <div className="grid grid-cols-1">
-        <RecentSnipsTable data={recentSnips} />
+        <RecentSnipsTable data={recentSnips as any} />
       </div>
     </div>
   )

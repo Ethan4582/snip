@@ -1,8 +1,8 @@
 "use client"
 import { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
+
 import { Input } from '@/components/ui/input'
 import { format } from 'date-fns'
 import { Copy, Star, Search, BarChart2, Edit, MoreVertical, Link2, ChevronsUpDown, ArrowUp, ArrowDown, Trash2 } from 'lucide-react'
@@ -24,7 +24,7 @@ import { EditSnipDialog } from './EditSnipDialog'
 import { DeleteSnipDialog } from './DeleteSnipDialog'
 
 interface SnipsTableProps {
-  title: string
+
   isFavorite?: boolean
 }
 
@@ -37,7 +37,7 @@ const ICONS_COLORS = [
   { bg: 'bg-[#e0f2fe]', text: 'text-[#0ea5e9]' }
 ]
 
-export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
+export function SnipsTable({ isFavorite = false }: SnipsTableProps) {
   const [data, setData] = useState<Url[]>([])
   const [clicksMap, setClicksMap] = useState<Record<string, number>>({})
   const [loading, setLoading] = useState(true)
@@ -121,7 +121,7 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
       setData(prev => prev.filter(u => u.short_code !== shortCode))
       setTotal(prev => prev - 1)
     } else {
-      setData(prev => prev.map(u => u.short_code === shortCode ? { ...u, is_favorite: !currentStatus } : u))
+      setData(prev => prev.map(u => u.short_code === shortCode ? { ...u, is_favorite: !currentStatus } as any : u))
     }
 
     try {
@@ -258,11 +258,11 @@ export function SnipsTable({ title, isFavorite = false }: SnipsTableProps) {
                             <BarChart2 className="w-4 h-4" />
                           </Link>
                           <button
-                            onClick={() => toggleFavorite(item.short_code, !!item.is_favorite)}
-                            className={`p-1.5 rounded-md hover:bg-gray-100 transition-colors ${item.is_favorite ? 'text-yellow-400 hover:text-yellow-500' : 'text-gray-400 hover:text-yellow-400'}`}
-                            title={item.is_favorite ? "Remove favorite" : "Add favorite"}
+                            onClick={() => toggleFavorite(item.short_code, !!(item as any).is_favorite)}
+                            className={`p-1.5 rounded-md hover:bg-gray-100 transition-colors ${(item as any).is_favorite ? 'text-yellow-400 hover:text-yellow-500' : 'text-gray-400 hover:text-yellow-400'}`}
+                            title={(item as any).is_favorite ? "Remove favorite" : "Add favorite"}
                           >
-                            <Star className={`w-4 h-4 ${item.is_favorite ? 'fill-current' : ''}`} />
+                            <Star className={`w-4 h-4 ${(item as any).is_favorite ? 'fill-current' : ''}`} />
                           </button>
                           <button
                             onClick={() => handleCopy(item.short_code)}
