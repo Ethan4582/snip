@@ -5,7 +5,7 @@
 
 A production-ready URL shortener with edge redirects and real-time analytics.
 
-![Snip banner](./docs/r1.png)
+![Snip banner](./docs/r7.png)
 <!-- Replace with a real screenshot/banner of the dashboard -->
 
 
