@@ -42,7 +42,7 @@ export default function AnalyticsPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-  const hasFetched = useRef(false)
+
 
   const fetchData = useCallback(async () => {
     try {

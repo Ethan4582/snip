@@ -1,6 +1,7 @@
 {
   "name": "snip",
   "private": true,
+  "packageManager": "pnpm@11.5.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
