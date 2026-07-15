@@ -120,8 +120,7 @@ export function SnipsTable({ isFavorite = false }: SnipsTableProps) {
   }
 
   const handleCopy = (shortCode: string) => {
-    const baseUrl = process.env.NEXT_PUBLIC_EDGE_URL || 'http://localhost:8787'
-    navigator.clipboard.writeText(`${baseUrl}/${shortCode}`)
+    navigator.clipboard.writeText(`https://snip.t7blocks.xyz/${shortCode}`)
     toast.success('Link copied to clipboard')
   }
 

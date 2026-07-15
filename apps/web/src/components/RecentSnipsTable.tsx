@@ -41,7 +41,7 @@ export function RecentSnipsTable({ data: initialData }: RecentSnipsTableProps) {
   }, [initialData])
 
   const handleCopy = (shortCode: string) => {
-    navigator.clipboard.writeText(`${edgeUrl}/${shortCode}`)
+    navigator.clipboard.writeText(`https://snip.t7blocks.xyz/${shortCode}`)
     toast.success('Link copied to clipboard')
   }
 
