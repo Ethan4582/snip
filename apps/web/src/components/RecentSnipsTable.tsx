@@ -30,8 +30,6 @@ const ICONS_COLORS = [
 ]
 
 export function RecentSnipsTable({ data: initialData }: RecentSnipsTableProps) {
-  const edgeUrl = process.env.NEXT_PUBLIC_EDGE_URL || 'http://localhost:8787'
-
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean, shortCode: string | null }>({ open: false, shortCode: null })
   const [editDialog, setEditDialog] = useState<{ open: boolean, shortCode: string | null, customAlias: string }>({ open: false, shortCode: null, customAlias: '' })
   const [localData, setLocalData] = useState(initialData)
