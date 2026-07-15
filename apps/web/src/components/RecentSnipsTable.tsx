@@ -169,7 +169,7 @@ export function RecentSnipsTable({ data: initialData }: RecentSnipsTableProps) {
         initialAlias={editDialog.customAlias}
         onClose={() => setEditDialog({ open: false, shortCode: null, customAlias: '' })}
         onSuccess={(updatedUrl) => {
-          setLocalData(prev => prev.map(u => u.short_code === editDialog.shortCode ? { ...u, custom_alias: updatedUrl.custom_alias } : u))
+          setLocalData(prev => prev.map(u => u.short_code === editDialog.shortCode ? { ...u, custom_alias: updatedUrl.custom_alias || undefined } : u))
           window.dispatchEvent(new Event('snipCreated'))
         }}
       />
