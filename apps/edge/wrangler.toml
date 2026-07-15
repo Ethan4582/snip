@@ -17,4 +17,4 @@ binding = "ANALYTICS_ENGINE"
 dataset = "snap_click_events"
 
 [triggers]
-crons = ["*/1 * * * *"]
+crons = ["*/3 * * * *"]

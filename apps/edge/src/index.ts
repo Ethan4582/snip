@@ -19,7 +19,8 @@ async function publishClickEvent(env: Env, request: Request, shortCode: string) 
     })
     
     const cf = (request as any).cf
-    const country = cf?.country || 'Unknown'
+    // Read from header first in case request was proxied from Next.js middleware
+    const country = request.headers.get('cf-ipcountry') || cf?.country || 'Unknown'
     const referrer = request.headers.get('referer') || ''
     const userAgent = request.headers.get('user-agent') || ''
     

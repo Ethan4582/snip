@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { format } from 'date-fns'
@@ -34,6 +34,11 @@ export function RecentSnipsTable({ data: initialData }: RecentSnipsTableProps) {
 
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean, shortCode: string | null }>({ open: false, shortCode: null })
   const [editDialog, setEditDialog] = useState<{ open: boolean, shortCode: string | null, customAlias: string }>({ open: false, shortCode: null, customAlias: '' })
+  const [localData, setLocalData] = useState(initialData)
+
+  useEffect(() => {
+    setLocalData(initialData)
+  }, [initialData])
 
   const handleCopy = (shortCode: string) => {
     navigator.clipboard.writeText(`${edgeUrl}/${shortCode}`)
@@ -59,11 +64,11 @@ export function RecentSnipsTable({ data: initialData }: RecentSnipsTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {initialData.length === 0 ? (
+            {localData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="text-center text-gray-500 h-24">No snips found</TableCell>
               </TableRow>
-            ) : initialData.map((item, i) => {
+            ) : localData.map((item, i) => {
               const color = ICONS_COLORS[i % ICONS_COLORS.length]
               return (
                 <TableRow key={i} className="border-gray-50 hover:bg-gray-50/50 group">
@@ -151,7 +156,10 @@ export function RecentSnipsTable({ data: initialData }: RecentSnipsTableProps) {
         open={deleteDialog.open}
         shortCode={deleteDialog.shortCode}
         onClose={() => setDeleteDialog({ open: false, shortCode: null })}
-        onSuccess={() => window.dispatchEvent(new Event('snipCreated'))}
+        onSuccess={(sc) => {
+          setLocalData(prev => prev.filter(u => u.short_code !== sc))
+          window.dispatchEvent(new Event('snipCreated'))
+        }}
         onError={() => {}}
       />
 
@@ -160,7 +168,10 @@ export function RecentSnipsTable({ data: initialData }: RecentSnipsTableProps) {
         shortCode={editDialog.shortCode}
         initialAlias={editDialog.customAlias}
         onClose={() => setEditDialog({ open: false, shortCode: null, customAlias: '' })}
-        onSuccess={() => window.dispatchEvent(new Event('snipCreated'))}
+        onSuccess={(updatedUrl) => {
+          setLocalData(prev => prev.map(u => u.short_code === editDialog.shortCode ? { ...u, custom_alias: updatedUrl.custom_alias } : u))
+          window.dispatchEvent(new Event('snipCreated'))
+        }}
       />
     </Card>
   )

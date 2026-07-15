@@ -1,18 +1,7 @@
 import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  async rewrites() {
-    return {
-      fallback: [
-        {
-          source: '/:code',
-          destination: 'https://snip-edge.t7labs.workers.dev/:code',
-        },
-      ],
-    }
-  },
-};
+const nextConfig = {};
 
 export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG || "snip",

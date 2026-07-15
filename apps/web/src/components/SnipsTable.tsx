@@ -95,6 +95,15 @@ export function SnipsTable({ isFavorite = false }: SnipsTableProps) {
     return () => clearTimeout(handler)
   }, [search, page, sortBy, sortOrder, fetchData])
 
+  useEffect(() => {
+    const handleSnipCreated = () => {
+      setPage(1)
+      fetchData()
+    }
+    window.addEventListener('snipCreated', handleSnipCreated)
+    return () => window.removeEventListener('snipCreated', handleSnipCreated)
+  }, [fetchData])
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
     setPage(1)
