@@ -6,15 +6,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface ClicksChartProps {
   data: { date: string, clicks: number }[]
   granularity: string
-  onGranularityChange: (val: string) => void
 }
 
-export function ClicksChart({ data, granularity, onGranularityChange }: ClicksChartProps) {
+export function ClicksChart({ data, granularity }: ClicksChartProps) {
   const formattedData = data.map(d => {
     const dateObj = new Date(d.date)
+    let displayDate = ''
+    if (granularity === 'hour') {
+      displayDate = dateObj.toLocaleTimeString('default', { hour: 'numeric', minute: '2-digit' })
+    } else if (granularity === 'month') {
+      displayDate = dateObj.toLocaleString('default', { month: 'short', year: 'numeric' })
+    } else {
+      displayDate = `${dateObj.toLocaleString('default', { month: 'short' })} ${dateObj.getDate()}`
+    }
     return {
       ...d,
-      displayDate: `${dateObj.toLocaleString('default', { month: 'short' })} ${dateObj.getDate()}`
+      displayDate
     }
   })
 
@@ -29,16 +36,6 @@ export function ClicksChart({ data, granularity, onGranularityChange }: ClicksCh
     <Card className="shadow-sm border-gray-100 h-full rounded-xl">
       <CardHeader className="pb-0 flex flex-row items-center justify-between">
         <CardTitle className="text-base font-semibold text-gray-900">Clicks Over Time</CardTitle>
-        <Select value={granularity} onValueChange={onGranularityChange}>
-          <SelectTrigger className="w-[100px] h-8 text-xs bg-white border-gray-200 focus:ring-0">
-            <SelectValue placeholder="Daily" />
-          </SelectTrigger>
-          <SelectContent align="end">
-            <SelectItem value="day" className="text-xs">Daily</SelectItem>
-            <SelectItem value="week" className="text-xs">Weekly</SelectItem>
-            <SelectItem value="month" className="text-xs">Monthly</SelectItem>
-          </SelectContent>
-        </Select>
       </CardHeader>
       <CardContent>
         <div className="h-[280px] w-full mt-6">

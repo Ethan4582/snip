@@ -94,6 +94,8 @@ function redisDaily(events: ClickEvent[], granularity: string) {
       bucket = d.toISOString().slice(0, 7) + '-01'
     } else if (granularity === 'week') {
       bucket = getWeekStart(d)
+    } else if (granularity === 'hour') {
+      bucket = d.toISOString().slice(0, 13) + ':00:00.000Z'
     } else {
       bucket = d.toISOString().slice(0, 10)
     }
@@ -166,6 +168,7 @@ router.get('/daily', async (c) => {
   if (shortCodes.length === 0) return c.json([])
   try {
     let dateExpr = 'toStartOfDay(timestamp)'
+    if (granularity === 'hour') dateExpr = 'toStartOfHour(timestamp)'
     if (granularity === 'week') dateExpr = 'toStartOfWeek(timestamp)'
     if (granularity === 'month') dateExpr = 'toStartOfMonth(timestamp)'
     return c.json(await queryAnalytics(`SELECT ${dateExpr} as date, sum(_sample_interval) as clicks FROM ${DATASET} WHERE index1 IN (${buildInClause(shortCodes)}) AND timestamp >= '${from}' AND timestamp <= '${to}' GROUP BY date ORDER BY date ASC`))
@@ -247,6 +250,7 @@ router.get('/:short_code/daily', async (c) => {
   if (!dbUrl || dbUrl.user_id !== user.id) return c.json({ message: 'Not Found' }, 404)
   try {
     let dateExpr = 'toStartOfDay(timestamp)'
+    if (granularity === 'hour') dateExpr = 'toStartOfHour(timestamp)'
     if (granularity === 'week') dateExpr = 'toStartOfWeek(timestamp)'
     if (granularity === 'month') dateExpr = 'toStartOfMonth(timestamp)'
     return c.json(await queryAnalytics(`SELECT ${dateExpr} as date, sum(_sample_interval) as clicks FROM ${DATASET} WHERE index1 = '${shortCode}' AND timestamp >= '${from}' AND timestamp <= '${to}' GROUP BY date ORDER BY date ASC`))

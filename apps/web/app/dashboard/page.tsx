@@ -16,7 +16,7 @@ import { StatCardSkeleton } from '@/components/skeletons/StatCardSkeleton'
 import { ChartSkeleton } from '@/components/skeletons/ChartSkeleton'
 import { BreakdownCardSkeleton } from '@/components/skeletons/BreakdownCardSkeleton'
 import { TableSkeleton } from '@/components/skeletons/TableSkeleton'
-import { subDays } from 'date-fns'
+import { subDays, differenceInDays } from 'date-fns'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -35,7 +35,9 @@ export default function Dashboard() {
     from: subDays(new Date(), 30), 
     to: new Date() 
   })
-  const [granularity, setGranularity] = useState('day')
+
+  const diffDays = differenceInDays(dateRange.to, dateRange.from)
+  const granularity = diffDays <= 1 ? 'hour' : diffDays <= 31 ? 'day' : diffDays <= 90 ? 'week' : 'month'
 
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -170,7 +172,7 @@ export default function Dashboard() {
       {/* Chart Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <ClicksChart data={daily} granularity={granularity} onGranularityChange={setGranularity} />
+          <ClicksChart data={daily} granularity={granularity} />
         </div>
         <div>
           <BreakdownCard title="Top Countries" data={countries} />

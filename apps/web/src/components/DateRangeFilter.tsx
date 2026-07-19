@@ -35,7 +35,11 @@ export function DateRangeFilter({ onRangeChange }: DateRangeFilterProps) {
     setPreset(value)
     const to = new Date()
     let from = new Date()
-    if (value === "7") from = subDays(to, 7)
+    if (value === "1") {
+      from = new Date()
+      from.setHours(0, 0, 0, 0)
+    }
+    else if (value === "7") from = subDays(to, 7)
     else if (value === "30") from = subDays(to, 30)
     else if (value === "90") from = subDays(to, 90)
     else return // Custom, do not update yet
@@ -99,6 +103,7 @@ export function DateRangeFilter({ onRangeChange }: DateRangeFilterProps) {
           <SelectValue placeholder="Select range" />
         </SelectTrigger>
         <SelectContent align="end">
+          <SelectItem value="1">Today</SelectItem>
           <SelectItem value="7">Last 7 days</SelectItem>
           <SelectItem value="30">Last 30 days</SelectItem>
           <SelectItem value="90">Last 90 days</SelectItem>

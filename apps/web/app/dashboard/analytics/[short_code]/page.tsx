@@ -37,7 +37,9 @@ export default function AnalyticsPage() {
     from: subDays(new Date(), 30), 
     to: new Date() 
   })
-  const [granularity, setGranularity] = useState('day')
+
+  const diffDays = differenceInDays(dateRange.to, dateRange.from)
+  const granularity = diffDays <= 1 ? 'hour' : diffDays <= 31 ? 'day' : diffDays <= 90 ? 'week' : 'month'
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -209,7 +211,7 @@ export default function AnalyticsPage() {
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <ClicksChart data={daily} granularity={granularity} onGranularityChange={setGranularity} />
+          <ClicksChart data={daily} granularity={granularity} />
         </div>
         <div>
           <BreakdownCard title="Top Countries" data={countries} />
